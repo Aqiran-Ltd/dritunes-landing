@@ -32,7 +32,16 @@ if [ ! -f ".git-ftp.log" ]; then
 else
     echo "📤 Syncing changes with server..."
     git-ftp catchup
-    git-ftp push
+    git-ftp push --force
+fi
+
+# Verify upload by checking if key files exist
+echo "🔍 Verifying upload..."
+if curl -s -u "$(git config git-ftp.user):$(git config git-ftp.password)" "ftp://$(git config git-ftp.url | sed 's|ftp://||')/$(git config git-ftp.remote-root)index.html" > /dev/null 2>&1; then
+    echo "✅ Upload verification successful - index.html found on server"
+else
+    echo "⚠️  Upload verification failed - index.html not found on server"
+    echo "💡 Try running: git-ftp push --force --verbose"
 fi
 
 echo "✅ Deployment completed successfully!"
