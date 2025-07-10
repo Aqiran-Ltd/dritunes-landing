@@ -4,10 +4,10 @@
 echo "🚀 Manual upload starting..."
 
 # FTP credentials
-FTP_HOST="82.29.189.235"
-FTP_USER="u643770900"
-FTP_PASS="l~1Q>ei&0G>@9A4r"
-FTP_PATH="public_html"
+FTP_HOST="ftp.dritunesconsult.com"
+FTP_USER="u643770900.abytrone"
+FTP_PASS="q7?9qHG6fs/t?2nX"
+FTP_PATH=""
 
 # Check if out directory exists
 if [ ! -d "out" ]; then
