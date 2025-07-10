@@ -79,8 +79,18 @@ npm run export
 
 # Sync with server
 git-ftp catchup
-git-ftp push
+git-ftp push --force
 ```
+
+### Alternative: Manual Upload
+
+If git-ftp has issues, you can use the manual upload script:
+
+```bash
+./manual-upload.sh
+```
+
+This will upload all files directly via FTP using curl.
 
 ### Deployment Process
 

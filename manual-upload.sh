@@ -19,8 +19,21 @@ fi
 echo "📤 Uploading files to server..."
 cd out
 
-# Upload all files recursively
-find . -type f -exec curl -T {} -u "$FTP_USER:$FTP_PASS" "ftp://$FTP_HOST/$FTP_PATH/{}" \;
+# First, create all directories
+echo "📁 Creating directories..."
+find . -type d | while read dir; do
+    if [ "$dir" != "." ]; then
+        echo "Creating directory: $dir"
+        curl -Q "MKD $FTP_PATH/$dir" -u "$FTP_USER:$FTP_PASS" "ftp://$FTP_HOST/" > /dev/null 2>&1
+    fi
+done
+
+# Then upload all files recursively
+echo "📄 Uploading files..."
+find . -type f | while read file; do
+    echo "Uploading: $file"
+    curl -T "$file" -u "$FTP_USER:$FTP_PASS" "ftp://$FTP_HOST/$FTP_PATH/$file"
+done
 
 echo "✅ Manual upload completed!"
 echo "🌐 Check your website at your domain" 
