@@ -1,0 +1,31 @@
+name: Deploy Next.js Static Site to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and export static site
+        run: npm run build && npm run export
+
+      - name: Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./out
+          server-dir: /public_html/
+# You'll need to add your FTP credentials as GitHub repository secrets (FTP_SERVER, FTP_USERNAME, FTP_PASSWORD).
+# This workflow will build and deploy your static site automatically every time you push to the main branch.
+# Let me know if you need help setting up the secrets or customizing the workflow!
