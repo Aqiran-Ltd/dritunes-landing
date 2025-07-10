@@ -10,6 +10,7 @@ if ! command -v git-ftp &> /dev/null; then
     echo "❌ git-ftp is not installed. Please install it first:"
     echo "   macOS: brew install git-ftp"
     echo "   Ubuntu/Debian: sudo apt-get install git-ftp"
+    echo "   Windows: Install from https://git-ftp.github.io/"
     echo "   Or download from: https://git-ftp.github.io/"
     exit 1
 fi
