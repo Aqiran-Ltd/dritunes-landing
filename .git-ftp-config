@@ -1,0 +1,6 @@
+[ftp]
+    url = ftp://82.29.189.235
+    user = u643770900
+    passwd = l~1Q>ei&0G>@9A4r
+    syncroot = out/
+    remote-root = public_html/ 

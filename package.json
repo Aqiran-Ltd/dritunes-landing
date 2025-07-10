@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next build",
+    "deploy": "./deploy.sh"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

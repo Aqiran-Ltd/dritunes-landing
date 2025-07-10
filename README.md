@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DriTunes Landing Page
 
-## Getting Started
+A modern landing page built with Next.js, React, and Tailwind CSS.
 
-First, run the development server:
+## Development
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment to Hostinger cPanel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project is configured to deploy to Hostinger cPanel using git-ftp.
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+1. **Install git-ftp:**
+   ```bash
+   # macOS
+   brew install git-ftp
+   
+   # Ubuntu/Debian
+   sudo apt-get install git-ftp
+   
+   # Or download from: https://git-ftp.github.io/
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Get your Hostinger FTP credentials:**
+   - Log into your Hostinger cPanel
+   - Go to "Files" → "FTP Accounts"
+   - Create a new FTP account or use your main account
+   - Note down: FTP hostname, username, and password
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Initial Setup
 
-## Deploy on Vercel
+1. **Update the git-ftp configuration:**
+   Edit `.git-ftp-config` and replace the placeholder values:
+   ```ini
+   [ftp]
+       url = ftp://your-domain.com
+       user = your-ftp-username
+       passwd = your-ftp-password
+       syncroot = out/
+       remote-root = public_html/
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Initial deployment:**
+   ```bash
+   npm run deploy
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Ongoing Deployments
+
+After making changes and pushing to GitHub:
+
+```bash
+npm run deploy
+```
+
+Or manually:
+```bash
+# Build and export
+npm run export
+
+# Sync with server
+git-ftp catchup
+git-ftp push
+```
+
+### Deployment Process
+
+The deployment script will:
+1. Build the Next.js project
+2. Export it to static files in the `out/` directory
+3. Sync the static files to your Hostinger server via FTP
+4. Only upload changed files for faster deployments
+
+### File Structure on Server
+
+The static files will be uploaded to your `public_html/` directory on Hostinger, which is the web root for your domain.
+
+### Troubleshooting
+
+- **FTP Connection Issues:** Verify your FTP credentials in `.git-ftp-config`
+- **Build Errors:** Check that all dependencies are installed (`npm install`)
+- **Export Issues:** Ensure your Next.js config supports static export
+- **Permission Issues:** Make sure the deploy script is executable (`chmod +x deploy.sh`)
+
+### Manual Commands
+
+```bash
+# Initialize git-ftp (first time only)
+git-ftp init
+
+# Catch up with server state
+git-ftp catchup
+
+# Push changes
+git-ftp push
+
+# Pull changes from server
+git-ftp pull
+```
+
+## Project Structure
+
+```
+dritunes-landing/
+├── src/
+│   ├── app/           # Next.js app router pages
+│   └── components/    # React components
+├── public/            # Static assets
+├── deploy.sh          # Deployment script
+├── .git-ftp-config    # FTP configuration
+└── .git-ftp-ignore    # Files to exclude from upload
+```
+
+## Technologies Used
+
+- **Next.js 15** - React framework
+- **React 19** - UI library
+- **Tailwind CSS 4** - Styling
+- **Framer Motion** - Animations
+- **TypeScript** - Type safety
