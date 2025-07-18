@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function StatsSection() {
   const { theme } = useTheme();
@@ -150,14 +151,16 @@ export default function StatsSection() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="text-center mt-12"
         >
-          <motion.button
-            whileHover={{ scale: 1.05, y: -3 }}
-            whileTap={{ scale: 0.95 }}
-            className="group px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
-          >
-            Join Our Success Story
-            <ChartBarIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-          </motion.button>
+          <Link href="/trade" passHref legacyBehavior>
+            <motion.button
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="group px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
+            >
+              Join Our Success Story
+              <ChartBarIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+            </motion.button>
+          </Link>
         </motion.div>
       </div>
     </section>

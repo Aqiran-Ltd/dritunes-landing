@@ -118,7 +118,7 @@ export default function Footer() {
               <ul className="space-y-4">
                 <li>
                   <motion.a
-                    href="https://wa.me/233244444444"
+                    href="https://wa.me/233548434599"
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ x: 5 }}
@@ -152,7 +152,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <motion.a
-                    href="mailto:info@dritunes.com"
+                    href="mailto:info@dritunesconsult.com"
                     whileHover={{ x: 5 }}
                     className="text-gray-300 dark:text-gray-400 hover:text-red-400 dark:hover:text-red-300 transition-colors duration-200 text-sm flex items-center group"
                   >
@@ -161,7 +161,7 @@ export default function Footer() {
                     </div>
                     <div>
                       <div className="font-medium">Email</div>
-                      <div className="text-xs text-gray-400">info@dritunes.com</div>
+                      <div className="text-xs text-gray-400">info@dritunesconsult.com</div>
                     </div>
                   </motion.a>
                 </li>
@@ -198,7 +198,7 @@ export default function Footer() {
                 {[
                   {
                     name: "Facebook",
-                    href: "https://facebook.com/dritunes",
+                    href: "https://facebook.com/profile.php?id=61577944273619",
                     bgColor: "bg-gray-600 hover:bg-red-400",
                     icon: (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -218,7 +218,7 @@ export default function Footer() {
                   },
                   {
                     name: "Instagram",
-                    href: "https://instagram.com/dritunes",
+                    href: "https://instagram.com/dr.itunesconsult/",
                     bgColor: "bg-gray-600 hover:bg-red-400",
                     icon: (
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

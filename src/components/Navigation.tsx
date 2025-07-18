@@ -88,13 +88,14 @@ export default function Navigation() {
                 <MoonIcon className="h-5 w-5" />
               )}
             </motion.button>
-            <motion.button
+            <motion.a
+              href="/contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
             >
               Get Started
-            </motion.button>
+            </motion.a>
           </div>
 
           {/* Mobile menu button */}
@@ -147,13 +148,14 @@ export default function Navigation() {
                     {item.name}
                   </motion.a>
                 ))}
-                <motion.button
+                <motion.a
+                  href="/contact"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full mt-4 px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-colors duration-200"
+                  className="w-full mt-4 px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-colors duration-200 text-center block"
                 >
                   Get Started
-                </motion.button>
+                </motion.a>
               </div>
             </motion.div>
           )}

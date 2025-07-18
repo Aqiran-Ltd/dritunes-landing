@@ -5,6 +5,12 @@ set -e
 
 echo "🚀 Starting deployment process..."
 
+# FTP credentials (same as manual-upload.sh)
+FTP_HOST="ftp.dritunesconsult.com"
+FTP_USER="u643770900.abytrone"
+FTP_PASS="q7?9qHG6fs/t?2nX"
+FTP_PATH=""
+
 # Check if git-ftp is installed
 if ! command -v git-ftp &> /dev/null; then
     echo "❌ git-ftp is not installed. Please install it first:"
@@ -14,6 +20,13 @@ if ! command -v git-ftp &> /dev/null; then
     echo "   Or download from: https://git-ftp.github.io/"
     exit 1
 fi
+
+# Configure git-ftp with the credentials
+echo "🔧 Configuring git-ftp..."
+git config git-ftp.url "ftp://$FTP_HOST"
+git config git-ftp.user "$FTP_USER"
+git config git-ftp.password "$FTP_PASS"
+git config git-ftp.remote-root "$FTP_PATH"
 
 # Build the Next.js project (this now includes static export)
 echo "📦 Building Next.js project..."
@@ -37,7 +50,7 @@ fi
 
 # Verify upload by checking if key files exist
 echo "🔍 Verifying upload..."
-if curl -s -u "$(git config git-ftp.user):$(git config git-ftp.password)" "ftp://$(git config git-ftp.url | sed 's|ftp://||')/$(git config git-ftp.remote-root)index.html" > /dev/null 2>&1; then
+if curl -s -u "$FTP_USER:$FTP_PASS" "ftp://$FTP_HOST/$FTP_PATH/index.html" > /dev/null 2>&1; then
     echo "✅ Upload verification successful - index.html found on server"
 else
     echo "⚠️  Upload verification failed - index.html not found on server"

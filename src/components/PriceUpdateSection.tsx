@@ -10,8 +10,10 @@ import {
   PauseIcon,
   ChartBarIcon
 } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 
 export default function PriceUpdateSection() {
+  const router = useRouter();
   const [isAutoRefresh, setIsAutoRefresh] = useState(true);
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
@@ -295,6 +297,7 @@ export default function PriceUpdateSection() {
             {/* CTA Buttons */}
             <div className="space-y-3">
               <motion.button
+                onClick={() => router.push("/trade")} 
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-full py-4 bg-gradient-to-r from-red-600 to-red-700 dark:from-red-500 dark:to-red-600 hover:from-red-700 hover:to-red-800 dark:hover:from-red-600 dark:hover:to-red-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
@@ -303,9 +306,10 @@ export default function PriceUpdateSection() {
               </motion.button>
               
               <motion.button
+                onClick={() => router.push("/rates")}
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full py-4 bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-600/50 text-white dark:text-gray-200 font-bold rounded-xl hover:bg-white/20 dark:hover:bg-gray-700/50 transition-all duration-300"
+                className="w-full py-4 bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-600/50 text-white dark:text-gray-200 font-bold rounded-xl hover:bg-white/20 dark:hover:bg-gray-700/50 transition-all duration-300"  
               >
                 View All Rates
               </motion.button>

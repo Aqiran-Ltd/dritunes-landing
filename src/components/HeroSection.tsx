@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HeroSection() {
   const { theme } = useTheme();
@@ -116,7 +117,7 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.6 }}
           className="text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed"
         >
-          Ghana&apos;s Premier <span className="text-red-600 font-bold">Crypto & Gift Card</span> Trading Service
+          Ghana&apos;s Premier <span className="text-red-400 font-bold">Crypto & Gift Card</span> Trading Service
           <br />
           <span className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium">Online Trading • Physical Store • 24/7 Support</span>
         </motion.p>
@@ -128,21 +129,25 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.8 }}
           className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
         >
-          <motion.button
-            whileHover={{ scale: 1.05, y: -3 }}
-            whileTap={{ scale: 0.95 }}
-            className="group px-10 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg min-w-[220px] flex items-center justify-center"
-          >
-            Start Trading Now
-            <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05, y: -3 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-10 py-4 border-2 border-red-600 dark:border-red-400 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white font-bold rounded-full transition-all duration-300 text-lg min-w-[220px] shadow-lg hover:shadow-xl"
-          >
-            Learn More
-          </motion.button>
+          <Link href="/trade">
+            <motion.button
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="group px-10 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg min-w-[220px] flex items-center justify-center"
+            >
+              Start Trading Now
+              <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+            </motion.button>
+          </Link>
+          <Link href="/about">
+            <motion.button
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-10 py-4 border-2 border-red-600 dark:border-red-400 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white font-bold rounded-full transition-all duration-300 text-lg min-w-[220px] shadow-lg hover:shadow-xl"
+            >
+              Learn More
+            </motion.button>
+          </Link>
         </motion.div>
       </div>
 
