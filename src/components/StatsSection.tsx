@@ -1,47 +1,55 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ChartBarIcon, UsersIcon, ClockIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { 
+  UsersIcon, 
+  CurrencyDollarIcon, 
+  ShieldCheckIcon, 
+  ChartBarIcon 
+} from "@heroicons/react/24/outline";
+import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 
-const stats = [
-  {
-    icon: CurrencyDollarIcon,
-    value: "₵50M+",
-    label: "Trading Volume",
-    description: "Total volume traded",
-    gradient: "from-green-500 to-green-600",
-    delay: 0.1
-  },
-  {
-    icon: UsersIcon,
-    value: "10K+",
-    label: "Happy Customers",
-    description: "Satisfied clients",
-    gradient: "from-blue-500 to-blue-600",
-    delay: 0.2
-  },
-  {
-    icon: ClockIcon,
-    value: "24/7",
-    label: "Support Available",
-    description: "Round the clock service",
-    gradient: "from-purple-500 to-purple-600",
-    delay: 0.3
-  },
-  {
-    icon: ChartBarIcon,
-    value: "5+",
-    label: "Years Experience",
-    description: "Industry expertise",
-    gradient: "from-orange-500 to-orange-600",
-    delay: 0.4
-  }
-];
-
 export default function StatsSection() {
+  const { theme } = useTheme();
+
+  const stats = [
+    {
+      value: "10,000+",
+      label: "Happy Customers",
+      description: "Trusted by thousands across Ghana",
+      icon: UsersIcon,
+      gradient: "from-blue-500 to-blue-600",
+      delay: 0.1
+    },
+    {
+      value: "₵50M+",
+      label: "Trading Volume",
+      description: "Successfully processed transactions",
+      icon: CurrencyDollarIcon,
+      gradient: "from-green-500 to-green-600",
+      delay: 0.2
+    },
+    {
+      value: "99.9%",
+      label: "Success Rate",
+      description: "Secure and reliable transactions",
+      icon: ShieldCheckIcon,
+      gradient: "from-purple-500 to-purple-600",
+      delay: 0.3
+    },
+    {
+      value: "24/7",
+      label: "Support Available",
+      description: "Round-the-clock customer service",
+      icon: ChartBarIcon,
+      gradient: "from-red-500 to-red-600",
+      delay: 0.4
+    }
+  ];
+
   return (
-    <section className="py-16 px-4 bg-gradient-to-r from-white via-red-50 to-white relative overflow-hidden">
+    <section className="py-16 px-4 bg-gradient-to-r from-white via-red-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-pattern opacity-5" />
       
@@ -60,11 +68,11 @@ export default function StatsSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-6 py-3 bg-red-100 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-6 shadow-lg"
+            className="inline-flex items-center px-6 py-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 rounded-full text-red-700 dark:text-red-300 text-sm font-medium mb-6 shadow-lg"
           >
             <div className="relative w-6 h-6 mr-3">
               <Image
-                src="/logo/red-black.png"
+                src={theme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                 alt="Dr iTunes Logo"
                 fill
                 className="object-contain"
@@ -73,10 +81,10 @@ export default function StatsSection() {
             <span className="font-semibold">Our Success Metrics</span>
           </motion.div>
           
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Trusted by <span className="text-gradient">Thousands</span> Across Ghana
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Our commitment to excellence has made us Ghana&apos;s most trusted crypto and gift card trading service.
           </p>
         </motion.div>
@@ -93,7 +101,7 @@ export default function StatsSection() {
               whileHover={{ scale: 1.05, y: -5 }}
               className="group relative"
             >
-              <div className="bg-white rounded-3xl p-8 shadow-lg border border-red-100 hover:shadow-xl transition-all duration-300 h-full">
+              <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border border-red-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full">
                 {/* Icon */}
                 <motion.div
                   whileHover={{ rotate: 360 }}
@@ -110,14 +118,14 @@ export default function StatsSection() {
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: stat.delay + 0.2 }}
-                    className="text-3xl md:text-4xl font-bold text-gray-900 mb-2"
+                    className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2"
                   >
                     {stat.value}
                   </motion.div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-red-600 transition-colors">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                     {stat.label}
                   </h3>
-                  <p className="text-gray-600 text-sm font-medium">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
                     {stat.description}
                   </p>
                 </div>

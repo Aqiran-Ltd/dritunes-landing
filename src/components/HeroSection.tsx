@@ -2,11 +2,14 @@
 
 import { motion } from "framer-motion";
 import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
+import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 
 export default function HeroSection() {
+  const { theme } = useTheme();
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-red-50 to-red-100 pt-20">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-red-50 to-red-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">
       {/* Creative Background Elements */}
       <div className="absolute inset-0 bg-pattern opacity-30" />
       <div className="absolute inset-0 bg-grid opacity-20" />
@@ -60,7 +63,7 @@ export default function HeroSection() {
         >
           <div className="relative w-32 h-32 mx-auto mb-6">
             <Image
-              src="/logo/red-black.png"
+              src={theme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
               alt="Dr iTunes Logo"
               fill
               className="object-contain drop-shadow-2xl"
@@ -88,7 +91,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="inline-flex items-center px-6 py-3 bg-red-100 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-8 shadow-lg"
+          className="inline-flex items-center px-6 py-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 rounded-full text-red-700 dark:text-red-300 text-sm font-medium mb-8 shadow-lg"
         >
           <CheckCircleIcon className="w-5 h-5 mr-2 text-red-500" />
           <span className="font-semibold">Trusted by 10,000+ Ghanaians</span>
@@ -103,7 +106,7 @@ export default function HeroSection() {
         >
           <span className="text-gradient">Dr iTunes</span>
           <br />
-          <span className="text-gray-900">Consult</span>
+          <span className="text-gray-900 dark:text-white">Consult</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -111,11 +114,11 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="text-xl md:text-2xl lg:text-3xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed"
+          className="text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed"
         >
           Ghana&apos;s Premier <span className="text-red-600 font-bold">Crypto & Gift Card</span> Trading Service
           <br />
-          <span className="text-lg md:text-xl text-gray-500 font-medium">Online Trading • Physical Store • 24/7 Support</span>
+          <span className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium">Online Trading • Physical Store • 24/7 Support</span>
         </motion.p>
 
         {/* CTA Buttons */}
@@ -136,7 +139,7 @@ export default function HeroSection() {
           <motion.button
             whileHover={{ scale: 1.05, y: -3 }}
             whileTap={{ scale: 0.95 }}
-            className="px-10 py-4 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-bold rounded-full transition-all duration-300 text-lg min-w-[220px] shadow-lg hover:shadow-xl"
+            className="px-10 py-4 border-2 border-red-600 dark:border-red-400 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white font-bold rounded-full transition-all duration-300 text-lg min-w-[220px] shadow-lg hover:shadow-xl"
           >
             Learn More
           </motion.button>
@@ -153,12 +156,12 @@ export default function HeroSection() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-red-600 rounded-full flex justify-center"
+          className="w-6 h-10 border-2 border-red-600 dark:border-red-400 rounded-full flex justify-center"
         >
           <motion.div
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-1 h-3 bg-red-600 rounded-full mt-2"
+            className="w-1 h-3 bg-red-600 dark:bg-red-400 rounded-full mt-2"
           />
         </motion.div>
       </motion.div>

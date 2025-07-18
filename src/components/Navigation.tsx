@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon, SunIcon, MoonIcon } from "@heroicons/react/24/outline";
+import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,9 +20,8 @@ export default function Navigation() {
   }, []);
 
   const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "Features", href: "#features" },
-    { name: "About", href: "#about" },
+    { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -30,20 +31,21 @@ export default function Navigation() {
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-red-100"
+          ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-red-100 dark:border-gray-700"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo */}
-          <motion.div
+          <motion.a
+            href="/"
             whileHover={{ scale: 1.05 }}
             className="flex items-center space-x-3"
           >
             <div className="relative w-12 h-12 lg:w-14 lg:h-14">
               <Image
-                src="/logo/red-black.png"
+                src={theme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                 alt="Dr iTunes Logo"
                 fill
                 className="object-contain"
@@ -51,14 +53,14 @@ export default function Navigation() {
               />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
+              <h1 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
                 Dr iTunes
               </h1>
-              <p className="text-xs lg:text-sm text-red-600 font-medium">
+              <p className="text-xs lg:text-sm text-red-600 dark:text-red-400 font-medium">
                 Consult
               </p>
             </div>
-          </motion.div>
+          </motion.a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -67,12 +69,25 @@ export default function Navigation() {
                 key={item.name}
                 href={item.href}
                 whileHover={{ y: -2 }}
-                className="text-gray-700 hover:text-red-600 font-medium transition-colors duration-200 relative group"
+                className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors duration-200 relative group"
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 dark:bg-red-400 transition-all duration-300 group-hover:w-full"></span>
               </motion.a>
             ))}
+            {/* Theme Toggle */}
+            <motion.button
+              onClick={toggleTheme}
+              whileHover={{ scale: 1.05, rotate: 180 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              {theme === 'dark' ? (
+                <SunIcon className="h-5 w-5" />
+              ) : (
+                <MoonIcon className="h-5 w-5" />
+              )}
+            </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -83,11 +98,24 @@ export default function Navigation() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2">
+            {/* Theme Toggle Mobile */}
+            <motion.button
+              onClick={toggleTheme}
+              whileHover={{ scale: 1.05, rotate: 180 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              {theme === 'dark' ? (
+                <SunIcon className="h-5 w-5" />
+              ) : (
+                <MoonIcon className="h-5 w-5" />
+              )}
+            </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 hover:text-red-600 transition-colors duration-200"
+              className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
             >
               {isOpen ? (
                 <XMarkIcon className="h-6 w-6" />
@@ -105,7 +133,7 @@ export default function Navigation() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white/95 backdrop-blur-md border-t border-red-100"
+              className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-red-100 dark:border-gray-700"
             >
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navItems.map((item) => (
@@ -114,7 +142,7 @@ export default function Navigation() {
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     whileHover={{ x: 10 }}
-                    className="block px-3 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md font-medium transition-colors duration-200"
+                    className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800 rounded-md font-medium transition-colors duration-200"
                   >
                     {item.name}
                   </motion.a>

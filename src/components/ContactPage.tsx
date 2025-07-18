@@ -182,7 +182,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Phone Support</h3>
-                  <p className="text-gray-300 font-medium">+233 XX XXX XXXX</p>
+                  <p className="text-gray-300 font-medium">+233548434599 / +233201623345</p>
                   <p className="text-sm text-gray-400">Available 24/7</p>
                 </div>
               </div>
@@ -201,8 +201,8 @@ export default function ContactPage() {
                   <ChatBubbleLeftRightIcon className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">WhatsApp</h3>
-                  <p className="text-gray-300 font-medium">+233 XX XXX XXXX</p>
+                  <h3 className="text-lg font-bold text-white">WhatsApp & Telegram</h3>
+                  <p className="text-gray-300 font-medium">+233548434599 / +233201623345</p>
                   <p className="text-sm text-gray-400">Instant messaging</p>
                 </div>
               </div>
@@ -222,7 +222,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Email</h3>
-                  <p className="text-gray-300 font-medium">info@dritunesconsult.com</p>
+                  <p className="text-gray-300 font-medium">dr.itunesconsult@gmail.com</p>
                   <p className="text-sm text-gray-400">Business inquiries</p>
                 </div>
               </div>
@@ -242,7 +242,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Location</h3>
-                  <p className="text-gray-300 font-medium">Tamale, Northern Region</p>
+                  <p className="text-gray-300 font-medium">Tamale, Northern Region, Ghana</p>
                   <p className="text-sm text-gray-400">Serving all of Ghana</p>
                 </div>
               </div>
@@ -256,7 +256,7 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.4 }}
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
-              href="https://wa.me/233XXXXXXXXX"
+              href="https://wa.me/233548434599"
               target="_blank"
               rel="noopener noreferrer"
               className="group block w-full px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg text-center flex items-center justify-center"
