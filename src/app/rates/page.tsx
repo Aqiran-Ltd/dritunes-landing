@@ -1,113 +1,535 @@
 "use client";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { CurrencyDollarIcon, ArrowTrendingUpIcon, StarIcon } from "@heroicons/react/24/solid";
+import React, { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Fuse from 'fuse.js';
+import {
+  CurrencyDollarIcon,
+  MagnifyingGlassIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  GlobeAltIcon,
+  DevicePhoneMobileIcon,
+  ShoppingBagIcon,
+  FunnelIcon,
+  XMarkIcon,
+  ArrowsUpDownIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ArrowPathIcon,
+  ExclamationTriangleIcon,
+  ChatBubbleLeftEllipsisIcon,
+  PaperAirplaneIcon,
+  GiftIcon
+} from "@heroicons/react/24/solid";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import Link from "next/link";
+import { getRatesData, type GiftCard, type Category, type Rate } from "@/lib/googleSheets";
 
-const rates = [
-  { name: "Bitcoin (BTC)", rate: "₵12.50 / $1", best: true },
-  { name: "USDT (Tether)", rate: "₵12.20 / $1", best: false },
-  { name: "iTunes Gift Card", rate: "₵10.00 / $1", best: false },
-  { name: "Amazon Gift Card", rate: "₵9.80 / $1", best: false },
-  { name: "Steam Gift Card", rate: "₵9.50 / $1", best: false },
-  { name: "Razer Gold", rate: "₵9.00 / $1", best: false },
-  { name: "Vanilla Visa", rate: "₵8.80 / $1", best: false },
-  { name: "Walmart MoneyCard", rate: "₵8.50 / $1", best: false },
-];
+// Types
+type Currency = "RMB" | "GHS" | "NGN";
+type DeliveryType = "Physical" | "E-Code";
+type SortOption = "rate-high" | "rate-low" | "region-asc" | "region-desc" | "amount-asc" | "amount-desc";
+
+// Extended interface for search
+interface SearchableCard extends GiftCard {
+  categoryName: string;
+}
 
 export default function RatesPage() {
-  const [search, setSearch] = useState("");
-  const filteredRates = rates.filter(item => item.name.toLowerCase().includes(search.toLowerCase()));
+  // State
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCategoryName, setActiveCategoryName] = useState<string>("");
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>("GHS");
+  const [deliveryType, setDeliveryType] = useState<DeliveryType>("Physical");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set());
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedRegions, setSelectedRegions] = useState<Set<string>>(new Set());
+  const [showUnavailable, setShowUnavailable] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>("rate-high");
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  // Fetch data
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getRatesData();
+        setCategories(data.categories);
+        if (data.categories.length > 0 && !activeCategoryName) {
+          setActiveCategoryName(data.categories[0].name);
+        }
+        setLastUpdated(new Date());
+      } catch (err) {
+        console.error('Error fetching rates data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load rates data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleRefresh = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await getRatesData(true);
+      setCategories(data.categories);
+      setLastUpdated(new Date());
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to refresh rates data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Helpers
+  const getCurrencySymbol = (currency: Currency) => {
+    switch (currency) {
+      case "RMB": return "¥";
+      case "GHS": return "¢";
+      case "NGN": return "₦";
+    }
+  };
+
+  const getRate = (rate: Rate, currency: Currency, delivery: DeliveryType): number => {
+    if (!rate) return 0;
+    if (currency === "RMB") return rate.rmbPhysical;
+    if (currency === "GHS") return delivery === "Physical" ? rate.ghsPhysical : rate.ghsEcode;
+    if (currency === "NGN") return delivery === "Physical" ? rate.ngnPhysical : rate.ngnEcode;
+    return 0;
+  };
+
+  const getAmountValue = (amount: string): number => {
+    const match = amount.match(/\d+/);
+    return match ? parseInt(match[0]) : 0;
+  };
+
+  const getCategoryStyle = (name: string) => {
+    const n = (name || "").toLowerCase();
+    if (n.includes('apple') || n.includes('itunes')) return { icon: <DevicePhoneMobileIcon className="w-5 h-5" />, color: "from-gray-600 to-gray-800" };
+    if (n.includes('steam')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-600 to-blue-800" };
+    if (n.includes('google')) return { icon: <GlobeAltIcon className="w-5 h-5" />, color: "from-green-600 to-green-800" };
+    if (n.includes('xbox') || n.includes('microsoft')) return { icon: <GlobeAltIcon className="w-5 h-5" />, color: "from-green-700 to-green-900" };
+    if (n.includes('sephora')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-red-600 to-red-800" };
+    if (n.includes('amazon')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-yellow-600 to-yellow-800" };
+    return { icon: <GiftIcon className="w-5 h-5" />, color: "from-purple-600 to-purple-800" };
+  };
+
+  // -- WhatsApp Action -- //
+  const handleTrade = (card: GiftCard, categoryName: string, activeRegion: string) => {
+    const rate = getRate(card.rates, selectedCurrency, deliveryType);
+    if (rate <= 0) return;
+
+    // Construct message
+    const typeStr = selectedCurrency === 'RMB' ? 'Physical' : deliveryType;
+    const message = `Hi, I want to trade:\n\n*${categoryName} ${activeRegion}*\nAmount: *${card.amount}*\nType: *${typeStr}*\nRate: *${getCurrencySymbol(selectedCurrency)}${rate}*\n\nPlease advise on next steps.`;
+
+    window.open(`https://wa.me/233548434599?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
+  const handleGeneralSupport = () => {
+    window.open(`https://wa.me/233548434599?text=${encodeURIComponent("Hi, I have a question about gift card trading.")}`, '_blank');
+  };
+
+
+  // Derived Data
+  const activeCategory = useMemo(() =>
+    categories.find(c => c.name === activeCategoryName),
+    [categories, activeCategoryName]
+  );
+
+  const getAllRegions = useMemo(() => {
+    if (!activeCategory) return [];
+    return Array.from(new Set(activeCategory.cards.map(c => c.region)));
+  }, [activeCategory]);
+
+  // SMART SEARCH: Index all cards
+  const allCards = useMemo(() => {
+    return categories.flatMap(cat =>
+      cat.cards.map(card => ({ ...card, categoryName: cat.name } as SearchableCard))
+    );
+  }, [categories]);
+
+  // SMART SEARCH: Fuse Instance
+  const fuse = useMemo(() => {
+    return new Fuse(allCards, {
+      keys: [
+        { name: 'productName', weight: 0.7 },
+        { name: 'categoryName', weight: 0.6 },
+        { name: 'region', weight: 0.5 },
+        { name: 'amount', weight: 0.3 }
+      ],
+      threshold: 0.4,
+      distance: 100,
+    });
+  }, [allCards]);
+
+  // Filtering & Sorting
+  const filteredCards = useMemo(() => {
+    // 1. GLOBAL SEARCH MODE
+    if (searchQuery.trim().length > 0) {
+      const results = fuse.search(searchQuery);
+      const grouped: Record<string, SearchableCard[]> = {};
+
+      results.forEach(res => {
+        const card = res.item;
+        const groupKey = `${card.categoryName}:::${card.region}`;
+        if (!grouped[groupKey]) grouped[groupKey] = [];
+        grouped[groupKey].push(card);
+      });
+      return grouped as Record<string, GiftCard[]>;
+    }
+
+    // 2. STANDARD TAB MODE
+    if (!activeCategory) return {};
+    let filtered = activeCategory.cards;
+
+    if (selectedRegions.size > 0) {
+      filtered = filtered.filter(card => selectedRegions.has(card.region));
+    }
+
+    if (!showUnavailable) {
+      filtered = filtered.filter(card => getRate(card.rates, selectedCurrency, deliveryType) > 0);
+    }
+
+    filtered = [...filtered].sort((a, b) => {
+      const rateA = getRate(a.rates, selectedCurrency, deliveryType);
+      const rateB = getRate(b.rates, selectedCurrency, deliveryType);
+
+      switch (sortBy) {
+        case "rate-high": return rateB - rateA;
+        case "rate-low": return rateA - rateB;
+        case "region-asc": return a.region.localeCompare(b.region);
+        case "region-desc": return b.region.localeCompare(a.region);
+        case "amount-asc": return getAmountValue(a.amount) - getAmountValue(b.amount);
+        case "amount-desc": return getAmountValue(b.amount) - getAmountValue(a.amount);
+        default: return 0;
+      }
+    });
+
+    return filtered.reduce((acc, card) => {
+      if (!acc[card.region]) acc[card.region] = [];
+      acc[card.region].push(card);
+      return acc;
+    }, {} as Record<string, GiftCard[]>);
+
+  }, [activeCategory, searchQuery, fuse, selectedRegions, showUnavailable, selectedCurrency, deliveryType, sortBy]);
+
+  // UI Handlers
+  const toggleRegion = (regionKey: string) => {
+    const newExpanded = new Set(expandedRegions);
+    if (newExpanded.has(regionKey)) newExpanded.delete(regionKey);
+    else newExpanded.add(regionKey);
+    setExpandedRegions(newExpanded);
+  };
+
+  const expandAllRegions = () => {
+    const keys = Object.keys(filteredCards);
+    setExpandedRegions(new Set(keys));
+  };
+
+  const collapseAllRegions = () => setExpandedRegions(new Set());
+
+  const toggleRegionFilter = (region: string) => {
+    const newSelected = new Set(selectedRegions);
+    if (newSelected.has(region)) newSelected.delete(region);
+    else newSelected.add(region);
+    setSelectedRegions(newSelected);
+  };
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedRegions(new Set());
+    setShowUnavailable(false);
+    setSortBy("rate-high");
+  };
 
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-br from-[#f8fafc] via-yellow-50 to-red-100 dark:from-[#0a0a0a] dark:via-[#171717] dark:to-[#23272f]">
       <Navigation />
-      <div className="flex-1 flex flex-col items-center justify-center py-12 px-4 pt-32 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 bg-gradient-to-br from-yellow-100 via-red-100 to-pink-100 dark:from-yellow-900 dark:via-red-900 dark:to-pink-900 pointer-events-none z-0"
-        />
-        <motion.div
-          animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-10 left-10 w-32 h-32 bg-yellow-400/30 rounded-full blur-2xl z-0"
-        />
-        <motion.div
-          animate={{ y: [0, 20, 0], x: [0, -10, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-10 right-10 w-40 h-40 bg-pink-400/20 rounded-full blur-2xl z-0"
-        />
-        {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12 relative z-10"
-        >
-          <div className="inline-flex items-center px-6 py-3 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700/50 rounded-full text-yellow-700 dark:text-yellow-300 text-lg font-bold mb-6 shadow-lg animate-pulse-slow">
-            <CurrencyDollarIcon className="w-6 h-6 mr-2 text-yellow-500 animate-bounce" />
-            Live Rates
+
+      <div className="flex-1 flex flex-col items-center py-12 px-4 pt-32 relative overflow-hidden">
+        {/* Animated Background */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.15 }} transition={{ duration: 1 }} className="absolute inset-0 bg-gradient-to-br from-yellow-100 via-red-100 to-pink-100 dark:from-yellow-900 dark:via-red-900 dark:to-pink-900 pointer-events-none z-0" />
+
+        {/* Header */}
+        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 relative z-10 w-full max-w-6xl">
+          <div className="inline-flex items-center px-6 py-3 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700/50 rounded-full text-yellow-700 dark:text-yellow-300 text-lg font-bold mb-6 shadow-lg">
+            <CurrencyDollarIcon className="w-6 h-6 mr-2 text-yellow-500" />
+            Live Gift Card Rates
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">All Rates at a Glance</h1>
-          <p className="text-lg md:text-2xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-4">Check the latest rates for all supported crypto and gift cards. Updated in real time for your convenience!</p>
+          <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Comprehensive Rates</h1>
+          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6">Real-time rates for all major gift cards.</p>
+
+          <div className="flex items-center justify-center gap-4 mb-4">
+            {isLoading && (
+              <div className="flex items-center gap-2 text-yellow-600"><ArrowPathIcon className="w-5 h-5 animate-spin" /> Loading...</div>
+            )}
+            {error && (
+              <div className="flex items-center gap-2 text-red-600"><ExclamationTriangleIcon className="w-5 h-5" /> {error} <button onClick={handleRefresh} className="underline">Retry</button></div>
+            )}
+            {!isLoading && !error && lastUpdated && (
+              <div className="flex items-center gap-2 text-green-600"><CheckCircleIcon className="w-5 h-5" /> Updated {lastUpdated.toLocaleTimeString()} <button onClick={handleRefresh}><ArrowPathIcon className="w-4 h-4 hover:rotate-180 transition-transform" /></button></div>
+            )}
+          </div>
         </motion.div>
-        {/* Search Bar */}
-        <div className="w-full max-w-xl mx-auto mb-10 relative z-10">
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search rates (e.g. Bitcoin, Amazon, Gift Card)"
-            className="w-full px-6 py-4 rounded-full border-2 border-yellow-300 dark:border-yellow-700 bg-white/80 dark:bg-gray-900/80 text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all shadow-md placeholder-gray-400 dark:placeholder-gray-500"
-          />
+
+        {/* Controls Bar */}
+        <div className="w-full max-w-6xl mx-auto mb-6 relative z-10">
+          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-lg border-2 border-yellow-200 dark:border-yellow-800 flex flex-wrap gap-4 justify-between items-center">
+            <div className="flex gap-2">
+              <span className="font-semibold text-gray-700 dark:text-gray-300 self-center">Currency:</span>
+              {(["RMB", "GHS", "NGN"] as Currency[]).map(c => (
+                <button key={c} onClick={() => setSelectedCurrency(c)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${selectedCurrency === c ? "bg-yellow-400 text-gray-900 shadow-md" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300"}`}>{c} {getCurrencySymbol(c)}</button>
+              ))}
+            </div>
+
+            {selectedCurrency !== "RMB" && (
+              <div className="flex gap-2">
+                <span className="font-semibold text-gray-700 dark:text-gray-300 self-center">Type:</span>
+                {(["Physical", "E-Code"] as DeliveryType[]).map(t => (
+                  <button key={t} onClick={() => setDeliveryType(t)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${deliveryType === t ? "bg-red-500 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"}`}>{t}</button>
+                ))}
+              </div>
+            )}
+
+            <button onClick={() => setShowUnavailable(!showUnavailable)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${showUnavailable ? "bg-gray-200 dark:bg-gray-700" : "bg-green-100 text-green-700"}`}>
+              {showUnavailable ? <><XCircleIcon className="w-4 h-4" /> Show All</> : <><CheckCircleIcon className="w-4 h-4" /> Available Only</>}
+            </button>
+          </div>
         </div>
-        {/* Creative Divider */}
-        <div className="w-32 h-2 mx-auto mb-12 bg-gradient-to-r from-yellow-400 via-red-400 to-pink-400 rounded-full blur-sm animate-pulse-slow" />
-        {/* Creative Rates Table - Simple, Modern Card Design */}
-        <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative z-10">
-          {filteredRates.length === 0 ? (
-            <div className="col-span-full text-center text-gray-400 dark:text-gray-500 text-lg font-medium py-12">No rates found.</div>
+
+        {/* Filters & Search */}
+        <div className="w-full max-w-6xl mx-auto mb-6 relative z-10 flex flex-col md:flex-row gap-4">
+          <div className="relative flex-1">
+            <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search cards..." className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-yellow-300 dark:border-yellow-700 bg-white/80 dark:bg-gray-900/80 focus:ring-2 focus:ring-yellow-400 outline-none transition-all shadow-md" />
+            {searchQuery && <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><XMarkIcon className="w-5 h-5" /></button>}
+          </div>
+
+          <div className="relative">
+            <select value={sortBy} onChange={e => setSortBy(e.target.value as SortOption)} className="px-6 py-3 rounded-full border-2 border-yellow-300 dark:border-yellow-700 bg-white dark:bg-gray-800 shadow-md appearance-none pr-10 cursor-pointer outline-none">
+              <option value="rate-high">Rate: High to Low</option>
+              <option value="rate-low">Rate: Low to High</option>
+              <option value="region-asc">Region: A-Z</option>
+              <option value="region-desc">Region: Z-A</option>
+              <option value="amount-asc">Amount: Low to High</option>
+              <option value="amount-desc">Amount: High to Low</option>
+            </select>
+            <ArrowsUpDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+          </div>
+
+          <button onClick={() => setShowFilters(!showFilters)} className={`px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-md transition-all ${showFilters || selectedRegions.size > 0 ? "bg-yellow-400 text-gray-900" : "bg-white dark:bg-gray-800 border-2 border-yellow-300 dark:border-yellow-700 dark:text-gray-200"}`}>
+            <FunnelIcon className="w-5 h-5" /> Filters {selectedRegions.size > 0 && <span className="bg-red-500 text-white text-xs px-2 rounded-full">{selectedRegions.size}</span>}
+          </button>
+        </div>
+
+        {/* Active Filters Panel */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="w-full max-w-6xl mx-auto mb-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border-2 border-yellow-200 overflow-hidden">
+              <h3 className="font-semibold mb-3">Filter by Region:</h3>
+              <div className="flex flex-wrap gap-2">
+                {getAllRegions.map(r => (
+                  <button key={r} onClick={() => toggleRegionFilter(r)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedRegions.has(r) ? "bg-yellow-400 text-gray-900" : "bg-gray-200 dark:bg-gray-700"}`}>{r}</button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Dynamic Category Tabs */}
+        {!searchQuery && categories.length > 0 && (
+          <div className="w-full max-w-6xl mx-auto mb-8 relative z-10">
+            <div className="flex flex-wrap justify-center gap-4">
+              {categories.map(cat => {
+                const style = getCategoryStyle(cat.name);
+                return (
+                  <motion.button key={cat.name} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => { setActiveCategoryName(cat.name); setExpandedRegions(new Set()); setSelectedRegions(new Set()); }}
+                    className={`px-6 py-3 rounded-full font-bold text-lg transition-all shadow-lg flex items-center gap-2 ${activeCategoryName === cat.name ? `bg-gradient-to-r ${style.color} text-white` : "bg-white dark:bg-gray-800 border-2 border-gray-200"}`}>
+                    {style.icon} {cat.name}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Results List */}
+        <div className="w-full max-w-6xl mx-auto relative z-10 pb-20">
+          {searchQuery && Object.keys(filteredCards).length > 0 && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex items-center gap-3 text-2xl font-black text-gray-800 dark:text-white">
+              <MagnifyingGlassIcon className="w-8 h-8 text-yellow-500" />
+              <span>Search Results for <span className="text-yellow-600 dark:text-yellow-400">&quot;{searchQuery}&quot;</span></span>
+            </motion.div>
+          )}
+
+          {Object.keys(filteredCards).length === 0 ? (
+            <div className="text-center py-12 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
+              <p className="text-gray-500 dark:text-gray-400 text-lg">No cards found matching your filters.</p>
+              <button onClick={resetFilters} className="mt-4 px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded-full font-semibold transition-colors shadow-sm">Reset Filters</button>
+            </div>
           ) : (
-            filteredRates.map((item, idx) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                whileHover={{ scale: 1.03, y: -4 }}
-                className={`relative rounded-2xl p-6 shadow-lg border-2 ${item.best ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-900/30' : 'border-red-100 dark:border-gray-700 bg-white dark:bg-gray-800'} transition-all duration-300 flex flex-col items-center group hover:shadow-2xl`}
-              >
-                <div className="flex items-center mb-2">
-                  <ArrowTrendingUpIcon className="w-6 h-6 mr-2 text-red-400 group-hover:scale-110 transition-transform" />
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">{item.name}</span>
-                  {item.best && <StarIcon className="w-5 h-5 ml-2 text-yellow-400 animate-bounce" title="Best Rate" />}
-                </div>
-                <div className="text-2xl font-extrabold text-gray-900 dark:text-yellow-200 mb-1">
-                  {item.rate}
-                </div>
-                {item.best && <div className="text-xs font-semibold text-yellow-600 dark:text-yellow-300">Best Rate!</div>}
-              </motion.div>
-            ))
+            <div className="space-y-6">
+              <div className="flex justify-end gap-2">
+                <button onClick={expandAllRegions} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md transition-all">Expand All</button>
+                <button onClick={collapseAllRegions} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-semibold shadow-md transition-all">Collapse All</button>
+              </div>
+
+              {Object.entries(filteredCards).map(([regionKey, cards]) => {
+                // Parse key for display
+                const [catName, regName] = regionKey.includes(':::') ? regionKey.split(':::') : [activeCategoryName, regionKey];
+                const style = getCategoryStyle(catName);
+                const isExpanded = expandedRegions.has(regionKey);
+
+                return (
+                  <motion.div key={regionKey} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <button onClick={() => toggleRegion(regionKey)} className={`w-full px-6 py-4 bg-gradient-to-r ${style.color} text-white font-bold text-lg flex items-center justify-between hover:opacity-90 transition-opacity`}>
+                      <div className="flex items-center gap-3">
+                        {style.icon} <span>{catName} {regName}</span>
+                        <span className="text-sm font-normal opacity-90 bg-black/20 px-2 py-0.5 rounded-full">
+                          {cards.length} options
+                        </span>
+                      </div>
+                      {isExpanded ? <ChevronUpIcon className="w-5 h-5" /> : <ChevronDownIcon className="w-5 h-5" />}
+                    </button>
+
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
+                          <div className="p-0">
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block overflow-x-auto">
+                              <table className="w-full text-left">
+                                <thead className="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold">
+                                  <tr>
+                                    <th className="px-6 py-4">Card Amount</th>
+                                    <th className="px-6 py-4">Rate ({selectedCurrency})</th>
+                                    <th className="px-6 py-4">Status</th>
+                                    {selectedCurrency !== "RMB" && <th className="px-6 py-4">Type</th>}
+                                    <th className="px-6 py-4">Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                                  {cards.map((card, idx) => {
+                                    const rate = getRate(card.rates, selectedCurrency, deliveryType);
+                                    const isAvailable = rate > 0;
+                                    return (
+                                      <tr key={idx} className={`group transition-colors ${isAvailable ? "hover:bg-yellow-50/50 dark:hover:bg-yellow-900/10" : "opacity-60 bg-gray-50/50 dark:bg-gray-800/20"}`}>
+                                        <td className="px-6 py-4 font-bold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                                          {card.amount}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                          <div className={`text-xl font-black ${isAvailable ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>
+                                            {isAvailable ? <>{getCurrencySymbol(selectedCurrency)}{rate.toFixed(2)}</> : '-'}
+                                          </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                          {isAvailable ? (
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Available
+                                            </span>
+                                          ) : (
+                                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                                              Currently Unavailable
+                                            </span>
+                                          )}
+                                        </td>
+                                        {selectedCurrency !== "RMB" && (
+                                          <td className="px-6 py-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                            {deliveryType}
+                                          </td>
+                                        )}
+                                        <td className="px-6 py-4">
+                                          {isAvailable && (
+                                            <button
+                                              onClick={() => handleTrade(card, catName, regName)}
+                                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-bold shadow-md shadow-green-900/10 transition-all hover:scale-105"
+                                            >
+                                              <ChatBubbleLeftEllipsisIcon className="w-4 h-4" /> Trade
+                                            </button>
+                                          )}
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+
+                            {/* Mobile List View */}
+                            <div className="md:hidden divide-y divide-gray-100 dark:divide-gray-800">
+                              {cards.map((card, idx) => {
+                                const rate = getRate(card.rates, selectedCurrency, deliveryType);
+                                const isAvailable = rate > 0;
+                                return (
+                                  <div key={idx} className={`p-4 flex items-center justify-between ${!isAvailable && "opacity-60 bg-gray-50/50 dark:bg-gray-800/20"}`}>
+                                    <div>
+                                      <div className="font-bold text-gray-900 dark:text-white mb-1">{card.amount}</div>
+                                      <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                                        {selectedCurrency !== "RMB" && <span>{deliveryType}</span>}
+                                        {!isAvailable && <span className="text-red-500">Unavailable</span>}
+                                      </div>
+                                    </div>
+                                    <div className="text-right flex items-center gap-3">
+                                      <div>
+                                        {isAvailable ? (
+                                          <div className="text-xl font-black text-gray-900 dark:text-white">
+                                            {getCurrencySymbol(selectedCurrency)}{rate.toFixed(2)}
+                                          </div>
+                                        ) : (
+                                          <span className="text-sm font-bold text-gray-400">N/A</span>
+                                        )}
+                                        {isAvailable && <div className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wide">Rate</div>}
+                                      </div>
+
+                                      {isAvailable && (
+                                        <button
+                                          onClick={() => handleTrade(card, catName, regName)}
+                                          className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full"
+                                        >
+                                          <PaperAirplaneIcon className="w-5 h-5 -rotate-45 relative left-[-1px] top-[1px]" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </div>
           )}
         </div>
-        {/* Creative CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-center relative z-10"
-        >
-          <Link href="/trade" className="inline-block px-10 py-4 bg-gradient-to-r from-yellow-400 to-red-500 hover:from-yellow-500 hover:to-red-600 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg animate-pulse-slow">
-            Start Trading Now
-          </Link>
-        </motion.div>
       </div>
+
+      {/* Floating Action Button */}
+      <motion.button
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={handleGeneralSupport}
+        className="fixed bottom-6 right-6 z-50 p-4 bg-green-500 text-white rounded-full shadow-lg shadow-green-500/30 flex items-center justify-center"
+      >
+        <ChatBubbleLeftEllipsisIcon className="w-8 h-8" />
+      </motion.button>
+
       <Footer />
     </main>
   );
-} 
+}

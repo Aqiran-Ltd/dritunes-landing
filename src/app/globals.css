@@ -18,8 +18,8 @@
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-urbanist);
+  --font-mono: var(--font-urbanist);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,8 +34,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-urbanist), Arial, Helvetica, sans-serif;
   scroll-behavior: smooth;
+}
+
+* {
+  font-family: var(--font-urbanist), Arial, Helvetica, sans-serif;
 }
 
 /* Custom scrollbar */
@@ -313,4 +317,28 @@ body {
     background: white !important;
     color: black !important;
   }
+}
+
+/* Marquee Animations */
+@keyframes scroll-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes scroll-down {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+.animate-scroll-up {
+  animation: scroll-up 30s linear infinite;
+}
+
+.animate-scroll-down {
+  animation: scroll-down 30s linear infinite;
+}
+
+.mask-linear-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
 }
