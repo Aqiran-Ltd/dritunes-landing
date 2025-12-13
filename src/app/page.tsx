@@ -6,6 +6,7 @@ import FeaturesSection from "@/components/FeaturesSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 import { fetchRatesFromSheets } from "@/lib/googleSheetsServer";
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
   const ratesData = await fetchRatesFromSheets().catch((err) => {

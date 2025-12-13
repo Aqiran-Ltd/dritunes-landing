@@ -73,3 +73,4 @@ export async function getRatesData(forceRefresh = false): Promise<RatesData> {
 
   return data;
 }
+
