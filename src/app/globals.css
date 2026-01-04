@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
@@ -22,13 +24,11 @@
   --font-mono: var(--font-urbanist);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
 }
 
 body {
@@ -62,13 +62,21 @@ body {
 
 /* Creative background patterns */
 .bg-pattern {
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
+  background-image:
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(220, 38, 38, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(220, 38, 38, 0.1) 0%,
+      transparent 50%
+    );
 }
 
 .bg-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(220, 38, 38, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(220, 38, 38, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
@@ -85,14 +93,24 @@ body {
 }
 
 @keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Floating animation */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 .float {
@@ -101,10 +119,11 @@ body {
 
 /* Pulse animation */
 @keyframes pulse-red {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
   }
-  50% { 
+  50% {
     box-shadow: 0 0 0 20px rgba(220, 38, 38, 0);
   }
 }
@@ -115,10 +134,11 @@ body {
 
 /* Logo glow effect */
 @keyframes logo-glow {
-  0%, 100% { 
+  0%,
+  100% {
     filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.3));
   }
-  50% { 
+  50% {
     filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.6));
   }
 }
@@ -138,15 +158,25 @@ body {
 }
 
 .shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
 
 /* Bounce animation */
 @keyframes bounce-gentle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .bounce-gentle {
@@ -155,8 +185,12 @@ body {
 
 /* Rotate animation */
 @keyframes rotate-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .rotate-slow {
@@ -165,8 +199,13 @@ body {
 
 /* Scale animation */
 @keyframes scale-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 .scale-pulse {
@@ -221,7 +260,9 @@ body {
 
 /* Hover effects */
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .hover-lift:hover {
@@ -244,13 +285,15 @@ body {
 }
 
 .gradient-border::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   padding: 2px;
   background: linear-gradient(135deg, #dc2626, #991b1b);
   border-radius: inherit;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   mask-composite: exclude;
 }
 
@@ -275,19 +318,29 @@ body {
 
 /* Loading animation */
 @keyframes loading-dots {
-  0%, 20% {
+  0%,
+  20% {
     color: rgba(0, 0, 0, 0);
-    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow:
+      0.25em 0 0 rgba(0, 0, 0, 0),
+      0.5em 0 0 rgba(0, 0, 0, 0);
   }
   40% {
     color: black;
-    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow:
+      0.25em 0 0 rgba(0, 0, 0, 0),
+      0.5em 0 0 rgba(0, 0, 0, 0);
   }
   60% {
-    text-shadow: 0.25em 0 0 black, 0.5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow:
+      0.25em 0 0 black,
+      0.5em 0 0 rgba(0, 0, 0, 0);
   }
-  80%, 100% {
-    text-shadow: 0.25em 0 0 black, 0.5em 0 0 black;
+  80%,
+  100% {
+    text-shadow:
+      0.25em 0 0 black,
+      0.5em 0 0 black;
   }
 }
 
@@ -312,7 +365,7 @@ body {
   .no-print {
     display: none !important;
   }
-  
+
   body {
     background: white !important;
     color: black !important;
@@ -321,13 +374,21 @@ body {
 
 /* Marquee Animations */
 @keyframes scroll-up {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
 }
 
 @keyframes scroll-down {
-  0% { transform: translateY(-50%); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .animate-scroll-up {
@@ -339,6 +400,18 @@ body {
 }
 
 .mask-linear-fade {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
 }
