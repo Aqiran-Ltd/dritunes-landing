@@ -4,12 +4,23 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bars3Icon, XMarkIcon, SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "@/contexts/ThemeContext";
+import { audit } from "@/lib/audit";
+import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
+import Link from 'next/link';
+import { 
+  UserCircleIcon, 
+  ArrowLeftOnRectangleIcon, 
+  ChevronDownIcon,
+  Squares2X2Icon
+} from '@heroicons/react/24/outline';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,6 +80,7 @@ export default function Navigation() {
               <motion.a
                 key={item.name}
                 href={item.href}
+                onClick={() => audit.log('navigation_click', { label: item.name, href: item.href })}
                 whileHover={{ y: -2 }}
                 className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors duration-200 relative group"
               >
@@ -89,14 +101,82 @@ export default function Navigation() {
                 <MoonIcon className="h-5 w-5" />
               )}
             </motion.button>
-            <motion.a
-              href="/contact"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
-            >
-              Get Started
-            </motion.a>
+            {/* Desktop Auth Buttons or Profile */}
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 flex items-center justify-center font-bold">
+                    {user.name?.charAt(0) || 'U'}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200 mobile-hidden">
+                    {user.name?.split(' ')[0]}
+                  </span>
+                  <ChevronDownIcon className={`w-4 h-4 text-gray-500 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                <AnimatePresence>
+                  {profileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden"
+                    >
+                      <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      </div>
+                      <div className="p-1">
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
+                        >
+                          <Squares2X2Icon className="w-4 h-4" />
+                          Dashboard
+                        </Link>
+                        <Link
+                          href="/dashboard/profile"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
+                        >
+                          <UserCircleIcon className="w-4 h-4" />
+                          Profile
+                        </Link>
+                        <button
+                          onClick={() => {
+                            logout();
+                            setProfileOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                        >
+                          <ArrowLeftOnRectangleIcon className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/auth/login"
+                  className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -149,14 +229,50 @@ export default function Navigation() {
                     {item.name}
                   </motion.a>
                 ))}
-                <motion.a
-                  href="/contact"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full mt-4 px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-colors duration-200 text-center block"
-                >
-                  Get Started
-                </motion.a>
+                {user ? (
+                   <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                      <div className="flex items-center gap-3 mb-4 px-3">
+                        <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 flex items-center justify-center font-bold">
+                           {user.name?.charAt(0)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                           <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name}</p>
+                           <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                        </div>
+                     </div>
+                      <Link
+                        href="/dashboard"
+                         onClick={() => setIsOpen(false)}
+                        className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                      >
+                        Dashboard
+                      </Link>
+                       <button
+                         onClick={() => {
+                           logout();
+                           setIsOpen(false);
+                         }}
+                         className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
+                       >
+                         Sign Out
+                       </button>
+                   </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                     <Link
+                      href="/auth/login"
+                      className="px-6 py-2 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 text-center"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/auth/register"
+                      className="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 text-center"
+                    >
+                      Register
+                    </Link>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
