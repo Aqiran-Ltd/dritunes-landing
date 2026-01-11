@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { audit } from "@/lib/audit";
 import { 
   CurrencyDollarIcon, 
   ArrowRightIcon,
@@ -431,6 +432,7 @@ export default function TradingPreview() {
           <motion.button
             whileHover={{ scale: 1.05, y: -3 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => audit.log('cta_click', { location: 'trading_preview', label: 'Start Trading Now' })}
             className="group px-12 py-5 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold rounded-full shadow-2xl hover:shadow-red-500/25 transition-all duration-300 text-xl mb-6 flex items-center mx-auto"
           >
             <FireIcon className="w-6 h-6 mr-2 group-hover:animate-bounce" />

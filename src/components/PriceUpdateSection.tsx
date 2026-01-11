@@ -9,7 +9,7 @@ import {
   ChatBubbleLeftEllipsisIcon
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import { Category } from "@/lib/googleSheets";
+import { Category } from "@/lib/ratesService";
 import { parseAmountRule, validateAmount, getHelperText } from "@/lib/validation";
 
 interface PriceUpdateSectionProps {
@@ -288,20 +288,28 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                 </div>
               </div>
 
-              <div className="grid gap-3">
-                <button
+              <div className="grid grid-cols-2 gap-3">
+                 <button
+                   onClick={() => router.push('/dashboard/trade')}
+                   disabled={!isValid || calculatedValue <= 0}
+                   className="w-full py-4 bg-red-600 hover:bg-red-700 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-900/20"
+                 >
+                   <BoltIcon className="w-6 h-6" />
+                   Trade Now
+                 </button>
+                 <button
                   onClick={handleTrade}
                   disabled={!isValid || calculatedValue <= 0}
                   className="w-full py-4 bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-green-900/20"
                 >
                   <ChatBubbleLeftEllipsisIcon className="w-6 h-6" />
-                  Trade on WhatsApp
+                  WhatsApp
                 </button>
+              </div>
 
                 <button onClick={() => router.push("/rates")} className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
                   View Full Rates Table <ArrowPathIcon className="w-4 h-4" />
                 </button>
-              </div>
             </div>
           </motion.div>
 

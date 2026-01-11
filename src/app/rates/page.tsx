@@ -1,7 +1,10 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Fuse from 'fuse.js';
+import { audit } from "@/lib/audit";
 import {
   CurrencyDollarIcon,
   MagnifyingGlassIcon,
@@ -19,11 +22,12 @@ import {
   ExclamationTriangleIcon,
   ChatBubbleLeftEllipsisIcon,
   PaperAirplaneIcon,
-  GiftIcon
+  GiftIcon,
+  BoltIcon
 } from "@heroicons/react/24/solid";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { getRatesData, type GiftCard, type Category, type Rate } from "@/lib/googleSheets";
+import { fetchRates, type GiftCard, type Category, type Rate } from "@/lib/ratesService";
 
 // Types
 type Currency = "RMB" | "GHS" | "NGN";
@@ -37,6 +41,8 @@ interface SearchableCard extends GiftCard {
 
 export default function RatesPage() {
   // State
+  const { user } = useAuth();
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategoryName, setActiveCategoryName] = useState<string>("");
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>("GHS");
@@ -58,7 +64,7 @@ export default function RatesPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await getRatesData();
+        const data = await fetchRates();
         setCategories(data.categories);
         if (data.categories.length > 0 && !activeCategoryName) {
           setActiveCategoryName(data.categories[0].name);
@@ -77,11 +83,27 @@ export default function RatesPage() {
     return () => clearInterval(interval);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Audit: Log Search (Debounced)
+  useEffect(() => {
+    if (!searchQuery || searchQuery.length < 3) return;
+    const timeoutId = setTimeout(() => {
+      audit.log('rates_search', { query: searchQuery });
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+  // Audit: Log Filter Changes
+  useEffect(() => {
+    // Only log if not initial render/default values if desired, 
+    // but simplified logging is fine.
+    // We can just log distinct changes if needed.
+  }, [selectedCurrency, deliveryType]);
+
   const handleRefresh = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getRatesData(true);
+      const data = await fetchRates();
       setCategories(data.categories);
       setLastUpdated(new Date());
     } catch (err) {
@@ -132,6 +154,16 @@ export default function RatesPage() {
     // Construct message
     const typeStr = selectedCurrency === 'RMB' ? 'Physical' : deliveryType;
     const message = `Hi, I want to trade:\n\n*${categoryName} ${activeRegion}*\nAmount: *${card.amount}*\nType: *${typeStr}*\nRate: *${getCurrencySymbol(selectedCurrency)}${rate}*\n\nPlease advise on next steps.`;
+
+    // Log Audit Event
+    audit.log('trade_intent_whatsapp', {
+      asset: card.productName || categoryName, // Fallback if needed
+      region: activeRegion,
+      amount: card.amount,
+      rate: rate,
+      currency: selectedCurrency,
+      type: typeStr
+    });
 
     window.open(`https://wa.me/233548434599?text=${encodeURIComponent(message)}`, '_blank');
   };
@@ -267,6 +299,40 @@ export default function RatesPage() {
             <CurrencyDollarIcon className="w-6 h-6 mr-2 text-yellow-500" />
             Live Gift Card Rates
           </div>
+
+          
+          {/* Live Rates Banner - Conditional */}
+          <AnimatePresence>
+            {!user && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0, scale: 0.95 }} 
+                animate={{ opacity: 1, height: 'auto', scale: 1 }} 
+                exit={{ opacity: 0, height: 0, scale: 0.9 }}
+                className="mb-8 p-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden text-white relative z-20"
+              >
+                 <div className="bg-black/10 backdrop-blur-sm p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-white/20 rounded-full animate-pulse shadow-inner">
+                        <BoltIcon className="w-8 h-8 text-yellow-300" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="font-bold text-xl leading-tight">Trading just got faster!</h3>
+                        <p className="text-red-100 text-sm mt-1">Login to access the <span className="font-bold text-white underline decoration-yellow-400">Live Trade Dashboard</span> with instant payouts.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                       <a href="/auth/register" className="whitespace-nowrap px-6 py-3 bg-white text-red-600 font-black rounded-xl shadow-lg hover:bg-gray-50 hover:scale-105 transition-all text-sm uppercase tracking-wide">
+                        Get Started
+                      </a>
+                       <a href="/auth/login" className="whitespace-nowrap px-6 py-3 bg-red-800/50 hover:bg-red-800/70 text-white font-bold rounded-xl border border-white/20 transition-all text-sm uppercase tracking-wide backdrop-blur-md">
+                        Login
+                      </a>
+                    </div>
+                 </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Comprehensive Rates</h1>
           <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6">Real-time rates for all major gift cards.</p>
 
@@ -451,12 +517,35 @@ export default function RatesPage() {
                                         )}
                                         <td className="px-6 py-4">
                                           {isAvailable && (
-                                            <button
-                                              onClick={() => handleTrade(card, catName, regName)}
-                                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-bold shadow-md shadow-green-900/10 transition-all hover:scale-105"
-                                            >
-                                              <ChatBubbleLeftEllipsisIcon className="w-4 h-4" /> Trade
-                                            </button>
+                                            <div className="flex items-center gap-2">
+                                              
+                                               {/* Platform Trade Button */}
+                                              <button
+                                                onClick={() => {
+                                                  audit.log('trade_intent_platform', {
+                                                    asset: catName,
+                                                    region: regName,
+                                                    amount: card.amount,
+                                                    rate: rate,
+                                                    currency: selectedCurrency
+                                                  });
+                                                  router.push(user ? '/dashboard/trade' : '/auth/login');
+                                                }}
+                                                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/10 transition-all hover:scale-105"
+                                                title="Instant Trade on Platform"
+                                              >
+                                                <BoltIcon className="w-3.5 h-3.5" /> Platform
+                                              </button>
+
+                                              {/* WhatsApp Trade Button */}
+                                              <button
+                                                onClick={() => handleTrade(card, catName, regName)}
+                                                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-bold shadow-md shadow-green-900/10 transition-all hover:scale-105"
+                                                title="Chat on WhatsApp"
+                                              >
+                                                <ChatBubbleLeftEllipsisIcon className="w-3.5 h-3.5" /> WhatsApp
+                                              </button>
+                                            </div>
                                           )}
                                         </td>
                                       </tr>
@@ -493,12 +582,23 @@ export default function RatesPage() {
                                       </div>
 
                                       {isAvailable && (
-                                        <button
-                                          onClick={() => handleTrade(card, catName, regName)}
-                                          className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full"
-                                        >
-                                          <PaperAirplaneIcon className="w-5 h-5 -rotate-45 relative left-[-1px] top-[1px]" />
-                                        </button>
+                                        <div className="flex gap-2">
+                                          <button
+                                            onClick={() => router.push(user ? '/dashboard/trade' : '/auth/login')}
+                                            className="p-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full hover:bg-red-200 transition-colors"
+                                            title="Trade on Platform"
+                                          >
+                                            <BoltIcon className="w-5 h-5" />
+                                          </button>
+                                          
+                                          <button
+                                            onClick={() => handleTrade(card, catName, regName)}
+                                            className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full hover:bg-green-200 transition-colors"
+                                            title="Chat on WhatsApp"
+                                          >
+                                            <PaperAirplaneIcon className="w-5 h-5 -rotate-45 relative left-[-1px] top-[1px]" />
+                                          </button>
+                                        </div>
                                       )}
                                     </div>
                                   </div>
