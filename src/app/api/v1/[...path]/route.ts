@@ -74,10 +74,15 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
     });
 
     // 5. Return the Response
+    const responseHeaders = new Headers(response.headers);
+    responseHeaders.delete('content-encoding');
+    responseHeaders.delete('content-length');
+    responseHeaders.delete('transfer-encoding');
+
     return new NextResponse(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers: response.headers,
+      headers: responseHeaders,
     });
 
   } catch (error) {
