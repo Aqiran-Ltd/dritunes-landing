@@ -1,23 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Define the Params type as a Promise
+type Props = {
+  params: Promise<{ path: string[] }>;
+};
+
 // Handle all HTTP methods
-export async function GET(request: NextRequest, { params }: { params: { path: string[] } }) {
+export async function GET(request: NextRequest, props: Props) {
+  const params = await props.params;
   return handleRequest(request, params);
 }
 
-export async function POST(request: NextRequest, { params }: { params: { path: string[] } }) {
+export async function POST(request: NextRequest, props: Props) {
+  const params = await props.params;
   return handleRequest(request, params);
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { path: string[] } }) {
+export async function PUT(request: NextRequest, props: Props) {
+  const params = await props.params;
   return handleRequest(request, params);
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { path: string[] } }) {
+export async function PATCH(request: NextRequest, props: Props) {
+  const params = await props.params;
   return handleRequest(request, params);
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { path: string[] } }) {
+export async function DELETE(request: NextRequest, props: Props) {
+  const params = await props.params;
   return handleRequest(request, params);
 }
 
