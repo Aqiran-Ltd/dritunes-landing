@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AuthLayout({
   children,
@@ -25,12 +26,15 @@ export default function AuthLayout({
         {/* Glassmorphism Card */}
         <div className="relative z-10 p-12 text-white max-w-xl backdrop-blur-sm bg-black/10 rounded-3xl border border-white/5 shadow-2xl">
            <div className="mb-8 relative">
-             <Link href="/" className="text-3xl font-bold tracking-tight flex items-center gap-2 group">
+             <Link href="/" className="text-3xl font-bold tracking-tight flex items-center gap-3 group">
+                 <div className="relative w-10 h-10">
+                    <Image src="/logo/red-black.png" alt="Logo" fill className="object-contain" />
+                 </div>
                  <div className="relative">
                     <div className="absolute inset-0 bg-red-600 blur-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
                     <span className="relative text-red-500">Dritunes</span>
                  </div>
-                <span className="font-light tracking-widest text-white/80">Connect</span>
+                <span className="font-light tracking-widest text-white/80">Consult</span>
              </Link>
            </div>
            
@@ -62,12 +66,28 @@ export default function AuthLayout({
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
         <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-3xl -z-10 lg:hidden"></div>
         
+        {/* Back to Home Link */}
+        <Link 
+            href="/" 
+            className="absolute top-8 left-8 flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 transition-colors"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            Back to Home
+        </Link>
+        
         <div className="w-full max-w-md space-y-8 relative z-10">
           {/* Mobile Logo */}
-          <div className="lg:hidden text-center mb-8">
-             <Link href="/" className="text-3xl font-bold tracking-tight inline-flex items-center gap-2">
-                <span className="text-red-600">Dritunes</span>
-                <span className="font-light dark:text-white">Connect</span>
+          <div className="lg:hidden text-center mb-8 flex flex-col items-center">
+             <Link href="/" className="inline-flex items-center gap-3">
+                <div className="relative w-10 h-10">
+                   <Image src="/logo/red-black.png" alt="Logo" fill className="object-contain" />
+                </div>
+                <div className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                    <span className="text-red-600">Dritunes</span>
+                    <span className="font-light dark:text-white">Consult</span>
+                </div>
              </Link>
           </div>
 

@@ -114,7 +114,7 @@ const ServiceCard = ({ service }: { service: Service }) => {
 };
 
 export default function AboutPage() {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   const services: Service[] = [
     {
@@ -231,7 +231,7 @@ export default function AboutPage() {
               className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0 mb-4 md:mb-0 drop-shadow-xl"
             >
               <Image
-                src={theme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+                src={resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                 alt="Dr iTunes Logo"
                 fill
                 className="object-contain"

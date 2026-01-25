@@ -2,32 +2,37 @@
 
 import React, { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { 
   ArrowTrendingUpIcon, 
   ArrowTrendingDownIcon, 
   ClockIcon, 
   CheckCircleIcon, 
   XCircleIcon,
+  ExclamationCircleIcon,
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 import { Input } from '@/components/ui/Input';
 
 interface Trade {
   id: number;
+  trade_number: string;
   trade_type: 'buy' | 'sell';
-  amount: string; // API often returns string for decimals
-  rate: string;
-  total_ghs: string;
-  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  asset_name: string;
+  amount: string;
+  rate_used: string;
+  total_payout: string;
+  trade_status: 'pending' | 'approved' | 'rejected' | 'disputed';
+  payment_status: 'pending' | 'paid' | 'failed';
   created_at: string;
-  reference?: string;
 }
 
 export default function HistoryPage() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTrades = async () => {
@@ -36,12 +41,13 @@ export default function HistoryPage() {
         if (!token) return;
         const response: any = await api.get('/trades', token);
         
-        if (response.status && response.data) {
+        // Handle pagination structure: response.data.data
+        if (response.data && response.data.data && Array.isArray(response.data.data)) {
+            setTrades(response.data.data);
+        } else if (response.data && Array.isArray(response.data)) {
             setTrades(response.data);
-        } else if (Array.isArray(response.data)) {
-             setTrades(response.data);
         } else if (Array.isArray(response)) {
-             setTrades(response); // Fallback if direct array
+            setTrades(response);
         }
       } catch (error) {
         console.error('Failed to fetch trades', error);
@@ -54,27 +60,39 @@ export default function HistoryPage() {
   }, []);
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'text-green-600 bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-900/50';
-      case 'failed': 
-      case 'cancelled': return 'text-red-600 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/50';
-      default: return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/50';
+    switch (status.toLowerCase()) {
+      case 'approved':
+      case 'paid':
+        return 'text-green-600 bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-900/50';
+      case 'rejected':
+      case 'failed':
+        return 'text-red-600 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/50';
+      case 'disputed':
+        return 'text-orange-600 bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-900/50';
+      default: // pending
+        return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/50';
     }
   };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed': return <CheckCircleIcon className="w-4 h-4" />;
-      case 'failed': 
-      case 'cancelled': return <XCircleIcon className="w-4 h-4" />;
-      default: return <ClockIcon className="w-4 h-4" />;
+    switch (status.toLowerCase()) {
+      case 'approved':
+      case 'paid':
+        return <CheckCircleIcon className="w-4 h-4" />;
+      case 'rejected':
+      case 'failed':
+        return <XCircleIcon className="w-4 h-4" />;
+      case 'disputed':
+        return <ExclamationCircleIcon className="w-4 h-4" />;
+      default: // pending
+        return <ClockIcon className="w-4 h-4" />;
     }
   };
 
   const filteredTrades = trades.filter(trade => 
-      trade.amount.toString().includes(searchTerm) || 
-      trade.status.includes(searchTerm.toLowerCase()) ||
-      (trade.reference && trade.reference.toLowerCase().includes(searchTerm.toLowerCase()))
+      trade.trade_number.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      trade.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      trade.amount.includes(searchTerm)
   );
 
   return (
@@ -86,7 +104,7 @@ export default function HistoryPage() {
         </div>
         <div className="w-full sm:w-72">
            <Input 
-              placeholder="Search trades..." 
+              placeholder="Search by ID or Asset..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               icon={<MagnifyingGlassIcon className="w-5 h-5" />}
@@ -110,18 +128,31 @@ export default function HistoryPage() {
                    <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
                       <tr>
                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Asset</th>
                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rate</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Total (GHS)</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Payout</th>
+                         <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Trade Status</th>
+                         <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment</th>
                       </tr>
                    </thead>
                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                       {filteredTrades.map((trade) => (
-                         <tr key={trade.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                         <tr 
+                            key={trade.id} 
+                            onClick={() => router.push(`/dashboard/history/${trade.id}`)}
+                            className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group"
+                         >
                             <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                                {format(new Date(trade.created_at), 'MMM d, yyyy HH:mm')}
+                                {formatDistanceToNow(new Date(trade.created_at), { addSuffix: true })}
+                            </td>
+                            <td className="px-6 py-4 text-sm font-mono text-gray-500 dark:text-gray-400 group-hover:text-red-500 transition-colors">
+                                {trade.trade_number}
+                            </td>
+                            <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
+                                {trade.asset_name.replace(/_/g, ' ')}
                             </td>
                             <td className="px-6 py-4">
                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
@@ -133,19 +164,25 @@ export default function HistoryPage() {
                                     {trade.trade_type.toUpperCase()}
                                 </span>
                             </td>
-                            <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
+                            <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                 ${parseFloat(trade.amount).toFixed(2)}
                             </td>
                             <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                {trade.rate}
+                                {trade.rate_used}
                             </td>
-                            <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
-                                ₵{parseFloat(trade.total_ghs || '0').toFixed(2)}
+                            <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">
+                                ₵{parseFloat(trade.total_payout).toFixed(2)}
                             </td>
-                            <td className="px-6 py-4">
-                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(trade.status)}`}>
-                                    {getStatusIcon(trade.status)}
-                                    {trade.status.charAt(0).toUpperCase() + trade.status.slice(1)}
+                            <td className="px-6 py-4 text-center whitespace-nowrap">
+                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(trade.trade_status)}`}>
+                                    {getStatusIcon(trade.trade_status)}
+                                    {trade.trade_status.charAt(0).toUpperCase() + trade.trade_status.slice(1)}
+                                </span>
+                            </td>
+                            <td className="px-6 py-4 text-center whitespace-nowrap">
+                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(trade.payment_status)}`}>
+                                    {getStatusIcon(trade.payment_status)}
+                                    {trade.payment_status.charAt(0).toUpperCase() + trade.payment_status.slice(1)}
                                 </span>
                             </td>
                          </tr>

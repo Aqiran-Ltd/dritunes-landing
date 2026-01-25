@@ -19,16 +19,24 @@ export default function RegisterPage() {
     password_confirmation: '',
   });
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error for this field
+    if (fieldErrors[e.target.name]) {
+        const newErrors = { ...fieldErrors };
+        delete newErrors[e.target.name];
+        setFieldErrors(newErrors);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setFieldErrors({});
 
     if (formData.password !== formData.password_confirmation) {
       setError("Passwords do not match");
@@ -40,6 +48,11 @@ export default function RegisterPage() {
       await register(formData);
     } catch (err: any) {
       setError(err.message || 'Failed to register');
+      if (err.data && err.data.errors) {
+          setFieldErrors(err.data.errors);
+      } else if (err.data) {
+          setFieldErrors(err.data);
+      }
       setIsLoading(false);
     }
   };
@@ -57,7 +70,7 @@ export default function RegisterPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
+        {error && !Object.keys(fieldErrors).length && (
             <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-xl text-sm border border-red-100 dark:border-red-900/50 flex items-center gap-2 animate-pulse">
                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0">
                   <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
@@ -74,6 +87,7 @@ export default function RegisterPage() {
             onChange={handleChange}
             icon={<UserIcon className="w-5 h-5" />}
             required
+            error={fieldErrors.name?.[0]}
         />
 
         <Input
@@ -85,6 +99,7 @@ export default function RegisterPage() {
             onChange={handleChange}
             icon={<EnvelopeIcon className="w-5 h-5" />}
             required
+            error={fieldErrors.email?.[0]}
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -96,16 +111,53 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 icon={<PhoneIcon className="w-5 h-5" />}
                 required
+                error={fieldErrors.phone_number?.[0]}
             />
-            <Input
-                name="country"
-                label="Country Code"
-                placeholder="e.g GH"
-                value={formData.country}
-                onChange={handleChange}
-                icon={<GlobeAltIcon className="w-5 h-5" />}
-                required
-            />
+            
+            <div className="w-full space-y-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">
+                    Country
+                </label>
+                <div className="relative group">
+                    <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        className={`
+                          w-full px-4 py-3 rounded-xl
+                          bg-gray-50 dark:bg-gray-900 
+                          border-2 
+                          ${fieldErrors.country 
+                            ? 'border-red-500 focus:border-red-600' 
+                            : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:border-red-600'
+                          }
+                          focus:ring-4 focus:ring-red-500/10
+                          transition-all duration-300 ease-out
+                          text-gray-900 dark:text-gray-100
+                          focus:outline-none focus:bg-white dark:focus:bg-black
+                          pl-11 appearance-none cursor-pointer
+                        `}
+                        required
+                    >
+                        <option value="" disabled>Select</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Nigeria">Nigeria</option>
+                    </select>
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors duration-300">
+                        <GlobeAltIcon className="w-5 h-5" />
+                    </div>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
+                </div>
+                {fieldErrors.country && (
+                  <p className="text-xs text-red-500 ml-1 animate-slide-in-up">
+                    {fieldErrors.country[0]}
+                  </p>
+                )}
+            </div>
         </div>
 
         <Input
@@ -117,6 +169,7 @@ export default function RegisterPage() {
             onChange={handleChange}
             icon={<LockClosedIcon className="w-5 h-5" />}
             required
+            error={fieldErrors.password?.[0]}
         />
 
         <Input

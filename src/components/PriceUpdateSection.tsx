@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Category } from "@/lib/ratesService";
 import { parseAmountRule, validateAmount, getHelperText } from "@/lib/validation";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface PriceUpdateSectionProps {
   initialCategories: Category[];
@@ -18,6 +19,7 @@ interface PriceUpdateSectionProps {
 
 export default function PriceUpdateSection({ initialCategories = [] }: PriceUpdateSectionProps) {
   const router = useRouter();
+  const { settings } = useSettings();
 
   // -- Selection State -- //
   const [selectedCatName, setSelectedCatName] = useState<string>(initialCategories[0]?.name || "");
@@ -108,7 +110,8 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
 
     const message = `Hi check this for me: ${selectedCatName} ${selectedRegion} ${amount} (${selectedType})`;
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/233548434599?text=${encodedMessage}`;
+    const phoneNumber = settings?.whatsapp_number || '233548434599';
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
     window.open(whatsappUrl, '_blank');
   };
@@ -288,7 +291,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className={`grid gap-3 ${settings?.offer_trade_via_whatsapp ? 'grid-cols-2' : 'grid-cols-1'}`}>
                  <button
                    onClick={() => router.push('/dashboard/trade')}
                    disabled={!isValid || calculatedValue <= 0}
@@ -297,6 +300,8 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                    <BoltIcon className="w-6 h-6" />
                    Trade Now
                  </button>
+
+                 {settings?.offer_trade_via_whatsapp && (
                  <button
                   onClick={handleTrade}
                   disabled={!isValid || calculatedValue <= 0}
@@ -305,6 +310,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                   <ChatBubbleLeftEllipsisIcon className="w-6 h-6" />
                   WhatsApp
                 </button>
+                )}
               </div>
 
                 <button onClick={() => router.push("/rates")} className="w-full py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">

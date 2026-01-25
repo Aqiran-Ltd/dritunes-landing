@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function HeroSection() {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-red-50 to-red-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">
@@ -64,7 +64,7 @@ export default function HeroSection() {
         >
           <div className="relative w-32 h-32 mx-auto mb-6">
             <Image
-              src={theme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+              src={resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
               alt="Dr iTunes Logo"
               fill
               className="object-contain drop-shadow-2xl"

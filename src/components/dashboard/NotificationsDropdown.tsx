@@ -47,7 +47,7 @@ export default function NotificationsDropdown() {
       const token = localStorage.getItem('access_token');
       if (!token) return;
       
-      const response: any = await api.get('/api/v1/notifications', token);
+      const response: any = await api.get('/notifications', token);
       if (response && Array.isArray(response.data)) {
         // According to standard Laravel structure, response might be { data: [...] } or just [...]
         // Adjust based on actual API response if needed. Assuming standard resource collection.
@@ -76,7 +76,7 @@ export default function NotificationsDropdown() {
   const markAsRead = async (id: string) => {
     try {
       const token = localStorage.getItem('access_token') || undefined;
-      await api.post(`/api/v1/notifications/${id}/read`, {}, token);
+      await api.post(`/notifications/${id}/read`, {}, token);
       
       // Update local state
       setNotifications(prev => prev.map(n => 
@@ -91,7 +91,7 @@ export default function NotificationsDropdown() {
   const markAllAsRead = async () => {
     try {
       const token = localStorage.getItem('access_token') || undefined;
-      await api.post('/api/v1/notifications/read-all', {}, token);
+      await api.post('/notifications/read-all', {}, token);
       
       // Update local state
       setNotifications(prev => prev.map(n => ({ ...n, read_at: new Date().toISOString() })));

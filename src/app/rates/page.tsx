@@ -28,6 +28,7 @@ import {
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { fetchRates, type GiftCard, type Category, type Rate } from "@/lib/ratesService";
+import { useSettings } from "@/contexts/SettingsContext"; // Added import
 
 // Types
 type Currency = "RMB" | "GHS" | "NGN";
@@ -42,6 +43,7 @@ interface SearchableCard extends GiftCard {
 export default function RatesPage() {
   // State
   const { user } = useAuth();
+  const { settings } = useSettings(); // Added settings hooks
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategoryName, setActiveCategoryName] = useState<string>("");
@@ -165,7 +167,10 @@ export default function RatesPage() {
       type: typeStr
     });
 
-    window.open(`https://wa.me/233548434599?text=${encodeURIComponent(message)}`, '_blank');
+
+    
+    const phoneNumber = settings?.whatsapp_number || '233548434599';
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const handleGeneralSupport = () => {
@@ -538,6 +543,7 @@ export default function RatesPage() {
                                               </button>
 
                                               {/* WhatsApp Trade Button */}
+                                              {settings?.offer_trade_via_whatsapp && (
                                               <button
                                                 onClick={() => handleTrade(card, catName, regName)}
                                                 className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-bold shadow-md shadow-green-900/10 transition-all hover:scale-105"
@@ -545,6 +551,7 @@ export default function RatesPage() {
                                               >
                                                 <ChatBubbleLeftEllipsisIcon className="w-3.5 h-3.5" /> WhatsApp
                                               </button>
+                                              )}
                                             </div>
                                           )}
                                         </td>
@@ -591,6 +598,7 @@ export default function RatesPage() {
                                             <BoltIcon className="w-5 h-5" />
                                           </button>
                                           
+                                          {settings?.offer_trade_via_whatsapp && (
                                           <button
                                             onClick={() => handleTrade(card, catName, regName)}
                                             className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full hover:bg-green-200 transition-colors"
@@ -598,6 +606,7 @@ export default function RatesPage() {
                                           >
                                             <PaperAirplaneIcon className="w-5 h-5 -rotate-45 relative left-[-1px] top-[1px]" />
                                           </button>
+                                          )}
                                         </div>
                                       )}
                                     </div>

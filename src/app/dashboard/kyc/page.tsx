@@ -16,6 +16,7 @@ import {
   UserCircleIcon,
   ChevronRightIcon
 } from '@heroicons/react/24/outline';
+import { VerificationStatus } from '@/components/auth/VerificationStatus';
 
 const DOC_TYPES = [
     { id: 'gh_card', label: 'Ghana Card' },
@@ -30,7 +31,7 @@ const STEPS = [
 ];
 
 export default function KycPage() {
-  const { kycStatus, checkKycStatus } = useAuth();
+  const { kycStatus, kycData, checkKycStatus } = useAuth();
   
   // Form State
   const [currentStep, setCurrentStep] = useState(1);
@@ -100,7 +101,8 @@ export default function KycPage() {
 
     try {
         const token = localStorage.getItem('access_token');
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1'}/kyc/submit`, {
+        // Use local proxy to ensure API Key is injected
+        const response = await fetch('/api/v1/kyc/submit', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -185,9 +187,9 @@ export default function KycPage() {
   );
 
   const renderStatus = () => {
-    if (kycStatus === 'verified') {
+    if (kycStatus === 'verified' || kycStatus === 'approved') {
         return (
-            <div className="flex flex-col items-center justify-center p-8 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-900 mb-8 max-w-2xl mx-auto">
+            <div className="flex flex-col items-center justify-center p-8 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-900 mb-8 w-full">
                 <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-800 rounded-full flex items-center justify-center mb-4">
                     <CheckCircleIcon className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
                 </div>
@@ -198,7 +200,7 @@ export default function KycPage() {
     }
     if (kycStatus === 'pending') {
         return (
-            <div className="flex flex-col items-center justify-center p-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-900 mb-8 max-w-2xl mx-auto">
+            <div className="flex flex-col items-center justify-center p-8 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-900 mb-8 w-full">
                 <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mb-4">
                     <ClockIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                 </div>
@@ -224,7 +226,70 @@ export default function KycPage() {
         </p>
       </div>
 
+      {/* Verification Status Checklist */}
+      <div className="w-full">
+         <VerificationStatus />
+      </div>
+
       {renderStatus()}
+
+      {kycData && (kycStatus === 'pending' || kycStatus === 'verified' || kycStatus === 'approved') && (
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 w-full shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-800 pb-2">
+                  Submitted Information
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div>
+                      <p className="text-gray-500 dark:text-gray-400">Document Type</p>
+                      <p className="font-medium text-gray-900 dark:text-white capitalize">{kycData.document_type?.replace(/_/g, ' ') || 'N/A'}</p>
+                  </div>
+                  <div>
+                      <p className="text-gray-500 dark:text-gray-400">Document Number</p>
+                      <p className="font-medium text-gray-900 dark:text-white uppercase">{kycData.document_number || 'N/A'}</p>
+                  </div>
+                  {kycData.created_at && (
+                    <div className="sm:col-span-2">
+                        <p className="text-gray-500 dark:text-gray-400">Submitted On</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                            {new Date(kycData.created_at).toLocaleDateString()} at {new Date(kycData.created_at).toLocaleTimeString()}
+                        </p>
+                    </div>
+                  )}
+
+                  {/* Document Images */}
+                  <div className="sm:col-span-2 mt-4 space-y-4">
+                      <h4 className="font-medium text-gray-900 dark:text-white">Uploaded Documents</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {[
+                              { label: 'Front of ID', src: kycData.front_image },
+                              { label: 'Back of ID', src: kycData.back_image },
+                              { label: 'Selfie', src: kycData.selfie_image },
+                              { label: 'Proof of Address', src: kycData.proof_of_address }
+                          ].map((doc, idx) => (
+                              doc.src ? (
+                                  <div key={idx} className="space-y-2">
+                                      <p className="text-xs text-gray-500">{doc.label}</p>
+                                      <a 
+                                        href={`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/storage/${doc.src}`} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="block border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
+                                      >
+                                          {/* Use a simple img tag for direct storage access, or Next Image if domain is whitelisted */}
+                                          <img 
+                                            src={`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/storage/${doc.src}`} 
+                                            alt={doc.label} 
+                                            className="w-full h-24 object-cover"
+                                          />
+                                      </a>
+                                  </div>
+                              ) : null
+                          ))}
+                      </div>
+                  </div>
+              </div>
+          </div>
+      )}
 
       {(kycStatus === 'unsubmitted' || kycStatus === 'rejected') && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">

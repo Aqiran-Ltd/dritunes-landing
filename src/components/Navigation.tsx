@@ -19,7 +19,7 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const { user, logout } = useAuth();
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function Navigation() {
           >
             <div className="relative w-12 h-12 lg:w-14 lg:h-14">
               <Image
-                src={theme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+                src={resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                 alt="Dr iTunes Logo"
                 fill
                 className="object-contain"
@@ -90,12 +90,12 @@ export default function Navigation() {
             ))}
             {/* Theme Toggle */}
             <motion.button
-              onClick={toggleTheme}
+              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
               whileHover={{ scale: 1.05, rotate: 180 }}
               whileTap={{ scale: 0.95 }}
               className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
             >
-              {theme === 'dark' ? (
+              {resolvedTheme === 'dark' ? (
                 <SunIcon className="h-5 w-5" />
               ) : (
                 <MoonIcon className="h-5 w-5" />
@@ -183,12 +183,12 @@ export default function Navigation() {
           <div className="md:hidden flex items-center space-x-2">
             {/* Theme Toggle Mobile */}
             <motion.button
-              onClick={toggleTheme}
+              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
               whileHover={{ scale: 1.05, rotate: 180 }}
               whileTap={{ scale: 0.95 }}
               className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
             >
-              {theme === 'dark' ? (
+              {resolvedTheme === 'dark' ? (
                 <SunIcon className="h-5 w-5" />
               ) : (
                 <MoonIcon className="h-5 w-5" />

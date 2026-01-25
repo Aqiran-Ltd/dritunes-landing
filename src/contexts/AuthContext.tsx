@@ -12,14 +12,15 @@ interface User {
   country?: string;
   phone_verified_at?: string | null;
   email_verified_at?: string | null;
-  kyc_status?: 'pending' | 'verified' | 'rejected' | 'unsubmitted';
+  kyc_status?: 'pending' | 'verified' | 'approved' | 'rejected' | 'unsubmitted';
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   needsVerification: boolean;
-  kycStatus: 'pending' | 'verified' | 'rejected' | 'unsubmitted';
+  kycStatus: 'pending' | 'verified' | 'approved' | 'rejected' | 'unsubmitted';
+  kycData: any | null;
   isLoading: boolean;
   checkKycStatus: () => Promise<void>;
   login: (credentials: any) => Promise<void>;
@@ -35,7 +36,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [kycStatus, setKycStatus] = useState<'pending' | 'verified' | 'rejected' | 'unsubmitted'>('unsubmitted');
+  const [kycStatus, setKycStatus] = useState<'pending' | 'verified' | 'approved' | 'rejected' | 'unsubmitted'>('unsubmitted');
+  const [kycData, setKycData] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -86,8 +88,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!token) return;
       try {
           const response: any = await api.get('/kyc/status', token);
-          if (response.status && response.data) {
-             setKycStatus(response.data.status); // Assuming API returns { status: '...' }
+          console.log('KYC Status Response:', response); 
+
+          // Check if response has the expected fields directly
+          if (response && response.verification_status) {
+             setKycStatus(response.verification_status);
+             setKycData(response.verification_details || null);
+          } else if (response && response.status && response.data) {
+             // Fallback for wrapped response
+             const data = response.data;
+             setKycStatus(data.verification_status || 'unsubmitted');
+             setKycData(data.verification_details || null);
+          } else {
+             // Implicitly unsubmitted or empty
+             // setKycStatus('unsubmitted');
           }
       } catch (error) {
           console.error('Failed to check KYC status', error);
@@ -157,10 +171,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userResponse);
       }
 
-      // Redirect to dashboard (VerificationBanner will show)
-      router.push('/dashboard');
+      // Redirect to verification page
+      router.push('/auth/otp');
     } else {
-        throw new Error(response.message || 'Registration failed');
+        const error = new Error(response.message || 'Registration failed');
+        (error as any).data = response.errors;
+        throw error;
     }
   };
 
@@ -179,38 +195,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const verifyOtp = async (token: string, type: 'phone' | 'email') => {
-      const endpoint = type === 'phone' ? '/auth/verify-phone' : '/auth/verify-otp';
-       const accessToken = localStorage.getItem('access_token');
-       
-       if (type === 'phone') {
-           const response: any = await api.post(endpoint, { token }, accessToken || undefined);
-           if (response.status) {
-               // Refresh user data to update verification status
-               const userResponse: any = await api.get('/user', accessToken || '');
-                if (userResponse.status && userResponse.data) {
-                    setUser(userResponse.data);
-                } else if (userResponse.data) {
-                    setUser(userResponse.data);
-                } 
-                // Redirect to dashboard
-               router.push('/dashboard');
-           } else {
-               throw new Error(response.message || 'Verification failed');
+      // Correct endpoints based on type
+      const endpoint = type === 'phone' ? '/auth/verify-phone' : '/auth/verify-email';
+      const accessToken = localStorage.getItem('access_token');
+      
+      // Both endpoints expect just the token in the body (authentication is via Bearer)
+      const payload = { token };
+      
+      const response: any = await api.post(endpoint, payload, accessToken || undefined);
+      
+      if (response.status) {
+          // Refresh user data to update verification status (both flow are similar now)
+          const userResponse: any = await api.get('/user', accessToken || '');
+           if (userResponse.status && userResponse.data) {
+               setUser(userResponse.data);
+           } else if (userResponse.data) {
+               setUser(userResponse.data);
            }
-       }
+           
+           // If on OTP page, general behavior usually redirects to dashboard upon success
+           // But since we have multiple verifications (phone & email), we might want to check if both are done?
+           // For now, let's keep the redirect to dashboard as a positive feedback loop.
+           router.push('/dashboard');
+      } else {
+          throw new Error(response.message || 'Verification failed');
+      }
   }
 
   const resendOtp = async (type: 'phone' | 'email') => {
-       const endpoint = type === 'phone' ? '/auth/resend-phone-otp' : '/auth/forgot-password'; // Simplification
+       const endpoint = type === 'phone' ? '/auth/resend-phone-otp' : '/auth/resend-email-otp';
        const accessToken = localStorage.getItem('access_token');
-       
-       if (type === 'phone') {
-            await api.post(endpoint, {}, accessToken || undefined);
-       } else {
-            // For email/forgot password resend, we usually need the email. 
-            // This might need a refactor if the API requires email for resend.
-            // Assuming the simple case for now or relying on the user re-triggering the flow.
-       }
+
+       await api.post(endpoint, {}, accessToken || undefined);
   }
 
   const forgotPassword = async (email: string) => {
@@ -227,7 +243,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, kycStatus, isLoading, login, register, logout, verifyOtp, resendOtp, forgotPassword, resetPassword, checkKycStatus }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, kycStatus, kycData, isLoading, login, register, logout, verifyOtp, resendOtp, forgotPassword, resetPassword, checkKycStatus }}>
       {children}
     </AuthContext.Provider>
   );

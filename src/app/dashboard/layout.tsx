@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -11,14 +11,15 @@ import {
   WalletIcon, 
   UserCircleIcon,
   ArrowLeftOnRectangleIcon,
-
   XMarkIcon,
   ShieldCheckIcon,
-  ClockIcon
+  ClockIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import TopBar from '@/components/dashboard/TopBar';
 import VerificationBanner from '@/components/dashboard/VerificationBanner';
+import { api } from '@/lib/api';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -27,6 +28,7 @@ const navigation = [
   { name: 'Rates', href: '/dashboard/rates', icon: CurrencyDollarIcon },
   { name: 'Wallet', href: '/dashboard/wallet', icon: WalletIcon },
   { name: 'Verification', href: '/dashboard/kyc', icon: ShieldCheckIcon },
+  { name: 'Settings', href: '/dashboard/settings/notifications', icon: Cog6ToothIcon },
   { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
 ];
 
@@ -35,12 +37,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isLoading && !user) {
       router.push('/auth/login');
     }
   }, [user, isLoading, router]);
+
+  useEffect(() => {
+    const fetchPendingTrades = async () => {
+        try {
+            const token = localStorage.getItem('access_token');
+            if (!token) return;
+
+            const response: any = await api.get('/trades', token);
+            let trades = [];
+            
+            // Handle pagination structure
+            if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                trades = response.data.data;
+            } else if (response.data && Array.isArray(response.data)) {
+                trades = response.data;
+            } else if (Array.isArray(response)) {
+                trades = response;
+            }
+
+            // Count pending trades
+            const count = trades.filter((t: any) => t.trade_status === 'pending').length;
+            setPendingCount(count);
+
+        } catch (error) {
+            console.error('Failed to fetch pending trades count', error);
+        }
+    };
+
+    if (user) {
+        fetchPendingTrades();
+        // Poll every 30 seconds
+        const interval = setInterval(fetchPendingTrades, 30000);
+        return () => clearInterval(interval);
+    }
+  }, [user]);
 
   if (isLoading) {
     return (
@@ -79,12 +118,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
-              // Active state logic:
-              // 1. Exact match for Dashboard root
-              // 2. Starts with href for sub-pages (e.g. /dashboard/trade/create matches /dashboard/trade)
-              // Active state logic:
-              // 1. If item is Dashboard (/dashboard), it's active if pathname is EXACTLY /dashboard
-              // 2. If item is sub-page (e.g. /dashboard/trade), it's active if pathname STARTS WITH that href
+              // Active state logic
               const isActive = item.href === '/dashboard' 
                 ? pathname === '/dashboard'
                 : pathname.startsWith(item.href);
@@ -100,7 +134,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   }`}
                 >
                   <item.icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
-                  <span className="relative z-10">{item.name}</span>
+                  <span className="relative z-10 flex-1">{item.name}</span>
+                  
+                  {/* Pending Badge for History */}
+                  {item.name === 'History' && pendingCount > 0 && (
+                      <span className={`relative z-10 flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold rounded-full ${
+                          isActive 
+                           ? 'bg-white text-red-600' 
+                           : 'bg-red-600 text-white group-hover:bg-red-500'
+                      }`}>
+                          {pendingCount}
+                      </span>
+                  )}
+
                   {isActive && (
                     <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   )}
@@ -123,7 +169,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
              </div>
              <button
-               onClick={() => logout()}
+               onClick={() => setLogoutConfirmOpen(true)}
                className="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
              >
                <ArrowLeftOnRectangleIcon className="w-5 h-5" />
@@ -154,6 +200,38 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           className="fixed inset-0 z-30 bg-black/50 lg:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         ></div>
+      )}
+
+      {/* Logout Confirmation Modal */}
+      {logoutConfirmOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+              <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-100 dark:border-gray-800 animate-slide-in-up">
+                  <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4 text-red-600 mx-auto">
+                      <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Sign Out?</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-center text-sm mb-6">
+                      Are you sure you want to sign out of your account? You will need to login again to access your dashboard.
+                  </p>
+                  <div className="flex gap-3">
+                      <button 
+                          onClick={() => setLogoutConfirmOpen(false)}
+                          className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      >
+                          Cancel
+                      </button>
+                      <button 
+                          onClick={() => {
+                              setLogoutConfirmOpen(false);
+                              logout();
+                          }}
+                          className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20"
+                      >
+                          Sign Out
+                      </button>
+                  </div>
+              </div>
+          </div>
       )}
     </div>
   );

@@ -58,7 +58,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"phone_number\": \"0123456789\",\n    \"country\": \"GH\"\n}",
+                            "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\",\n    \"phone_number\": \"0123456789\",\n    \"country\": \"Ghana\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -318,6 +318,79 @@
             ]
         },
         {
+            "name": "Email Verification",
+            "description": "Endpoints to verify user email address via OTP.",
+            "item": [
+                {
+                    "name": "Verify Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"token\": \"123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/verify-email",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "verify-email"
+                            ]
+                        },
+                        "description": "Submits the OTP received via Email to mark the email address as verified."
+                    }
+                },
+                {
+                    "name": "Resend Email OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/resend-email-otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "resend-email-otp"
+                            ]
+                        },
+                        "description": "Triggers a new Email OTP if the previous one expired or was not received."
+                    }
+                }
+            ]
+        },
+        {
             "name": "Password Reset",
             "description": "Endpoints for recovering a lost password via Email OTP.",
             "item": [
@@ -487,7 +560,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Updated Name\",\n    \"phone_number\": \"0987654321\",\n    \"date_of_birth\": \"1990-01-01\",\n    \"address\": \"123 Main St\",\n    \"city\": \"Accra\",\n    \"state\": \"Greater Accra\",\n    \"country\": \"GH\"\n}",
+                            "raw": "{\n    \"name\": \"Updated Name\",\n    \"phone_number\": \"0987654321\",\n    \"date_of_birth\": \"1990-01-01\",\n    \"address\": \"123 Main St\",\n    \"city\": \"Accra\",\n    \"state\": \"Greater Accra\",\n    \"country\": \"Ghana\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -567,6 +640,62 @@
                             ]
                         },
                         "description": "Fetches available payment methods."
+                    }
+                },
+                {
+                    "name": "Get Socials",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/socials",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "socials"
+                            ]
+                        },
+                        "description": "Fetches company social media links."
+                    }
+                },
+                {
+                    "name": "Get Settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "settings"
+                            ]
+                        },
+                        "description": "Fetches general settings including trade configurations (WhatsApp)."
                     }
                 }
             ]

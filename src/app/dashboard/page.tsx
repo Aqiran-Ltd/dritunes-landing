@@ -1,108 +1,164 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   ArrowTrendingUpIcon, 
   ArrowTrendingDownIcon,
   ClockIcon, 
-  ShieldCheckIcon 
+  ShieldCheckIcon,
+  WalletIcon,
+  CurrencyDollarIcon,
+  ChevronRightIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
-import { useState } from 'react';
+import RatesTicker from '@/components/dashboard/RatesTicker';
+import QuickActions from '@/components/dashboard/QuickActions';
+import { VerificationStatus } from '@/components/auth/VerificationStatus';
+import Link from 'next/link';
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, kycStatus } = useAuth();
 
   const [recentTrades, setRecentTrades] = useState<any[]>([]);
-  const [loadingActivity, setLoadingActivity] = useState(true);
+  const [stats, setStats] = useState({
+      totalEarnings: 0,
+      pendingPayouts: 0,
+      totalTrades: 0
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
-      const loadRecentActivity = async () => {
+  // Check if all verifications are complete
+  const allVerified = React.useMemo(() => {
+      if (!user) return false;
+      const isPhoneVerified = !!user.phone_verified_at;
+      const isEmailVerified = !!user.email_verified_at;
+      const isKycVerified = kycStatus === 'verified' || kycStatus === 'approved';
+      
+      return isPhoneVerified && isEmailVerified && isKycVerified;
+  }, [user, kycStatus]);
+
+  useEffect(() => {
+      const loadDashboardData = async () => {
           try {
              const token = localStorage.getItem('access_token');
              if (!token) return;
              const response: any = await api.get('/trades', token);
              
-             let trades = [];
-             if (response.status && response.data) {
-                 trades = response.data;
-             } else if (Array.isArray(response.data)) {
+             let trades: any[] = [];
+             if (response.data && response.data.data) {
+                 trades = response.data.data;
+             } else if (response.data && Array.isArray(response.data)) {
                  trades = response.data;
              } else if (Array.isArray(response)) {
                  trades = response;
              }
-             // Take top 5
+
+             // Calculate Stats
+             const earnings = trades
+                .filter((t: any) => t.payment_status === 'paid' || t.trade_status === 'completed') // Adjust based on API reliability
+                .reduce((sum: number, t: any) => sum + parseFloat(t.total_payout || 0), 0);
+            
+             const pending = trades
+                .filter((t: any) => t.payment_status === 'pending' && t.trade_status !== 'rejected')
+                .reduce((sum: number, t: any) => sum + parseFloat(t.total_payout || 0), 0);
+
+             setStats({
+                 totalEarnings: earnings,
+                 pendingPayouts: pending,
+                 totalTrades: trades.length
+             });
+
+             // Top 5 recent
              setRecentTrades(trades.slice(0, 5));
+
           } catch (e) {
-              console.error("Failed to load activity", e);
+              console.error("Failed to load dashboard data", e);
           } finally {
-              setLoadingActivity(false);
+              setIsLoading(false);
           }
       };
-      loadRecentActivity();
-  }, []);
-
-  const stats = [
-    { name: 'Total Trades', value: recentTrades.length.toString(), change: '+0%', changeType: 'neutral', icon: ArrowTrendingUpIcon },
-    { name: 'Pending', value: recentTrades.filter(t => t.status === 'pending').length.toString(), change: 'Processing', changeType: 'neutral', icon: ClockIcon },
-    { name: 'Verified', value: user?.kyc_status === 'verified' ? 'Level 2' : 'Level 1', change: user?.kyc_status === 'verified' ? 'Verified' : 'Basic', changeType: 'positive', icon: ShieldCheckIcon },
-  ];
+      
+      if (user) {
+        loadDashboardData();
+      }
+  }, [user]);
 
   return (
-    <div className="space-y-8 animate-slide-in-up">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-         <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-               Welcome back, {user?.name.split(' ')[0]}! 👋
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-               Here's what's happening with your account today.
-            </p>
-         </div>
-         <Button onClick={() => window.location.href = '/dashboard/trade'}>
-            Start New Trade
-         </Button>
+    <div className="space-y-8 animate-slide-in-up pb-10">
+      {/* Header Section */}
+      <div className="flex flex-col gap-1">
+         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Hello, {user?.name.split(' ')[0]} 👋
+         </h1>
+         <p className="text-gray-500 dark:text-gray-400">
+            Let's make some profit today.
+         </p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Main Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         {stats.map((stat) => (
-             <div key={stat.name} className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-red-100 dark:hover:border-red-900/30 transition-colors">
-                <div className="flex items-center justify-between mb-4">
-                   <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg text-red-600">
-                      <stat.icon className="w-6 h-6" />
-                   </div>
-                   <span className={`text-sm font-medium ${
-                       stat.changeType === 'positive' ? 'text-green-600' : 'text-gray-500'
-                   }`}>
-                      {stat.change}
-                   </span>
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                   {stat.value}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                   {stat.name}
-                </p>
+         {/* Earnings Card */}
+         <div className="md:col-span-3 bg-gray-900 dark:bg-black rounded-[2.5rem] p-8 text-white relative overflow-hidden">
+             {/* Background Pattern */}
+             <div className="absolute top-0 right-0 w-64 h-64 bg-red-600 rounded-full blur-[80px] opacity-20 -mr-16 -mt-16 pointer-events-none"></div>
+             
+             <div className="relative z-10 flex flex-col justify-between h-full gap-8">
+                 <div className="flex items-start justify-between">
+                    <div>
+                        <p className="text-gray-400 font-medium mb-1">Total Earnings</p>
+                        <h2 className="text-4xl font-bold">₵{stats.totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+                    </div>
+                    <div className="p-3 bg-white/10 rounded-full backdrop-blur-sm">
+                        <WalletIcon className="w-6 h-6 text-white" />
+                    </div>
+                 </div>
+
+                 <div className="flex items-center gap-6">
+                     <div>
+                         <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Pending Payout</p>
+                         <p className="text-xl font-semibold text-green-400">₵{stats.pendingPayouts.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                     </div>
+                     <div className="w-px h-8 bg-gray-700"></div>
+                     <div>
+                         <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Trades</p>
+                         <p className="text-xl font-semibold">{stats.totalTrades}</p>
+                     </div>
+                 </div>
              </div>
-         ))}
+         </div>
+
+      {/* Verification Status - Hide if all verified */}
+      {!allVerified && (
+          <div className="md:col-span-3">
+             <VerificationStatus />
+          </div>
+      )}
+      </div>
+
+      {/* Live Rates */}
+      <RatesTicker />
+
+      {/* Quick Actions */}
+      <div className="space-y-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Quick Actions</h2>
+          <QuickActions />
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
-         <div className="flex items-center justify-between mb-6">
-             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+      <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 p-8">
+         <div className="flex items-center justify-between mb-8">
+             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 Recent Activity
              </h2>
-             <Button variant="outline" size="sm" onClick={() => window.location.href = '/dashboard/history'}>
+             <Link href="/dashboard/history" className="flex items-center gap-1 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
                  View All
-             </Button>
+                 <ChevronRightIcon className="w-4 h-4" />
+             </Link>
          </div>
          
-         {loadingActivity ? (
+         {isLoading ? (
              <div className="py-12 flex justify-center">
                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
              </div>
@@ -117,32 +173,39 @@ export default function DashboardPage() {
                 </p>
             </div>
          ) : (
-             <div className="space-y-4">
+             <div className="space-y-3">
                  {recentTrades.map((trade: any) => (
-                     <div key={trade.id} className="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                     <div key={trade.id} className="group flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/30 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700">
                          <div className="flex items-center gap-4">
-                             <div className={`p-2 rounded-full ${trade.trade_type === 'buy' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'}`}>
-                                 {trade.trade_type === 'buy' ? <ArrowTrendingUpIcon className="w-5 h-5" /> : <ArrowTrendingDownIcon className="w-5 h-5" />}
+                             <div className={`p-3 rounded-2xl ${
+                                 trade.trade_type === 'buy' 
+                                 ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' 
+                                 : 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
+                             }`}>
+                                 {trade.trade_type === 'buy' ? <ArrowTrendingUpIcon className="w-6 h-6" /> : <ArrowTrendingDownIcon className="w-6 h-6" />}
                              </div>
                              <div>
-                                 <p className="font-semibold text-gray-900 dark:text-white text-sm">
-                                     {trade.trade_type === 'buy' ? 'Bought' : 'Sold'} Crypto
+                                 <p className="font-bold text-gray-900 dark:text-white">
+                                     {trade.asset_name ? trade.asset_name.replace(/_/g, ' ') : (trade.trade_type === 'buy' ? 'Buy Order' : 'Sell Order')}
                                  </p>
-                                 <p className="text-xs text-gray-500">
-                                     {new Date(trade.created_at).toLocaleDateString()}
+                                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                     {new Date(trade.created_at).toLocaleDateString()} • {trade.trade_number}
                                  </p>
                              </div>
                          </div>
                          <div className="text-right">
-                             <p className="font-bold text-gray-900 dark:text-white text-sm">
-                                 ${parseFloat(trade.amount).toFixed(2)}
+                             <p className="font-bold text-gray-900 dark:text-white">
+                                 {trade.total_payout ? `₵${parseFloat(trade.total_payout).toFixed(2)}` : 'Pending'}
                              </p>
-                             <p className={`text-xs capitalize ${
-                                 trade.status === 'completed' ? 'text-green-600' : 
-                                 trade.status === 'failed' ? 'text-red-600' : 'text-yellow-600'
-                             }`}>
-                                 {trade.status}
-                             </p>
+                             <div className="flex items-center justify-end gap-1.5 mt-1">
+                                 <span className={`w-2 h-2 rounded-full ${
+                                     trade.trade_status === 'approved' || trade.trade_status === 'completed' ? 'bg-green-500' : 
+                                     trade.trade_status === 'failed' || trade.trade_status === 'rejected' ? 'bg-red-500' : 'bg-yellow-500'
+                                 }`}></span>
+                                 <p className="text-xs font-medium capitalize text-gray-500">
+                                     {trade.trade_status}
+                                 </p>
+                             </div>
                          </div>
                      </div>
                  ))}

@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ExclamationTriangleIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 
 export default function VerificationBanner() {
-  const { user, needsVerification, kycStatus } = useAuth();
+  const { user, needsVerification, kycStatus, resendOtp } = useAuth();
+  const router = useRouter();
 
   if (!user) return null;
 
@@ -34,13 +36,17 @@ export default function VerificationBanner() {
               </div>
             </div>
 
-            <Link
-              href="/auth/otp?type=phone"
+            <button
+              onClick={() => {
+                  // Trigger OTP send
+                  resendOtp('phone').catch(console.error);
+                  router.push('/auth/otp?type=phone');
+              }}
               className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-sm font-semibold rounded-xl shadow-md transition-all duration-300 hover:shadow-orange-500/25 w-full sm:w-auto justify-center"
             >
               Verify Phone
               <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Link>
+            </button>
           </div>
         </div>
       )}
@@ -63,13 +69,17 @@ export default function VerificationBanner() {
                </div>
              </div>
  
-             <Link
-               href="/auth/otp?type=email"
+             <button
+               onClick={() => {
+                   // Trigger OTP send
+                   resendOtp('email').catch(console.error);
+                   router.push('/auth/otp?type=email');
+               }}
                className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-md transition-all duration-300 w-full sm:w-auto justify-center"
              >
                Verify Email
                <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-             </Link>
+             </button>
            </div>
          </div>
       )}
