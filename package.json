@@ -13,14 +13,17 @@
   "dependencies": {
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
+    "@sentry/nextjs": "^10.36.0",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
+    "firebase": "^12.8.0",
     "framer-motion": "^12.22.0",
     "fuse.js": "^7.1.0",
     "next": "^16.0.10",
     "next-themes": "^0.4.6",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "react-hot-toast": "^2.6.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

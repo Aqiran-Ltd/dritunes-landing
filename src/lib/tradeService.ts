@@ -14,12 +14,14 @@ export interface TradePayload {
   trade_type: 'buy' | 'sell';
   asset_name: string;
   asset_type: 'gift_card' | 'crypto';
-  payment_method_id: number;
+  payment_method_id?: number;
   // Additional fields for Sell mode
   payment_method_name?: string;     
   payment_account_name?: string;    
   payment_account_number?: string;  
   notes?: string;
+  user_notes?: string;
+  user_payment_details?: Record<string, any>;
 }
 
 export async function fetchCompanyPaymentMethods(token: string): Promise<PaymentMethod[]> {

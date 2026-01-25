@@ -3,6 +3,8 @@ import { Urbanist } from "next/font/google";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const urbanist = Urbanist({
@@ -62,7 +64,10 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <SettingsProvider>
-              {children}
+              <NotificationProvider>
+                {children}
+                <Toaster position="top-right" />
+              </NotificationProvider>
             </SettingsProvider>
           </AuthProvider>
         </ThemeProvider>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { useParams, useRouter } from 'next/navigation';
 import { format } from 'date-fns';
+import { fetchCompanyPaymentMethods, type PaymentMethod } from '@/lib/tradeService';
 import { 
   ArrowLeftIcon,
   CalendarIcon,
@@ -35,6 +36,12 @@ interface TradeDetail {
   updated_at: string;
   admin_notes: string | null;
   user_notes: string | null;
+  user_payment_details?: Record<string, string> | null;
+  payment_method_id?: number | null; 
+  payment_method?: {
+    name: string;
+    details: Record<string, string>;
+  } | null;
 }
 
 export default function TradeDetailPage() {
@@ -51,7 +58,24 @@ export default function TradeDetailPage() {
         
         const response: any = await api.get(`/trades/${id}`, token);
         if (response.data) {
-           setTrade(response.data);
+           const tradeData: TradeDetail = response.data;
+           
+           // If 'buy' trade and we have an ID but no expanded object, fetch company methods to find it
+           if (tradeData.trade_type === 'buy' && !tradeData.payment_method && tradeData.payment_method_id) {
+               try {
+                  const methods = await fetchCompanyPaymentMethods(token);
+                  const matched = methods.find(m => m.id === Number(tradeData.payment_method_id));
+                  if (matched) {
+                      tradeData.payment_method = {
+                          name: matched.name,
+                          details: matched.details
+                      };
+                  }
+               } catch (err) {
+                   console.error("Failed to hydrate payment method details", err);
+               }
+           }
+           setTrade(tradeData);
         }
       } catch (error) {
         console.error('Failed to fetch trade details', error);
@@ -113,7 +137,7 @@ export default function TradeDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-slide-in-up">
+    <div className="max-w-7xl mx-auto space-y-6 animate-slide-in-up">
       {/* Header */}
       <div className="flex items-center gap-4">
         <button 
@@ -209,6 +233,48 @@ export default function TradeDetailPage() {
                      </div>
                   </div>
                </div>
+            </div>
+
+            {/* Payment Information Card */}
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+               <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Payment Information</h2>
+               
+               {/* SELL: User provided details to get paid */}
+               {trade.trade_type === 'sell' && trade.user_payment_details && (
+                   <div className="space-y-4">
+                       <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">Payout Destination</p>
+                       {Object.entries(trade.user_payment_details).map(([key, value]) => (
+                           <div key={key} className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800 last:border-0">
+                               <span className="text-gray-500 text-sm capitalize">{key.replace(/_/g, ' ')}</span>
+                               <span className="font-medium text-gray-900 dark:text-white text-right">{value}</span>
+                           </div>
+                       ))}
+                   </div>
+               )}
+
+               {/* BUY: User paid to Company Account */}
+               {trade.trade_type === 'buy' && trade.payment_method && (
+                   <div className="space-y-4">
+                       <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">Paid To Company Account</p>
+                       <div className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800">
+                           <span className="text-gray-500 text-sm">Method</span>
+                           <span className="font-bold text-gray-900 dark:text-white">{trade.payment_method.name}</span>
+                       </div>
+                       {trade.payment_method.details && Object.entries(trade.payment_method.details).map(([key, value]) => (
+                           <div key={key} className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800 last:border-0">
+                               <span className="text-gray-500 text-sm capitalize">{key.replace(/_/g, ' ')}</span>
+                               <span className="font-medium text-gray-900 dark:text-white text-right select-all">{value}</span>
+                           </div>
+                       ))}
+                   </div>
+               )}
+
+               {/* Fallback if no structured data but notes exist */}
+               {((trade.trade_type === 'sell' && !trade.user_payment_details) || (trade.trade_type === 'buy' && !trade.payment_method)) && (
+                   <div className="text-sm text-gray-500 italic">
+                       {trade.user_notes ? `Note: ${trade.user_notes}` : 'No detailed payment info available.'}
+                   </div>
+               )}
             </div>
          </div>
       </div>

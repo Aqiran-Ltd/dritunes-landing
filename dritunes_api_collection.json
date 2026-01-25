@@ -862,7 +862,7 @@
                     }
                 },
                 {
-                    "name": "Create Trade",
+                    "name": "Create Trade (User Sells)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -879,7 +879,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"amount\": 100,\n    \"rate_id\": 1\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"user_payment_details\": {\n        \"bank\": \"GTBank\",\n        \"account_number\": \"1234567890\",\n        \"account_name\": \"John Doe\"\n    },\n    \"user_notes\": \"Please process quickly.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -895,7 +895,44 @@
                                 "trades"
                             ]
                         },
-                        "description": "Creates a new trade."
+                        "description": "Create a trade where the User SELLS an asset to the Company.\n\n**Required:** `user_payment_details` so the company can pay the user."
+                    }
+                },
+                {
+                    "name": "Create Trade (User Buys)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"buy\",\n    \"asset_type\": \"crypto\",\n    \"asset_name\": \"BTC\",\n    \"payment_method_id\": 1,\n    \"user_notes\": \"Payment made via MoMo.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/trades",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "trades"
+                            ]
+                        },
+                        "description": "Create a trade where the User BUYS an asset from the Company.\n\n**Required:** `payment_method_id` (The company account the user paid into)."
                     }
                 }
             ]
@@ -1010,13 +1047,11 @@
                             }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/v1/devices",
+                            "raw": "{{base_url}}/devices",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
-                                "v1",
                                 "devices"
                             ]
                         }
@@ -1040,13 +1075,11 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/devices/device_abc_123",
+                            "raw": "{{base_url}}/devices/device_abc_123",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
-                                "v1",
                                 "devices",
                                 "device_abc_123"
                             ]
@@ -1076,13 +1109,11 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/notifications",
+                            "raw": "{{base_url}}/notifications",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
-                                "v1",
                                 "notifications"
                             ]
                         }
@@ -1106,13 +1137,11 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/notifications/{{notification_id}}/read",
+                            "raw": "{{base_url}}/notifications/{{notification_id}}/read",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
-                                "v1",
                                 "notifications",
                                 "{{notification_id}}",
                                 "read"
@@ -1138,13 +1167,11 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/notifications/read-all",
+                            "raw": "{{base_url}}/notifications/read-all",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
-                                "v1",
                                 "notifications",
                                 "read-all"
                             ]
@@ -1174,13 +1201,11 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/notification-settings",
+                            "raw": "{{base_url}}/notification-settings",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
-                                "v1",
                                 "notification-settings"
                             ]
                         }
@@ -1213,13 +1238,11 @@
                             }
                         },
                         "url": {
-                            "raw": "{{base_url}}/api/v1/notification-settings",
+                            "raw": "{{base_url}}/notification-settings",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
-                                "api",
-                                "v1",
                                 "notification-settings"
                             ]
                         }

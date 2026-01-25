@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchRates, type Category, type GiftCard } from '@/lib/ratesService';
 import { createTrade, fetchCompanyPaymentMethods, type PaymentMethod } from '@/lib/tradeService';
+import { fetchSocials } from '@/lib/socialService';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowPathIcon, 
@@ -26,6 +27,7 @@ export default function TradePage() {
   // -- Data State --
   const [categories, setCategories] = useState<Category[]>([]);
   const [companyPaymentMethods, setCompanyPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [whatsappLink, setWhatsappLink] = useState('https://wa.me/233548434599'); // Default fallback
   const [loadingRates, setLoadingRates] = useState(true);
 
   // -- Form State --
@@ -38,8 +40,25 @@ export default function TradePage() {
   
   // -- Payment Details (When Selling) --
   const [paymentProvider, setPaymentProvider] = useState('Momo');
-  const [accountName, setAccountName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
+  
+  // Momo Fields
+  const [momoName, setMomoName] = useState('');
+  const [momoNumber, setMomoNumber] = useState('');
+  const [momoNetwork, setMomoNetwork] = useState('MTN');
+
+  // Bank Fields
+  const [bankName, setBankName] = useState('');
+  const [bankAccountName, setBankAccountName] = useState('');
+  const [bankAccountNumber, setBankAccountNumber] = useState('');
+
+  // Crypto Fields
+  const [walletAddress, setWalletAddress] = useState('');
+  const [cryptoNetwork, setCryptoNetwork] = useState('TRC20');
+
+  // -- Sender Details (When Buying) --
+  const [senderName, setSenderName] = useState('');
+  const [senderReference, setSenderReference] = useState(''); // Serves as User Notes
+  const [selectedCompanyMethodId, setSelectedCompanyMethodId] = useState<number | null>(null);
 
   // -- Submission State --
   const [submitting, setSubmitting] = useState(false);
@@ -55,10 +74,15 @@ export default function TradePage() {
              fetchCompanyPaymentMethods('') // No token needed if public
         ]);
         
-        setCategories(ratesData.categories);
+         setCategories(ratesData.categories);
         if (ratesData.categories.length > 0) setSelectedCatName(ratesData.categories[0].name);
         
         setCompanyPaymentMethods(paymentData);
+
+        // Fetch Socials separately to not block main content if it fails
+        fetchSocials().then(s => {
+          if (s.whatsapp) setWhatsappLink(s.whatsapp);
+        });
 
       } catch (err) {
         console.error(err);
@@ -137,33 +161,63 @@ export default function TradePage() {
           
           if (!rateId) throw new Error("Selected card type not available for this region.");
 
-          // Find a valid payment method ID (Required by API)
-          // For Sell: We just need ANY valid ID to pass validation (or specific one if logic dictates)
-          // For Buy: We likely select the one user pays to.
-          // Defaulting to first available company method if user hasn't "selected" one in Sell mode.
-          const defaultMethodId = companyPaymentMethods[0]?.id;
-          if (!defaultMethodId) throw new Error("System error: No payment methods available to process trade.");
-
-          // Construct Notes for user payment details (since API might not map them automatically yet)
-          const notes = tradeType === 'sell' 
-            ? `Payout Details: ${paymentProvider} - ${accountName} - ${accountNumber}`
-            : undefined;
-
-          await createTrade(token, {
+          // Construct Payload Base
+          const payload: any = {
               amount: parseFloat(amount),
               rate_id: rateId,
               trade_type: tradeType,
               asset_name: activeCard.assetName,
-              asset_type: 'gift_card', // Hardcoded for now based on API requirement
-              payment_method_id: defaultMethodId, // REQUIRED field
-              payment_method_name: tradeType === 'sell' ? paymentProvider : undefined,
-              payment_account_name: tradeType === 'sell' ? accountName : undefined,
-              payment_account_number: tradeType === 'sell' ? accountNumber : undefined,
-              notes: notes
-          });
+              asset_type: 'gift_card', // hardcoded
+              user_notes: senderReference // Mapping the UI "Notes" field to API "user_notes"
+          };
+
+          if (tradeType === 'sell') {
+               // SELL MODE: Requires user_payment_details Object
+               let userDetailsObj: any = {};
+               if (paymentProvider === 'Momo') {
+                    userDetailsObj = {
+                        account_name: momoName,
+                        account_number: momoNumber,
+                        network: momoNetwork
+                    };
+               } else if (paymentProvider === 'Bank') {
+                    userDetailsObj = {
+                        bank_name: bankName,
+                        account_name: bankAccountName,
+                        account_number: bankAccountNumber
+                    };
+               } else if (paymentProvider === 'Crypto') {
+                    userDetailsObj = {
+                        wallet_address: walletAddress,
+                        network: cryptoNetwork
+                    };
+               }
+               // Add to payload
+               payload.user_payment_details = userDetailsObj;
+               
+               // Keep legacy fields populated just in case, or for admin view redundancy
+               payload.payment_method_name = paymentProvider;
+               payload.payment_account_name = momoName || bankAccountName;
+               payload.payment_account_number = momoNumber || bankAccountNumber || walletAddress;
+
+          } else {
+               // BUY MODE: Requires payment_method_id
+               // Use selected ID, or default to first if user didn't click (but better to enforce selection or auto-select first)
+               let methodId = selectedCompanyMethodId;
+               if (!methodId && companyPaymentMethods.length > 0) {
+                   methodId = companyPaymentMethods[0].id; // Auto-select first if none clicked
+               }
+               
+               if (!methodId) throw new Error("Please select a payment method to proceed.");
+               
+               payload.payment_method_id = methodId;
+               // No user_payment_details for Buy
+          }
+
+          await createTrade(token, payload);
 
           setSuccess("Trade initiated successfully! Check your trades history.");
-          // Reset form?
+          // Optional: Reset form here
       } catch (err: any) {
           setError(err.message || 'Failed to create trade.');
       } finally {
@@ -286,56 +340,104 @@ export default function TradePage() {
                       <div className="space-y-4">
                           <p className="text-sm text-gray-500">Provide details where you want to receive payment.</p>
                           
-                          <div>
+                          <div className="space-y-4">
                               <label className="block text-sm font-medium text-gray-500 mb-1">Payment Provider</label>
                               <select 
                                 value={paymentProvider}
                                 onChange={e => setPaymentProvider(e.target.value)}
-                                className="w-full p-3 rounded-xl bg-red-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500"
+                                className="w-full p-3 rounded-xl bg-red-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 mb-4"
                               >
                                   <option value="Momo">Mobile Money (Momo)</option>
                                   <option value="Bank">Bank Transfer</option>
                                   <option value="Crypto">USDT / Crypto</option>
                               </select>
-                          </div>
 
-                          <div className="grid grid-cols-2 gap-4">
-                               <div>
-                                  <label className="block text-sm font-medium text-gray-500 mb-1">Account Name</label>
-                                  <input 
-                                    type="text" 
-                                    value={accountName}
-                                    onChange={e => setAccountName(e.target.value)}
-                                    placeholder="e.g. John Doe"
-                                    className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500"
-                                  />
-                               </div>
-                               <div>
-                                  <label className="block text-sm font-medium text-gray-500 mb-1">Number/Address</label>
-                                  <input 
-                                    type="text" 
-                                    value={accountNumber}
-                                    onChange={e => setAccountNumber(e.target.value)}
-                                    placeholder="055..."
-                                    className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500"
-                                  />
-                               </div>
+                              {/* CONDITIONAL INPUTS */}
+                              {paymentProvider === 'Momo' && (
+                                  <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Network</label>
+                                          <select value={momoNetwork} onChange={e => setMomoNetwork(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600">
+                                              <option value="MTN">MTN</option>
+                                              <option value="Vodafone">Telecel (Vodafone)</option>
+                                              <option value="AirtelTigo">AirtelTigo</option>
+                                          </select>
+                                      </div>
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Account Name</label>
+                                          <input type="text" value={momoName} onChange={e => setMomoName(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" placeholder="e.g. John Doe" />
+                                      </div>
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Number</label>
+                                          <input type="text" value={momoNumber} onChange={e => setMomoNumber(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" placeholder="055..." />
+                                      </div>
+                                  </div>
+                              )}
+
+                              {paymentProvider === 'Bank' && (
+                                  <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Bank Name</label>
+                                          <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" placeholder="e.g. Ecobank" />
+                                      </div>
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Account Name</label>
+                                          <input type="text" value={bankAccountName} onChange={e => setBankAccountName(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" />
+                                      </div>
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Account Number</label>
+                                          <input type="text" value={bankAccountNumber} onChange={e => setBankAccountNumber(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" />
+                                      </div>
+                                  </div>
+                              )}
+
+                               {paymentProvider === 'Crypto' && (
+                                  <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Network</label>
+                                          <select value={cryptoNetwork} onChange={e => setCryptoNetwork(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600">
+                                              <option value="TRC20">TRC20</option>
+                                              <option value="ERC20">ERC20</option>
+                                              <option value="BEP20">BEP20</option>
+                                          </select>
+                                      </div>
+                                      <div>
+                                          <label className="text-xs font-bold text-gray-500 uppercase">Wallet Address</label>
+                                          <input type="text" value={walletAddress} onChange={e => setWalletAddress(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600 font-mono text-sm" placeholder="T..." />
+                                      </div>
+                                  </div>
+                              )}
                           </div>
                       </div>
-                  ) : (
+                   ) : (
                       <div className="space-y-4">
-                          <p className="text-sm text-gray-500">Make payment to one of our accounts below to purchase.</p>
+                          <p className="text-sm text-gray-500">Select a payment method to pay into:</p>
                           
                           {companyPaymentMethods.length > 0 ? (
                               <div className="space-y-3">
                                   {companyPaymentMethods.map((method) => (
-                                      <div key={method.id} className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-700/50">
-                                          <div className="flex items-center gap-2 mb-2">
-                                              <BuildingLibraryIcon className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-                                              <p className="font-bold text-yellow-800 dark:text-yellow-400">{method.name}</p>
+                                      <div 
+                                        key={method.id} 
+                                        onClick={() => setSelectedCompanyMethodId(method.id)}
+                                        className={`cursor-pointer p-4 rounded-xl border transition-all ${
+                                            selectedCompanyMethodId === method.id 
+                                            ? 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-500 ring-1 ring-yellow-500' 
+                                            : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-yellow-300'
+                                        }`}
+                                      >
+                                          <div className="flex items-center justify-between mb-2">
+                                              <div className="flex items-center gap-2">
+                                                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                                                      selectedCompanyMethodId === method.id ? 'border-yellow-600' : 'border-gray-400'
+                                                  }`}>
+                                                      {selectedCompanyMethodId === method.id && <div className="w-2 h-2 rounded-full bg-yellow-600" />}
+                                                  </div>
+                                                  <BuildingLibraryIcon className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                                                  <p className="font-bold text-gray-900 dark:text-white">{method.name}</p>
+                                              </div>
                                           </div>
                                           
-                                          <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                                          <div className="pl-6 space-y-1 text-sm text-gray-700 dark:text-gray-300">
                                               {Object.entries(method.details).map(([key, value]) => (
                                                   <div key={key} className="flex justify-between">
                                                       <span className="font-medium text-gray-500 dark:text-gray-400">{key}:</span>
@@ -345,7 +447,7 @@ export default function TradePage() {
                                           </div>
                                           
                                           {method.instructions && (
-                                              <div className="mt-3 text-xs bg-white dark:bg-black/20 p-2 rounded-lg text-gray-500 italic">
+                                              <div className="pl-6 mt-3 text-xs text-gray-500 italic">
                                                   {method.instructions}
                                               </div>
                                           )}
@@ -357,15 +459,26 @@ export default function TradePage() {
                                   No payment methods available. Please contact support.
                               </div>
                           )}
-                          
-                          <div className="text-center mt-4">
+                      </div>
+                   )}
+                   
+                   {/* SHARED: Notes & Support */}
+                   <div className="space-y-3 pt-6 border-t border-gray-100 dark:border-gray-800">
+                        <label className="block text-sm font-medium text-gray-500 mb-1">Additional Notes (Optional)</label>
+                        <textarea 
+                          value={senderReference} 
+                          onChange={e => setSenderReference(e.target.value)}
+                          placeholder="e.g. Payment Reference, specific instructions..."
+                          className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-yellow-500 min-h-[80px]"
+                        />
+
+                        <div className="text-center mt-4">
                               <p className="text-xs text-gray-400 mb-2">Need help? Chat with us.</p>
-                              <button onClick={() => window.open('https://wa.me/233548434599')} className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-200 transition-colors">
+                              <button onClick={() => window.open(whatsappLink)} className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-200 transition-colors">
                                   WhatsApp Support
                               </button>
-                          </div>
-                      </div>
-                  )}
+                        </div>
+                   </div>
                </div>
 
                {/* Summary Card */}
