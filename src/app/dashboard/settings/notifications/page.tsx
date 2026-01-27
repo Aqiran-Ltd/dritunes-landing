@@ -54,7 +54,7 @@ export default function NotificationSettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className="max-w-7xl mx-auto space-y-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notification Settings</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-2">Manage how you receive updates and alerts.</p>
