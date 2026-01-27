@@ -123,6 +123,8 @@ export default function KycPage() {
             setDocNumber('');
             setCurrentStep(1);
             await checkKycStatus(); 
+            // Force reload to update UI state completely
+            window.location.reload();
         } else {
             setError(data.message || 'Failed to submit documents.');
         }
@@ -212,7 +214,7 @@ export default function KycPage() {
     return null;
   };
 
-  if (!kycStatus) return null;
+
 
   return (
     <div className="max-w-7xl mx-auto py-8 animate-slide-in-up space-y-8">
@@ -291,7 +293,8 @@ export default function KycPage() {
           </div>
       )}
 
-      {(kycStatus === 'unsubmitted' || kycStatus === 'rejected') && (
+      {/* Show form if NOT pending/verified/approved (Fallback for unsubmitted or any other state) */}
+      {!['pending', 'verified', 'approved'].includes(kycStatus || '') && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
             {/* LEFT COLUMN: IDENTITY STEPPER */}

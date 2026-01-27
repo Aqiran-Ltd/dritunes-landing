@@ -70,7 +70,7 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
       method: request.method,
       headers: headers,
       body: body,
-      // cache: 'no-store' // Do not cache API responses by default
+      cache: 'no-store' // Do not cache API responses by default
     });
 
     // 5. Return the Response

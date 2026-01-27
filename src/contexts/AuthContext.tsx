@@ -205,18 +205,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response: any = await api.post(endpoint, payload, accessToken || undefined);
       
       if (response.status) {
-          // Refresh user data to update verification status (both flow are similar now)
+          // Refresh user data to update verification status
           const userResponse: any = await api.get('/user', accessToken || '');
+           
+           let validUser = null;
            if (userResponse.status && userResponse.data) {
-               setUser(userResponse.data);
+               validUser = userResponse.data;
            } else if (userResponse.data) {
-               setUser(userResponse.data);
+               validUser = userResponse.data;
+           } else if (userResponse.user) {
+               validUser = userResponse.user;
+           } else if (userResponse.id) {
+               validUser = userResponse;
+           }
+
+           if (validUser) {
+               setUser(validUser);
+               return validUser;
            }
            
-           // If on OTP page, general behavior usually redirects to dashboard upon success
-           // But since we have multiple verifications (phone & email), we might want to check if both are done?
-           // For now, let's keep the redirect to dashboard as a positive feedback loop.
-           router.push('/dashboard');
+           // Return nothing if parsing failed (tho setUser won't update)
+           return;
       } else {
           throw new Error(response.message || 'Verification failed');
       }
