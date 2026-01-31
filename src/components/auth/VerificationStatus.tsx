@@ -61,15 +61,14 @@ export const VerificationStatus = ({ onMethodSelect }: VerificationStatusProps) 
                 {item.status !== 'verified' && (
                     <button 
                         onClick={() => {
-                                if (onMethodSelect) {
-                                    onMethodSelect(item.id as 'phone' | 'email');
-                                } else {
-                                    // Trigger OTP send before navigation
-                                    if (item.id === 'phone' || item.id === 'email') {
-                                        resendOtp(item.id).catch(console.error);
-                                    }
-                                    router.push(`/auth/otp?type=${item.id}`);
+                            if (onMethodSelect) {
+                                onMethodSelect(item.id as 'phone' | 'email');
+                            } else {
+                                // Trigger OTP send before navigation
+                                if (item.id === 'phone' || item.id === 'email') {
+                                    resendOtp(item.id).catch(console.error);
                                 }
+                                router.push(`/auth/otp?type=${item.id}`);
                             }
                         }}
                         className="w-full py-2.5 text-sm font-semibold bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all flex items-center justify-center gap-2"
