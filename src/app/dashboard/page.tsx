@@ -19,7 +19,7 @@ import { VerificationStatus } from '@/components/auth/VerificationStatus';
 import Link from 'next/link';
 
 export default function DashboardPage() {
-  const { user, kycStatus } = useAuth();
+  const { user } = useAuth();
 
   const [recentTrades, setRecentTrades] = useState<any[]>([]);
   const [stats, setStats] = useState({
@@ -34,10 +34,9 @@ export default function DashboardPage() {
       if (!user) return false;
       const isPhoneVerified = !!user.phone_verified_at;
       const isEmailVerified = !!user.email_verified_at;
-      const isKycVerified = kycStatus === 'verified' || kycStatus === 'approved';
       
-      return isPhoneVerified && isEmailVerified && isKycVerified;
-  }, [user, kycStatus]);
+      return isPhoneVerified && isEmailVerified;
+  }, [user]);
 
   useEffect(() => {
       const loadDashboardData = async () => {

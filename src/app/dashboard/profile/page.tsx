@@ -242,7 +242,7 @@ function SecurityForm() {
 }
 
 export default function ProfilePage() {
-  const { user, kycStatus } = useAuth();
+  const { user } = useAuth();
   
   if (!user) return null;
 
@@ -258,7 +258,7 @@ export default function ProfilePage() {
                  {user.name.charAt(0)}
              </div>
              <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-900 p-1 rounded-full border border-gray-100 dark:border-gray-800 shadow-sm">
-                 {kycStatus === 'verified' ? (
+                 {user.phone_verified_at && user.email_verified_at ? (
                      <CheckBadgeIcon className="w-6 h-6 text-blue-500" title="Verified Account" />
                  ) : (
                      <UserCircleIcon className="w-6 h-6 text-gray-400" />

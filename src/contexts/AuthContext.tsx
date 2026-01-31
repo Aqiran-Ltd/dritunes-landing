@@ -12,17 +12,13 @@ interface User {
   country?: string;
   phone_verified_at?: string | null;
   email_verified_at?: string | null;
-  kyc_status?: 'pending' | 'verified' | 'approved' | 'rejected' | 'unsubmitted';
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   needsVerification: boolean;
-  kycStatus: 'pending' | 'verified' | 'approved' | 'rejected' | 'unsubmitted';
-  kycData: any | null;
   isLoading: boolean;
-  checkKycStatus: () => Promise<void>;
   login: (credentials: any) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => Promise<void>;
@@ -36,8 +32,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [kycStatus, setKycStatus] = useState<'pending' | 'verified' | 'approved' | 'rejected' | 'unsubmitted'>('unsubmitted');
-  const [kycData, setKycData] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -82,37 +76,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     loadUser();    loadUser();
   }, []);
-
-  const checkKycStatus = async () => {
-      const token = localStorage.getItem('access_token');
-      if (!token) return;
-      try {
-          const response: any = await api.get('/kyc/status', token);
-          console.log('KYC Status Response:', response); 
-
-          // Check if response has the expected fields directly
-          if (response && response.verification_status) {
-             setKycStatus(response.verification_status);
-             setKycData(response.verification_details || null);
-          } else if (response && response.status && response.data) {
-             // Fallback for wrapped response
-             const data = response.data;
-             setKycStatus(data.verification_status || 'unsubmitted');
-             setKycData(data.verification_details || null);
-          } else {
-             // Implicitly unsubmitted or empty
-             // setKycStatus('unsubmitted');
-          }
-      } catch (error) {
-          console.error('Failed to check KYC status', error);
-      }
-  };
-
-  useEffect(() => {
-      if (user) {
-          checkKycStatus();
-      }
-  }, [user]);
 
   const login = async (credentials: any) => {
     const response: any = await api.post('/auth/login', credentials);
@@ -252,7 +215,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, kycStatus, kycData, isLoading, login, register, logout, verifyOtp, resendOtp, forgotPassword, resetPassword, checkKycStatus }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, isLoading, login, register, logout, verifyOtp, resendOtp, forgotPassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

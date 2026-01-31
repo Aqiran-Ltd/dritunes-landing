@@ -27,7 +27,6 @@ const navigation = [
   { name: 'History', href: '/dashboard/history', icon: ClockIcon },
   { name: 'Rates', href: '/dashboard/rates', icon: CurrencyDollarIcon },
   { name: 'Wallet', href: '/dashboard/wallet', icon: WalletIcon },
-  { name: 'Verification', href: '/dashboard/kyc', icon: ShieldCheckIcon },
   { name: 'Settings', href: '/dashboard/settings/notifications', icon: Cog6ToothIcon },
   { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
 ];
