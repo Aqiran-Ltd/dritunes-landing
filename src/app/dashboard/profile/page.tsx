@@ -189,11 +189,12 @@ function SecurityForm() {
         setMessage('');
 
         try {
+            const token = localStorage.getItem('access_token');
             await api.post('/auth/change-password', { 
                 current_password: currentPassword, 
                 password, 
                 password_confirmation: passwordConfirmation 
-            });
+            }, token || undefined);
             setMessage('Password changed successfully!');
             setCurrentPassword('');
             setPassword('');
@@ -235,7 +236,7 @@ function SecurityForm() {
             )}
              
              <div className="flex justify-end">
-                <Button type="submit" variant="outline" isLoading={isLoading}>Update Password</Button>
+                <Button type="submit" isLoading={isLoading}>Update Password</Button>
             </div>
         </form>
     );

@@ -10,8 +10,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
+import { usePathname } from 'next/navigation';
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
 
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-black dark:from-black dark:via-gray-900 dark:to-gray-800 text-white relative overflow-hidden">
@@ -81,25 +84,36 @@ export default function Footer() {
               </h4>
               <ul className="space-y-3">
                 {[
-                  { name: "Home", href: "#home" },
+                  { name: "Home", href: "/" },
                   { name: "About Us", href: "/about" },
                   { name: "Rates", href: "/rates" },
-                  { name: "Our Services", href: "#features" },
+                  { name: "Our Services", href: "/#features" },
                   { name: "Contact", href: "/contact" },
                   { name: "Privacy Policy", href: "/privacy" },
                   { name: "Terms of Service", href: "/terms" }
-                ].map((link) => (
-                  <li key={link.name}>
-                    <motion.a
-                      href={link.href}
-                      whileHover={{ x: 5 }}
-                      className="text-gray-300 dark:text-gray-400 hover:text-red-400 dark:hover:text-red-300 transition-colors duration-200 text-sm flex items-center group"
-                    >
-                      <span className="w-1 h-1 bg-red-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
-                      {link.name}
-                    </motion.a>
-                  </li>
-                ))}
+                ].map((link) => {
+                  // Normalize paths by removing trailing slashes for comparison
+                  const normalize = (path: string) => path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+                  const isActive = normalize(pathname) === normalize(link.href);
+                  return (
+                    <li key={link.name}>
+                      <motion.a
+                        href={link.href}
+                        whileHover={{ x: 5 }}
+                        className={`text-sm flex items-center group transition-colors duration-200 ${
+                          isActive 
+                            ? "text-red-400 font-medium" 
+                            : "text-gray-300 dark:text-gray-400 hover:text-red-400 dark:hover:text-red-300"
+                        }`}
+                      >
+                        <span className={`w-1 h-1 bg-red-500 rounded-full mr-3 transition-opacity duration-200 ${
+                          isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                        }`}></span>
+                        {link.name}
+                      </motion.a>
+                    </li>
+                  );
+                })}
               </ul>
             </motion.div>
           </div>

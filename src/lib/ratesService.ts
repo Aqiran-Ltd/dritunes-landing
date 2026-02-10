@@ -149,8 +149,20 @@ export async function fetchRates(token?: string): Promise<RatesData> {
         categoriesMap[catName].cards.push(card);
     });
 
-    // Sort categories and cards?
+    // Sort categories alphabetically
     const categories = Object.values(categoriesMap).sort((a, b) => a.name.localeCompare(b.name));
+
+    // Sort cards within each category by amount (lowest to highest)
+    categories.forEach(category => {
+        category.cards.sort((a, b) => {
+            // Helper to extract numeric value from amount string (e.g. "50-100" -> 50)
+            const getAmountValue = (amt: string) => {
+                const match = amt.match(/(\d+)/);
+                return match ? parseInt(match[0], 10) : 0;
+            };
+            return getAmountValue(a.amount) - getAmountValue(b.amount);
+        });
+    });
 
     return {
       categories,

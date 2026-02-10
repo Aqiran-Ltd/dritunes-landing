@@ -41,7 +41,14 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
   // Cards available for the selected category + region
   const availableCards = useMemo(() => {
     if (!activeCategory || !selectedRegion) return [];
-    return activeCategory.cards.filter(c => (c.region || "Global") === selectedRegion);
+    return activeCategory.cards.filter(c => (c.region || "Global") === selectedRegion)
+      .sort((a, b) => { // Sort by amount (lowest to highest)
+          const getAmountValue = (amt: string) => {
+              const match = amt.match(/(\d+)/);
+              return match ? parseInt(match[0], 10) : 0;
+          };
+          return getAmountValue(a.amount) - getAmountValue(b.amount);
+      });
   }, [activeCategory, selectedRegion]);
 
   // The currently selected specific card object

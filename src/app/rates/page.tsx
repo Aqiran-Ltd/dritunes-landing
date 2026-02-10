@@ -360,7 +360,7 @@ export default function RatesPage() {
             <div className="flex gap-2">
               <span className="font-semibold text-gray-700 dark:text-gray-300 self-center">Currency:</span>
               {(["RMB", "GHS", "NGN"] as Currency[]).map(c => (
-                <button key={c} onClick={() => setSelectedCurrency(c)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${selectedCurrency === c ? "bg-yellow-400 text-gray-900 shadow-md" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300"}`}>{c} {getCurrencySymbol(c)}</button>
+                <button key={c} onClick={() => setSelectedCurrency(c)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedCurrency === c ? "bg-yellow-400 text-gray-900 shadow-md" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300"}`}>{c} {getCurrencySymbol(c)}</button>
               ))}
             </div>
 
@@ -368,12 +368,12 @@ export default function RatesPage() {
               <div className="flex gap-2">
                 <span className="font-semibold text-gray-700 dark:text-gray-300 self-center">Type:</span>
                 {(["Physical", "E-Code"] as DeliveryType[]).map(t => (
-                  <button key={t} onClick={() => setDeliveryType(t)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${deliveryType === t ? "bg-red-500 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"}`}>{t}</button>
+                  <button key={t} onClick={() => setDeliveryType(t)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${deliveryType === t ? "bg-red-500 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"}`}>{t}</button>
                 ))}
               </div>
             )}
 
-            <button onClick={() => setShowUnavailable(!showUnavailable)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${showUnavailable ? "bg-gray-200 dark:bg-gray-700" : "bg-green-100 text-green-700"}`}>
+            <button onClick={() => setShowUnavailable(!showUnavailable)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${showUnavailable ? "bg-gray-200 dark:bg-gray-700" : "bg-green-100 text-green-700"}`}>
               {showUnavailable ? <><XCircleIcon className="w-4 h-4" /> Show All</> : <><CheckCircleIcon className="w-4 h-4" /> Available Only</>}
             </button>
           </div>
@@ -399,7 +399,7 @@ export default function RatesPage() {
             <ArrowsUpDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
 
-          <button onClick={() => setShowFilters(!showFilters)} className={`px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-md transition-all ${showFilters || selectedRegions.size > 0 ? "bg-yellow-400 text-gray-900" : "bg-white dark:bg-gray-800 border-2 border-yellow-300 dark:border-yellow-700 dark:text-gray-200"}`}>
+          <button onClick={() => setShowFilters(!showFilters)} className={`px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-md transition-all cursor-pointer ${showFilters || selectedRegions.size > 0 ? "bg-yellow-400 text-gray-900" : "bg-white dark:bg-gray-800 border-2 border-yellow-300 dark:border-yellow-700 dark:text-gray-200"}`}>
             <FunnelIcon className="w-5 h-5" /> Filters {selectedRegions.size > 0 && <span className="bg-red-500 text-white text-xs px-2 rounded-full">{selectedRegions.size}</span>}
           </button>
         </div>
@@ -411,7 +411,7 @@ export default function RatesPage() {
               <h3 className="font-semibold mb-3">Filter by Region:</h3>
               <div className="flex flex-wrap gap-2">
                 {getAllRegions.map(r => (
-                  <button key={r} onClick={() => toggleRegionFilter(r)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedRegions.has(r) ? "bg-yellow-400 text-gray-900" : "bg-gray-200 dark:bg-gray-700"}`}>{r}</button>
+                  <button key={r} onClick={() => toggleRegionFilter(r)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedRegions.has(r) ? "bg-yellow-400 text-gray-900" : "bg-gray-200 dark:bg-gray-700"}`}>{r}</button>
                 ))}
               </div>
             </motion.div>
@@ -426,7 +426,7 @@ export default function RatesPage() {
                 const style = getCategoryStyle(cat.name);
                 return (
                   <motion.button key={cat.name} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => { setActiveCategoryName(cat.name); setExpandedRegions(new Set()); setSelectedRegions(new Set()); }}
-                    className={`px-6 py-3 rounded-full font-bold text-lg transition-all shadow-lg flex items-center gap-2 ${activeCategoryName === cat.name ? `bg-gradient-to-r ${style.color} text-white` : "bg-white dark:bg-gray-800 border-2 border-gray-200"}`}>
+                    className={`px-6 py-3 rounded-full font-bold text-lg transition-all shadow-lg flex items-center gap-2 cursor-pointer ${activeCategoryName === cat.name ? `bg-gradient-to-r ${style.color} text-white` : "bg-white dark:bg-gray-800 border-2 border-gray-200"}`}>
                     {style.icon} {cat.name}
                   </motion.button>
                 );
@@ -462,9 +462,12 @@ export default function RatesPage() {
                 const style = getCategoryStyle(catName);
                 const isExpanded = expandedRegions.has(regionKey);
 
+                // Sort cards within the group by amount (lowest to highest) ALWAYS
+                const sortedCards = [...cards].sort((a, b) => getAmountValue(a.amount) - getAmountValue(b.amount));
+
                 return (
                   <motion.div key={regionKey} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden">
-                    <button onClick={() => toggleRegion(regionKey)} className={`w-full px-6 py-4 bg-gradient-to-r ${style.color} text-white font-bold text-lg flex items-center justify-between hover:opacity-90 transition-opacity`}>
+                    <button onClick={() => toggleRegion(regionKey)} className={`w-full px-6 py-4 bg-gradient-to-r ${style.color} text-white font-bold text-lg flex items-center justify-between hover:opacity-90 transition-opacity cursor-pointer`}>
                       <div className="flex items-center gap-3">
                         {style.icon} <span>{catName} {regName}</span>
                         <span className="text-sm font-normal opacity-90 bg-black/20 px-2 py-0.5 rounded-full">
@@ -491,7 +494,7 @@ export default function RatesPage() {
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                                  {cards.map((card, idx) => {
+                                  {sortedCards.map((card, idx) => {
                                     const rate = getRate(card.rates, selectedCurrency, deliveryType);
                                     const isAvailable = rate > 0;
                                     return (

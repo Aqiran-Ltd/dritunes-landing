@@ -8,6 +8,7 @@ import { audit } from "@/lib/audit";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { 
   UserCircleIcon, 
   ArrowLeftOnRectangleIcon, 
@@ -21,6 +22,7 @@ export default function Navigation() {
   const [profileOpen, setProfileOpen] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
   const { user, logout } = useAuth();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,18 +78,31 @@ export default function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <motion.a
-                key={item.name}
-                href={item.href}
-                onClick={() => audit.log('navigation_click', { label: item.name, href: item.href })}
-                whileHover={{ y: -2 }}
-                className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors duration-200 relative group"
-              >
-                {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 dark:bg-red-400 transition-all duration-300 group-hover:w-full"></span>
-              </motion.a>
-            ))}
+            {navItems.map((item) => {
+              // Normalize paths by removing trailing slashes for comparison
+              // Exception: if both are just "/", they match.
+              const normalize = (path: string) => path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+              const isActive = normalize(pathname) === normalize(item.href);
+              
+              return (
+                <motion.a
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => audit.log('navigation_click', { label: item.name, href: item.href })}
+                  whileHover={{ y: -2 }}
+                  className={`font-medium transition-colors duration-200 relative group ${
+                    isActive 
+                      ? "text-red-600 dark:text-red-400" 
+                      : "text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
+                  }`}
+                >
+                  {item.name}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-600 dark:bg-red-400 transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}></span>
+                </motion.a>
+              );
+            })}
             {/* Theme Toggle */}
             <motion.button
               onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
@@ -218,17 +233,26 @@ export default function Navigation() {
               className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-red-100 dark:border-gray-700"
             >
               <div className="px-2 pt-2 pb-3 space-y-1">
-                {navItems.map((item) => (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    whileHover={{ x: 10 }}
-                    className="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800 rounded-md font-medium transition-colors duration-200"
-                  >
-                    {item.name}
-                  </motion.a>
-                ))}
+                {navItems.map((item) => {
+                  // Normalize paths for mobile as well
+                  const normalize = (path: string) => path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+                  const isActive = normalize(pathname) === normalize(item.href);
+                  return (
+                    <motion.a
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      whileHover={{ x: 10 }}
+                      className={`block px-3 py-2 rounded-md font-medium transition-colors duration-200 ${
+                        isActive
+                          ? "text-red-600 dark:text-red-400 bg-red-50 dark:bg-gray-800"
+                          : "text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      {item.name}
+                    </motion.a>
+                  );
+                })}
                 {user ? (
                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
                       <div className="flex items-center gap-3 mb-4 px-3">
