@@ -68,3 +68,36 @@ export async function createTrade(token: string, payload: TradePayload) {
     throw error;
   }
 }
+
+export interface TradeQueryParams {
+  per_page?: number;
+  page?: number;
+  search?: string;
+  trade_type?: string;
+  asset_type?: string;
+  trade_status?: string;
+  payment_status?: string;
+}
+
+export async function fetchTrades(token: string, params?: TradeQueryParams) {
+  try {
+    const query = new URLSearchParams();
+    if (params) {
+      if (params.per_page) query.append('per_page', params.per_page.toString());
+      if (params.page) query.append('page', params.page.toString());
+      if (params.search) query.append('search', params.search);
+      if (params.trade_type) query.append('trade_type', params.trade_type);
+      if (params.asset_type) query.append('asset_type', params.asset_type);
+      if (params.trade_status) query.append('trade_status', params.trade_status);
+      if (params.payment_status) query.append('payment_status', params.payment_status);
+    }
+
+    const queryString = query.toString();
+    const endpoint = queryString ? `/trades?${queryString}` : '/trades';
+    
+    return await api.get(endpoint, token);
+  } catch (error) {
+    console.error('Fetch Trades Error:', error);
+    throw error;
+  }
+}

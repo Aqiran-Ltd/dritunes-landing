@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { 
@@ -11,9 +10,15 @@ import {
   CheckCircleIcon, 
   XCircleIcon,
   ExclamationCircleIcon,
-  MagnifyingGlassIcon
+  MagnifyingGlassIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline';
 import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Select } from '@/components/ui/Select';
+import { fetchTrades, type TradeQueryParams } from '@/lib/tradeService';
 
 interface Trade {
   id: number;
@@ -32,32 +37,64 @@ export default function HistoryPage() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [tradeType, setTradeType] = useState<string>('');
+  const [assetType, setAssetType] = useState<string>('');
+  const [tradeStatus, setTradeStatus] = useState<string>('');
+  const [paymentStatus, setPaymentStatus] = useState<string>('');
+  
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    lastPage: 1,
+    total: 0,
+    perPage: 10
+  });
+
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchTrades = async () => {
-      try {
-        const token = localStorage.getItem('access_token');
-        if (!token) return;
-        const response: any = await api.get('/trades', token);
-        
-        // Handle pagination structure: response.data.data
-        if (response.data && response.data.data && Array.isArray(response.data.data)) {
-            setTrades(response.data.data);
-        } else if (response.data && Array.isArray(response.data)) {
-            setTrades(response.data);
-        } else if (Array.isArray(response)) {
-            setTrades(response);
-        }
-      } catch (error) {
-        console.error('Failed to fetch trades', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const loadTrades = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
 
-    fetchTrades();
-  }, []);
+      const params: TradeQueryParams = {
+        page,
+        per_page: pagination.perPage,
+        search: searchTerm,
+        trade_type: tradeType || undefined,
+        asset_type: assetType || undefined,
+        trade_status: tradeStatus || undefined,
+        payment_status: paymentStatus || undefined
+      };
+
+      const response: any = await fetchTrades(token, params);
+      
+      const data = response.data?.data || response.data || [];
+      const meta = response.data || {};
+
+      if (Array.isArray(data)) {
+        setTrades(data);
+        setPagination({
+          currentPage: meta.current_page || 1,
+          lastPage: meta.last_page || 1,
+          total: meta.total || data.length,
+          perPage: meta.per_page || pagination.perPage
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch trades', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadTrades(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, tradeType, assetType, tradeStatus, paymentStatus]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -89,11 +126,31 @@ export default function HistoryPage() {
     }
   };
 
-  const filteredTrades = trades.filter(trade => 
-      trade.trade_number.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      trade.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      trade.amount.includes(searchTerm)
-  );
+  const filterOptions = {
+    tradeType: [
+      { id: 'all', name: 'All Types' },
+      { id: 'buy', name: 'Buy' },
+      { id: 'sell', name: 'Sell' }
+    ],
+    assetType: [
+      { id: 'all', name: 'All Assets' },
+      { id: 'crypto', name: 'Crypto' },
+      { id: 'gift_card', name: 'Gift Card' }
+    ],
+    tradeStatus: [
+      { id: 'all', name: 'All Status' },
+      { id: 'pending', name: 'Pending' },
+      { id: 'approved', name: 'Approved' },
+      { id: 'rejected', name: 'Rejected' },
+      { id: 'disputed', name: 'Disputed' }
+    ],
+    paymentStatus: [
+      { id: 'all', name: 'All Payment' },
+      { id: 'pending', name: 'Pending' },
+      { id: 'paid', name: 'Paid' },
+      { id: 'failed', name: 'Failed' }
+    ]
+  };
 
   return (
     <div className="space-y-6 animate-slide-in-up">
@@ -102,94 +159,178 @@ export default function HistoryPage() {
            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Trade History</h1>
            <p className="text-gray-500 dark:text-gray-400">View and track all your past transactions.</p>
         </div>
-        <div className="w-full sm:w-72">
+        <div className="w-full sm:w-80">
            <Input 
               placeholder="Search by ID or Asset..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              icon={<MagnifyingGlassIcon className="w-5 h-5" />}
+              icon={<MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />}
+              className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 focus:ring-red-600 rounded-2xl h-11"
            />
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
-         {isLoading ? (
-             <div className="p-12 flex justify-center">
+      {/* Filters Bar */}
+      <div className="bg-white dark:bg-gray-900 p-4 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-wrap gap-4 items-end">
+          <div className="w-full sm:w-44">
+              <Select 
+                  label="Trade Type"
+                  options={filterOptions.tradeType}
+                  value={filterOptions.tradeType.find(o => o.id === (tradeType || 'all')) || null}
+                  onChange={(o) => setTradeType(String(o.id) === 'all' ? '' : String(o.id))}
+                  className="!space-y-1"
+              />
+          </div>
+          <div className="w-full sm:w-44">
+              <Select 
+                  label="Asset Class"
+                  options={filterOptions.assetType}
+                  value={filterOptions.assetType.find(o => o.id === (assetType || 'all')) || null}
+                  onChange={(o) => setAssetType(String(o.id) === 'all' ? '' : String(o.id))}
+                  className="!space-y-1"
+              />
+          </div>
+          <div className="w-full sm:w-44">
+              <Select 
+                  label="Trade Status"
+                  options={filterOptions.tradeStatus}
+                  value={filterOptions.tradeStatus.find(o => o.id === (tradeStatus || 'all')) || null}
+                  onChange={(o) => setTradeStatus(String(o.id) === 'all' ? '' : String(o.id))}
+                  className="!space-y-1"
+              />
+          </div>
+          <div className="w-full sm:w-44">
+              <Select 
+                  label="Payment Status"
+                  options={filterOptions.paymentStatus}
+                  value={filterOptions.paymentStatus.find(o => o.id === (paymentStatus || 'all')) || null}
+                  onChange={(o) => setPaymentStatus(String(o.id) === 'all' ? '' : String(o.id))}
+                  className="!space-y-1"
+              />
+          </div>
+          
+          <button 
+            onClick={() => {
+                setTradeType('');
+                setAssetType('');
+                setTradeStatus('');
+                setPaymentStatus('');
+                setSearchTerm('');
+            }}
+            className="px-4 h-11 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-red-600 transition-colors flex items-center gap-2"
+          >
+              <AdjustmentsHorizontalIcon className="w-4 h-4" />
+              Reset
+          </button>
+      </div>
+
+      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden min-h-[400px]">
+         {isLoading && trades.length === 0 ? (
+             <div className="p-24 flex justify-center">
                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
              </div>
-         ) : filteredTrades.length === 0 ? (
-             <div className="p-12 text-center text-gray-500">
+         ) : trades.length === 0 ? (
+             <div className="p-24 text-center text-gray-500">
                  <ClockIcon className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                 <p>No trades found.</p>
+                 <p>No trades found matching your filters.</p>
              </div>
          ) : (
-             <div className="overflow-x-auto">
-                <table className="w-full">
-                   <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
-                      <tr>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Asset</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rate</th>
-                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Payout</th>
-                         <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Trade Status</th>
-                         <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment</th>
-                      </tr>
-                   </thead>
-                   <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                      {filteredTrades.map((trade) => (
-                         <tr 
-                            key={trade.id} 
-                            onClick={() => router.push(`/dashboard/history/${trade.id}`)}
-                            className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group"
-                         >
-                            <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                                {formatDistanceToNow(new Date(trade.created_at), { addSuffix: true })}
-                            </td>
-                            <td className="px-6 py-4 text-sm font-mono text-gray-500 dark:text-gray-400 group-hover:text-red-500 transition-colors">
-                                {trade.trade_number}
-                            </td>
-                            <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
-                                {trade.asset_name.replace(/_/g, ' ')}
-                            </td>
-                            <td className="px-6 py-4">
-                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                                    trade.trade_type === 'buy' 
-                                    ? 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-900/50'
-                                    : 'bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-900/50'
-                                }`}>
-                                    {trade.trade_type === 'buy' ? <ArrowTrendingUpIcon className="w-3 h-3" /> : <ArrowTrendingDownIcon className="w-3 h-3" />}
-                                    {trade.trade_type.toUpperCase()}
-                                </span>
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                                ${parseFloat(trade.amount).toFixed(2)}
-                            </td>
-                            <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                {trade.rate_used}
-                            </td>
-                            <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">
-                                ₵{parseFloat(trade.total_payout).toFixed(2)}
-                            </td>
-                            <td className="px-6 py-4 text-center whitespace-nowrap">
-                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(trade.trade_status)}`}>
-                                    {getStatusIcon(trade.trade_status)}
-                                    {trade.trade_status.charAt(0).toUpperCase() + trade.trade_status.slice(1)}
-                                </span>
-                            </td>
-                            <td className="px-6 py-4 text-center whitespace-nowrap">
-                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(trade.payment_status)}`}>
-                                    {getStatusIcon(trade.payment_status)}
-                                    {trade.payment_status.charAt(0).toUpperCase() + trade.payment_status.slice(1)}
-                                </span>
-                            </td>
-                         </tr>
-                      ))}
-                   </tbody>
-                </table>
-             </div>
+             <>
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                       <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                          <tr>
+                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
+                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Asset</th>
+                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
+                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
+                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rate</th>
+                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Payout</th>
+                             <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                             <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Payment</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+                          {trades.map((trade) => (
+                             <tr 
+                                key={trade.id} 
+                                onClick={() => router.push(`/dashboard/history/${trade.id}`)}
+                                className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group"
+                             >
+                                <td className="px-6 py-4 text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                                    {formatDistanceToNow(new Date(trade.created_at), { addSuffix: true })}
+                                </td>
+                                <td className="px-6 py-4 font-mono text-gray-500 dark:text-gray-400 group-hover:text-red-500 transition-colors">
+                                    {trade.trade_number}
+                                </td>
+                                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                                    {trade.asset_name.replace(/_/g, ' ')}
+                                </td>
+                                <td className="px-6 py-4">
+                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest border ${
+                                        trade.trade_type === 'buy' 
+                                        ? 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-900/50'
+                                        : 'bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-900/50'
+                                    }`}>
+                                        {trade.trade_type === 'buy' ? <ArrowTrendingUpIcon className="w-3 h-3" /> : <ArrowTrendingDownIcon className="w-3 h-3" />}
+                                        {trade.trade_type.toUpperCase()}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 text-gray-900 dark:text-white font-bold">
+                                    ${parseFloat(trade.amount).toLocaleString()}
+                                </td>
+                                <td className="px-6 py-4 text-gray-500 dark:text-gray-400">
+                                    {trade.rate_used}
+                                </td>
+                                <td className="px-6 py-4 font-black text-gray-900 dark:text-white">
+                                    ₵{parseFloat(trade.total_payout).toLocaleString()}
+                                </td>
+                                <td className="px-6 py-4 text-center whitespace-nowrap">
+                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusColor(trade.trade_status)}`}>
+                                        {getStatusIcon(trade.trade_status)}
+                                        {trade.trade_status}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 text-center whitespace-nowrap">
+                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusColor(trade.payment_status)}`}>
+                                        {getStatusIcon(trade.payment_status)}
+                                        {trade.payment_status}
+                                    </span>
+                                </td>
+                             </tr>
+                          ))}
+                       </tbody>
+                    </table>
+                </div>
+                
+                {/* Pagination Controls */}
+                <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/30 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                        Showing page {pagination.currentPage} of {pagination.lastPage} ({pagination.total} total)
+                    </p>
+                    <div className="flex gap-2">
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            disabled={pagination.currentPage <= 1 || isLoading}
+                            onClick={() => loadTrades(pagination.currentPage - 1)}
+                            className="rounded-xl h-10 px-4"
+                        >
+                            <ChevronLeftIcon className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            disabled={pagination.currentPage >= pagination.lastPage || isLoading}
+                            onClick={() => loadTrades(pagination.currentPage + 1)}
+                            className="rounded-xl h-10 px-4"
+                        >
+                            <ChevronRightIcon className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </div>
+              </>
          )}
       </div>
     </div>

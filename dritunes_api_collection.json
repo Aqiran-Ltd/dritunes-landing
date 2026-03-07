@@ -631,7 +631,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"payment_method_id\": 1,\n    \"account_name\": \"John Doe\",\n    \"account_number\": \"0551234567\",\n    \"bank_name\": \"MTN\",\n    \"is_default\": true\n}",
+                            "raw": "{\n    \"payment_type\": \"momo\",\n    \"account_name\": \"John Doe\",\n    \"account_number\": \"0551234567\",\n    \"bank_name\": \"MTN\",\n    \"branch\": \"\",\n    \"is_default\": true\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -743,6 +743,12 @@
                             ],
                             "path": [
                                 "wallet"
+                            ],
+                            "query": [
+                                { "key": "per_page", "value": "20" },
+                                { "key": "search", "value": "", "description": "Search by reference or notes" },
+                                { "key": "type", "value": "", "description": "Filter by type (credit, payout)" },
+                                { "key": "status", "value": "", "description": "Filter by status (pending, completed, failed)" }
                             ]
                         }
                     }
@@ -1031,6 +1037,14 @@
                             ],
                             "path": [
                                 "trades"
+                            ],
+                            "query": [
+                                { "key": "per_page", "value": "20", "description": "Number of results per page" },
+                                { "key": "search", "value": "", "description": "Search by trade_number or asset_name" },
+                                { "key": "trade_type", "value": "", "description": "Filter by trade_type (buy, sell)" },
+                                { "key": "asset_type", "value": "", "description": "Filter by asset_type (crypto, gift_card)" },
+                                { "key": "trade_status", "value": "", "description": "Filter by trade_status (pending, approved, rejected, disputed)" },
+                                { "key": "payment_status", "value": "", "description": "Filter by payment_status (pending, paid, failed)" }
                             ]
                         },
                         "description": "Lists all trades for the authenticated user."

@@ -53,7 +53,7 @@ export function Select({
         </label>
       )}
 
-      <Listbox value={value} onChange={onChange}>
+      <Listbox value={value ?? undefined} onChange={onChange}>
         <div className="relative">
           <ListboxButton
             className={`
