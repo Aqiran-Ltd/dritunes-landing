@@ -14,6 +14,7 @@ import {
   CheckBadgeIcon,
   CameraIcon
 } from '@heroicons/react/24/outline';
+import { toast } from 'react-hot-toast';
 
 function ProfileForm({ user }: { user: any }) {
     const [name, setName] = useState(user.name);
@@ -40,9 +41,7 @@ function ProfileForm({ user }: { user: any }) {
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
-        setMessage('');
-
+        const loadingToast = toast.loading('Updating profile...');
         try {
             // Prepare FormData (for file upload support)
             const formData = new FormData();
@@ -71,12 +70,15 @@ function ProfileForm({ user }: { user: any }) {
             const data = await response.json();
             
             if (response.ok) {
+                 toast.success('Profile updated successfully!', { id: loadingToast });
                  setMessage('Profile updated successfully!');
             } else {
                  throw new Error(data.message || 'Failed to update profile.');
             }
         } catch (error: any) {
-            setMessage(error.message || 'Failed to update profile.');
+            const msg = error.message || 'Failed to update profile.';
+            toast.error(msg, { id: loadingToast });
+            setMessage(msg);
         } finally {
             setIsLoading(false);
         }
@@ -187,6 +189,7 @@ function SecurityForm() {
         
         setIsLoading(true);
         setMessage('');
+        const loadingToast = toast.loading('Updating password...');
 
         try {
             const token = localStorage.getItem('access_token');
@@ -195,12 +198,15 @@ function SecurityForm() {
                 password, 
                 password_confirmation: passwordConfirmation 
             }, token || undefined);
+            toast.success('Password changed successfully!', { id: loadingToast });
             setMessage('Password changed successfully!');
             setCurrentPassword('');
             setPassword('');
             setPasswordConfirmation('');
         } catch (error: any) {
-             setMessage(error.message || 'Failed to change password.');
+            const msg = error.message || 'Failed to change password.';
+            toast.error(msg, { id: loadingToast });
+            setMessage(msg);
         } finally {
              setIsLoading(false);
         }

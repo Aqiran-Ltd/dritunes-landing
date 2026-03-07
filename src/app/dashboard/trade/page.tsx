@@ -4,8 +4,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchRates, type Category, type GiftCard } from '@/lib/ratesService';
 import { createTrade, fetchCompanyPaymentMethods, type PaymentMethod } from '@/lib/tradeService';
+import { fetchUserPaymentMethods, type UserPaymentMethod } from '@/lib/paymentMethodService';
 import { fetchSocials } from '@/lib/socialService';
+import { Button } from '@/components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Select, type SelectOption } from '@/components/ui/Select';
 import { 
   ArrowPathIcon, 
   BoltIcon, 
@@ -14,11 +17,16 @@ import {
   BuildingLibraryIcon,
   CreditCardIcon,
   DevicePhoneMobileIcon,
-  ClipboardDocumentCheckIcon
+  ClipboardDocumentCheckIcon,
+  PhotoIcon,
+  XCircleIcon,
+  WalletIcon,
+  CheckIcon
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
-type TradeType = 'sell' | 'buy'; // Sell = User to Company (Get paid), Buy = Company to User (Pay us)
+type TradeType = 'sell' | 'buy';
 
 export default function TradePage() {
   const { user } = useAuth();
@@ -27,7 +35,8 @@ export default function TradePage() {
   // -- Data State --
   const [categories, setCategories] = useState<Category[]>([]);
   const [companyPaymentMethods, setCompanyPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [whatsappLink, setWhatsappLink] = useState('https://wa.me/233548434599'); // Default fallback
+  const [userPaymentMethods, setUserPaymentMethods] = useState<UserPaymentMethod[]>([]);
+  const [whatsappLink, setWhatsappLink] = useState('https://wa.me/233548434599'); 
   const [loadingRates, setLoadingRates] = useState(true);
 
   // -- Form State --
@@ -38,48 +47,68 @@ export default function TradePage() {
   const [selectedType, setSelectedType] = useState<'physical' | 'ecode'>('physical');
   const [amount, setAmount] = useState<string>('100');
   
-  // -- Payment Details (When Selling) --
-  const [paymentProvider, setPaymentProvider] = useState('Momo');
+  // -- Payout Details (When Selling) --
+  const [withdrawalPreference, setWithdrawalPreference] = useState<'wallet' | 'direct_payout'>('direct_payout');
+  const [selectedUserMethodId, setSelectedUserMethodId] = useState<number>(-1);
   
-  // Momo Fields
-  const [momoName, setMomoName] = useState('');
-  const [momoNumber, setMomoNumber] = useState('');
-  const [momoNetwork, setMomoNetwork] = useState('MTN');
+  // -- Attachment (When Selling) --
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
 
-  // Bank Fields
-  const [bankName, setBankName] = useState('');
-  const [bankAccountName, setBankAccountName] = useState('');
-  const [bankAccountNumber, setBankAccountNumber] = useState('');
-
-  // Crypto Fields
-  const [walletAddress, setWalletAddress] = useState('');
-  const [cryptoNetwork, setCryptoNetwork] = useState('TRC20');
-
-  // -- Sender Details (When Buying) --
-  const [senderName, setSenderName] = useState('');
-  const [senderReference, setSenderReference] = useState(''); // Serves as User Notes
+  // Buy Mode sender reference
+  const [senderReference, setSenderReference] = useState('');
   const [selectedCompanyMethodId, setSelectedCompanyMethodId] = useState<number | null>(null);
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+  
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+  
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      setAttachments(prev => [...prev, ...Array.from(e.dataTransfer.files)]);
+    }
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setAttachments(prev => [...prev, ...Array.from(e.target.files!)]);
+    }
+  };
 
   // -- Submission State --
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  // -- Fetch Rates --
+  // -- Fetch Data --
   useEffect(() => {
     const init = async () => {
       try {
-        const [ratesData, paymentData] = await Promise.all([
+        const token = localStorage.getItem('access_token');
+        const [ratesData, paymentData, userMethodsData] = await Promise.all([
              fetchRates(),
-             fetchCompanyPaymentMethods('') // No token needed if public
+             fetchCompanyPaymentMethods(''),
+             token ? fetchUserPaymentMethods(token) : Promise.resolve([])
         ]);
         
-         setCategories(ratesData.categories);
+        setCategories(ratesData.categories);
         if (ratesData.categories.length > 0) setSelectedCatName(ratesData.categories[0].name);
         
         setCompanyPaymentMethods(paymentData);
+        setUserPaymentMethods(userMethodsData);
+        
+        const defaultMethod = userMethodsData.find(m => m.is_default);
+        if (defaultMethod) setSelectedUserMethodId(defaultMethod.id);
+        else if (userMethodsData.length > 0) setSelectedUserMethodId(userMethodsData[0].id);
 
-        // Fetch Socials separately to not block main content if it fails
         fetchSocials().then(s => {
           if (s.whatsapp) setWhatsappLink(s.whatsapp);
         });
@@ -93,7 +122,7 @@ export default function TradePage() {
     init();
   }, []);
 
-  // -- Derived Data Logic (Reuse from Rates Page) --
+  // -- Derived Data Logic --
   const activeCategory = useMemo(() => categories.find(c => c.name === selectedCatName), [categories, selectedCatName]);
   
   const activeRegions = useMemo(() => {
@@ -113,7 +142,6 @@ export default function TradePage() {
   }, [activeCategory, selectedRegion, activeRegions]);
 
   useEffect(() => {
-     // Reset card selection when available cards change
      if (availableCards.length > 0) setSelectedCardId(0);
      else setSelectedCardId(-1);
   }, [availableCards]);
@@ -123,11 +151,8 @@ export default function TradePage() {
     return null;
   }, [availableCards, selectedCardId]);
 
-  // -- Rate Calculation --
   const currentRate = useMemo(() => {
      if (!activeCard) return 0;
-     // Assuming Sell Rate is what we pay user
-     // If user buys, logic might differ (margin added?), but usually same rate ID used
      return selectedType === 'physical' ? activeCard.rates.ghsPhysical : activeCard.rates.ghsEcode;
   }, [activeCard, selectedType]);
 
@@ -151,75 +176,53 @@ export default function TradePage() {
           return;
       }
 
+      const payload: any = {
+          amount: parseFloat(amount),
+          rate_id: selectedType === 'physical' ? activeCard.physicalId : activeCard.ecodeId,
+          trade_type: tradeType,
+          asset_name: activeCard.assetName,
+          asset_type: 'gift_card',
+          user_notes: senderReference
+      };
+
+      if (tradeType === 'sell') {
+          if (withdrawalPreference === 'direct_payout' && selectedUserMethodId === -1) {
+              setError("Please select a payout account.");
+              return;
+          }
+          payload.withdrawal_preference = withdrawalPreference;
+          if (withdrawalPreference === 'direct_payout') {
+              payload.user_payment_method_id = selectedUserMethodId;
+          }
+          if (attachments.length > 0) {
+              payload.attachments = attachments;
+          }
+      } else {
+          let methodId = selectedCompanyMethodId;
+          if (!methodId && companyPaymentMethods.length > 0) {
+              methodId = companyPaymentMethods[0].id;
+          }
+          if (!methodId) {
+              setError("Please select a payment method.");
+              return;
+          }
+          payload.payment_method_id = methodId;
+      }
+
       setSubmitting(true);
       setError('');
       setSuccess('');
+      const loadingToast = toast.loading('Initiating trade...');
 
       try {
-          // Identify correct ID
-          const rateId = selectedType === 'physical' ? activeCard.physicalId : activeCard.ecodeId;
-          
-          if (!rateId) throw new Error("Selected card type not available for this region.");
-
-          // Construct Payload Base
-          const payload: any = {
-              amount: parseFloat(amount),
-              rate_id: rateId,
-              trade_type: tradeType,
-              asset_name: activeCard.assetName,
-              asset_type: 'gift_card', // hardcoded
-              user_notes: senderReference // Mapping the UI "Notes" field to API "user_notes"
-          };
-
-          if (tradeType === 'sell') {
-               // SELL MODE: Requires user_payment_details Object
-               let userDetailsObj: any = {};
-               if (paymentProvider === 'Momo') {
-                    userDetailsObj = {
-                        account_name: momoName,
-                        account_number: momoNumber,
-                        network: momoNetwork
-                    };
-               } else if (paymentProvider === 'Bank') {
-                    userDetailsObj = {
-                        bank_name: bankName,
-                        account_name: bankAccountName,
-                        account_number: bankAccountNumber
-                    };
-               } else if (paymentProvider === 'Crypto') {
-                    userDetailsObj = {
-                        wallet_address: walletAddress,
-                        network: cryptoNetwork
-                    };
-               }
-               // Add to payload
-               payload.user_payment_details = userDetailsObj;
-               
-               // Keep legacy fields populated just in case, or for admin view redundancy
-               payload.payment_method_name = paymentProvider;
-               payload.payment_account_name = momoName || bankAccountName;
-               payload.payment_account_number = momoNumber || bankAccountNumber || walletAddress;
-
-          } else {
-               // BUY MODE: Requires payment_method_id
-               // Use selected ID, or default to first if user didn't click (but better to enforce selection or auto-select first)
-               let methodId = selectedCompanyMethodId;
-               if (!methodId && companyPaymentMethods.length > 0) {
-                   methodId = companyPaymentMethods[0].id; // Auto-select first if none clicked
-               }
-               
-               if (!methodId) throw new Error("Please select a payment method to proceed.");
-               
-               payload.payment_method_id = methodId;
-               // No user_payment_details for Buy
-          }
-
           await createTrade(token, payload);
-
+          toast.success("Trade initiated successfully!", { id: loadingToast });
           setSuccess("Trade initiated successfully! Check your trades history.");
-          // Optional: Reset form here
+          setTimeout(() => router.push('/dashboard/history'), 2000);
       } catch (err: any) {
-          setError(err.message || 'Failed to create trade.');
+          const msg = err.message || 'Failed to create trade.';
+          setError(msg);
+          toast.error(msg, { id: loadingToast });
       } finally {
           setSubmitting(false);
       }
@@ -268,49 +271,44 @@ export default function TradePage() {
                   
                   <div className="space-y-4">
                       <div>
-                          <label className="block text-sm font-medium text-gray-500 mb-1">Category</label>
-                          <select 
-                            value={selectedCatName}
-                            onChange={e => setSelectedCatName(e.target.value)}
-                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-yellow-500"
-                          >
-                              {categories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
-                          </select>
+                          <Select
+                            label="Category"
+                            options={categories.map(c => ({ id: c.name, name: c.name }))}
+                            value={selectedCatName ? { id: selectedCatName, name: selectedCatName } : null}
+                            onChange={(opt) => setSelectedCatName(opt.name)}
+                            searchable
+                          />
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                           <div>
-                              <label className="block text-sm font-medium text-gray-500 mb-1">Region</label>
-                              <select 
-                                value={selectedRegion}
-                                onChange={e => setSelectedRegion(e.target.value)}
-                                className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-yellow-500"
-                              >
-                                  {activeRegions.map(r => <option key={r} value={r}>{r}</option>)}
-                              </select>
+                              <Select
+                                label="Region"
+                                options={activeRegions.map(r => ({ id: r, name: r }))}
+                                value={selectedRegion ? { id: selectedRegion, name: selectedRegion } : null}
+                                onChange={(opt) => setSelectedRegion(opt.name)}
+                              />
                           </div>
                           <div>
-                              <label className="block text-sm font-medium text-gray-500 mb-1">Type</label>
-                               <select 
-                                value={selectedType}
-                                onChange={e => setSelectedType(e.target.value as any)}
-                                className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-yellow-500"
-                              >
-                                  <option value="physical">Physical Card</option>
-                                  <option value="ecode">E-Code</option>
-                              </select>
+                              <Select
+                                label="Type"
+                                options={[
+                                    { id: 'physical', name: 'Physical Card' },
+                                    { id: 'ecode', name: 'E-Code' }
+                                ]}
+                                value={selectedType === 'physical' ? { id: 'physical', name: 'Physical Card' } : { id: 'ecode', name: 'E-Code' }}
+                                onChange={(opt) => setSelectedType(opt.id as any)}
+                              />
                           </div>
                       </div>
 
                       <div>
-                          <label className="block text-sm font-medium text-gray-500 mb-1">Card Amount on Label</label>
-                           <select 
-                                value={selectedCardId}
-                                onChange={e => setSelectedCardId(Number(e.target.value))}
-                                className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-yellow-500"
-                              >
-                                  {availableCards.map((c, i) => <option key={i} value={i}>{c.amount}</option>)}
-                              </select>
+                          <Select
+                            label="Card Amount on Label"
+                            options={availableCards.map((c, i) => ({ id: i, name: c.amount }))}
+                            value={selectedCardId >= 0 && availableCards[selectedCardId] ? { id: selectedCardId, name: availableCards[selectedCardId].amount } : null}
+                            onChange={(opt) => setSelectedCardId(opt.id as number)}
+                          />
                       </div>
 
                       <div>
@@ -323,6 +321,77 @@ export default function TradePage() {
                             placeholder="100.00"
                           />
                       </div>
+
+                      {tradeType === 'sell' && (
+                          <div>
+                              <label className="block text-sm font-medium text-gray-500 mb-1">Upload Card images</label>
+                              <label
+                                  htmlFor="file-upload"
+                                  onDragOver={handleDragOver}
+                                  onDragLeave={handleDragLeave}
+                                  onDrop={handleDrop}
+                                  className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
+                                      isDragging 
+                                      ? 'border-primary bg-primary/5 dark:bg-primary/10' 
+                                      : 'border-gray-300 dark:border-gray-700 hover:border-primary/80 dark:hover:border-primary bg-gray-50 dark:bg-gray-800'
+                                  }`}
+                              >
+                                  <div className="space-y-4 text-center w-full">
+                                      {attachments.length > 0 && (
+                                          <div className="flex flex-wrap items-center justify-center gap-4 mb-4">
+                                              {attachments.map((file, idx) => (
+                                                  <div key={idx} className="flex flex-col items-center">
+                                                      <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm group">
+                                                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                          <img 
+                                                              src={URL.createObjectURL(file)} 
+                                                              alt="Preview" 
+                                                              className="object-cover w-full h-full"
+                                                          />
+                                                          {/* Remove Button Overlay */}
+                                                          <button 
+                                                              type="button" 
+                                                              onClick={(e) => {
+                                                                  e.preventDefault();
+                                                                  setAttachments(prev => prev.filter((_, i) => i !== idx));
+                                                              }}
+                                                              className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-md"
+                                                              aria-label="Remove image"
+                                                          >
+                                                              <XCircleIcon className="w-5 h-5" />
+                                                          </button>
+                                                      </div>
+                                                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium w-24 truncate">{file.name}</p>
+                                                  </div>
+                                              ))}
+                                          </div>
+                                      )}
+                                      
+                                      <div className={`flex flex-col items-center justify-center ${attachments.length > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-4' : ''}`}>
+                                          <PhotoIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+                                          <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2 relative">
+                                              <span className="font-medium text-primary dark:text-primary hover:text-primary/80">
+                                                  {attachments.length > 0 ? 'Click to add more' : 'Click to upload'}
+                                              </span>
+                                              <input 
+                                                  id="file-upload" 
+                                                  name="file-upload" 
+                                                  type="file" 
+                                                  className="sr-only" 
+                                                  accept="image/*"
+                                                  multiple // allow selecting multiple files
+                                                  onChange={handleFileChange}
+                                              />
+                                              <p className="pl-1">or drag and drop</p>
+                                          </div>
+                                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                              PNG, JPG, GIF up to 10MB
+                                          </p>
+                                      </div>
+                                  </div>
+                              </label>
+                          </div>
+                      )}
                   </div>
               </div>
           </div>
@@ -337,79 +406,108 @@ export default function TradePage() {
                   </h3>
 
                   {tradeType === 'sell' ? (
-                      <div className="space-y-4">
-                          <p className="text-sm text-gray-500">Provide details where you want to receive payment.</p>
+                      <div className="space-y-6">
+                          <p className="text-sm text-gray-500">How would you like to receive your payment?</p>
                           
-                          <div className="space-y-4">
-                              <label className="block text-sm font-medium text-gray-500 mb-1">Payment Provider</label>
-                              <select 
-                                value={paymentProvider}
-                                onChange={e => setPaymentProvider(e.target.value)}
-                                className="w-full p-3 rounded-xl bg-red-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 mb-4"
+                          {/* Withdrawal Preference Selector */}
+                          <div className="flex gap-2 p-1 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                              <button
+                                  type="button"
+                                  onClick={() => setWithdrawalPreference('direct_payout')}
+                                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
+                                      withdrawalPreference === 'direct_payout' 
+                                      ? 'bg-white dark:bg-gray-700 shadow-sm text-red-600' 
+                                      : 'text-gray-400 hover:text-gray-600'
+                                  }`}
                               >
-                                  <option value="Momo">Mobile Money (Momo)</option>
-                                  <option value="Bank">Bank Transfer</option>
-                                  <option value="Crypto">USDT / Crypto</option>
-                              </select>
-
-                              {/* CONDITIONAL INPUTS */}
-                              {paymentProvider === 'Momo' && (
-                                  <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Network</label>
-                                          <select value={momoNetwork} onChange={e => setMomoNetwork(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600">
-                                              <option value="MTN">MTN</option>
-                                              <option value="Vodafone">Telecel (Vodafone)</option>
-                                              <option value="AirtelTigo">AirtelTigo</option>
-                                          </select>
-                                      </div>
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Account Name</label>
-                                          <input type="text" value={momoName} onChange={e => setMomoName(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" placeholder="e.g. John Doe" />
-                                      </div>
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Number</label>
-                                          <input type="text" value={momoNumber} onChange={e => setMomoNumber(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" placeholder="055..." />
-                                      </div>
-                                  </div>
-                              )}
-
-                              {paymentProvider === 'Bank' && (
-                                  <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Bank Name</label>
-                                          <input type="text" value={bankName} onChange={e => setBankName(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" placeholder="e.g. Ecobank" />
-                                      </div>
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Account Name</label>
-                                          <input type="text" value={bankAccountName} onChange={e => setBankAccountName(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" />
-                                      </div>
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Account Number</label>
-                                          <input type="text" value={bankAccountNumber} onChange={e => setBankAccountNumber(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600" />
-                                      </div>
-                                  </div>
-                              )}
-
-                               {paymentProvider === 'Crypto' && (
-                                  <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Network</label>
-                                          <select value={cryptoNetwork} onChange={e => setCryptoNetwork(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600">
-                                              <option value="TRC20">TRC20</option>
-                                              <option value="ERC20">ERC20</option>
-                                              <option value="BEP20">BEP20</option>
-                                          </select>
-                                      </div>
-                                      <div>
-                                          <label className="text-xs font-bold text-gray-500 uppercase">Wallet Address</label>
-                                          <input type="text" value={walletAddress} onChange={e => setWalletAddress(e.target.value)} className="w-full p-2 rounded-lg border mt-1 dark:bg-gray-700 dark:border-gray-600 font-mono text-sm" placeholder="T..." />
-                                      </div>
-                                  </div>
-                              )}
+                                  <BuildingLibraryIcon className="w-4 h-4" /> Direct Payout
+                              </button>
+                              <button
+                                  type="button"
+                                  onClick={() => setWithdrawalPreference('wallet')}
+                                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
+                                      withdrawalPreference === 'wallet' 
+                                      ? 'bg-white dark:bg-gray-700 shadow-sm text-red-600' 
+                                      : 'text-gray-400 hover:text-gray-600'
+                                  }`}
+                              >
+                                  <WalletIcon className="w-4 h-4" /> Credit Wallet
+                              </button>
                           </div>
+
+                          <AnimatePresence mode="wait">
+                              {withdrawalPreference === 'direct_payout' ? (
+                                  <motion.div 
+                                      key="direct"
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="space-y-4"
+                                  >
+                                      <label className="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Select Payout Account</label>
+                                      {userPaymentMethods.length === 0 ? (
+                                          <div className="p-8 border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-3xl text-center">
+                                              <p className="text-sm text-gray-400 mb-4">No payment methods found.</p>
+                                              <Button 
+                                                  variant="outline" 
+                                                  size="sm"
+                                                  onClick={() => router.push('/dashboard/wallet')}
+                                              >
+                                                  Add Account in Wallet
+                                              </Button>
+                                          </div>
+                                      ) : (
+                                          <div className="space-y-2">
+                                              {userPaymentMethods.map((method) => (
+                                                  <button
+                                                      key={method.id}
+                                                      type="button"
+                                                      onClick={() => setSelectedUserMethodId(method.id)}
+                                                      className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
+                                                          selectedUserMethodId === method.id 
+                                                          ? 'border-red-600 bg-red-50/50 dark:bg-red-600/10' 
+                                                          : method.is_default
+                                                              ? 'border-red-200 dark:border-red-900/30 bg-red-50/10 dark:bg-red-900/5'
+                                                              : 'border-gray-50 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700'
+                                                      }`}
+                                                  >
+                                                      <div className="text-left">
+                                                          <div className="flex items-center gap-2">
+                                                              <p className="text-sm font-bold text-gray-900 dark:text-white">{method.account_name}</p>
+                                                              {method.is_default && (
+                                                                  <span className="text-[9px] font-black uppercase tracking-tighter bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded-md border border-red-200 dark:border-red-800">
+                                                                      Default
+                                                                  </span>
+                                                              )}
+                                                          </div>
+                                                          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                                                              {method.payment_method?.name} • {method.account_number}
+                                                          </p>
+                                                      </div>
+                                                      {selectedUserMethodId === method.id && <CheckIcon className="w-5 h-5 text-red-600" />}
+                                                  </button>
+                                              ))}
+                                          </div>
+                                      )}
+                                  </motion.div>
+                              ) : (
+                                  <motion.div 
+                                      key="wallet"
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -10 }}
+                                      className="p-6 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-[2rem] text-center"
+                                  >
+                                      <div className="p-3 bg-red-600 text-white rounded-2xl w-fit mx-auto mb-3 shadow-lg shadow-red-600/20">
+                                          <WalletIcon className="w-6 h-6" />
+                                      </div>
+                                      <p className="text-sm font-bold text-red-900 dark:text-red-200">Funds will be credited to your wallet.</p>
+                                      <p className="text-xs text-red-600/70 dark:text-red-400/60 mt-1">You can withdraw anytime from your balance.</p>
+                                  </motion.div>
+                              )}
+                          </AnimatePresence>
                       </div>
-                   ) : (
+                    ) : (
                       <div className="space-y-4">
                           <p className="text-sm text-gray-500">Select a payment method to pay into:</p>
                           

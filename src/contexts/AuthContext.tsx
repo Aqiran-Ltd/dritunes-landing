@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api, ApiError } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 interface User {
   id: number;
@@ -78,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (credentials: any) => {
+    // Note: Toasts are handled in the components for login/register to allow for loading states
     const response: any = await api.post('/auth/login', credentials);
     if (response.status) {
       const token = response.data.access_token;
@@ -115,6 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (data: any) => {
+    // Note: Toasts are handled in the components
     const response: any = await api.post('/auth/register', data);
     if (response.status) {
       const token = response.data.access_token;
@@ -154,6 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     localStorage.removeItem('access_token');
     setUser(null);
+    toast.success('Logged out successfully');
     router.push('/auth/login');
   };
 
@@ -198,19 +202,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
        const endpoint = type === 'phone' ? '/auth/resend-phone-otp' : '/auth/resend-email-otp';
        const accessToken = localStorage.getItem('access_token');
 
-       await api.post(endpoint, {}, accessToken || undefined);
+       try {
+           await api.post(endpoint, {}, accessToken || undefined);
+           toast.success('OTP resent successfully');
+       } catch (err: any) {
+           toast.error(err.message || 'Failed to resend OTP');
+       }
   }
 
   const forgotPassword = async (email: string) => {
-      await api.post('/auth/forgot-password', { email });
+      try {
+          await api.post('/auth/forgot-password', { email });
+          toast.success('Password reset link sent to your email');
+      } catch (err: any) {
+          toast.error(err.message || 'Failed to send reset link');
+          throw err;
+      }
   };
 
   const resetPassword = async (data: any) => {
-      const response: any = await api.post('/auth/reset-password', data);
-      if (response.status) {
-         router.push('/auth/login');
-      } else {
-         throw new Error(response.message || 'Failed to reset password');
+      try {
+          const response: any = await api.post('/auth/reset-password', data);
+          if (response.status) {
+             toast.success('Password reset successfully! You can now login.');
+             router.push('/auth/login');
+          } else {
+             throw new Error(response.message || 'Failed to reset password');
+          }
+      } catch (err: any) {
+          toast.error(err.message || 'Failed to reset password');
+          throw err;
       }
   };
 

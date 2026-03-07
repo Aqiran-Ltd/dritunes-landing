@@ -25,6 +25,7 @@ import {
   GiftIcon,
   BoltIcon
 } from "@heroicons/react/24/solid";
+import { Select, type SelectOption } from "@/components/ui/Select";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { fetchRates, type GiftCard, type Category, type Rate } from "@/lib/ratesService";
@@ -59,6 +60,20 @@ export default function RatesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const sortOptions: SelectOption[] = [
+    { id: "rate-high", name: "Rate: High to Low" },
+    { id: "rate-low", name: "Rate: Low to High" },
+    { id: "region-asc", name: "Region: A-Z" },
+    { id: "region-desc", name: "Region: Z-A" },
+    { id: "amount-asc", name: "Amount: Low to High" },
+    { id: "amount-desc", name: "Amount: High to Low" },
+  ];
+
+  const activeSortOption = useMemo(() => 
+    sortOptions.find(o => o.id === sortBy) || sortOptions[0],
+    [sortBy]
+  );
 
   // Fetch data
   useEffect(() => {
@@ -387,16 +402,13 @@ export default function RatesPage() {
             {searchQuery && <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><XMarkIcon className="w-5 h-5" /></button>}
           </div>
 
-          <div className="relative">
-            <select value={sortBy} onChange={e => setSortBy(e.target.value as SortOption)} className="px-6 py-3 rounded-full border-2 border-yellow-300 dark:border-yellow-700 bg-white dark:bg-gray-800 shadow-md appearance-none pr-10 cursor-pointer outline-none">
-              <option value="rate-high">Rate: High to Low</option>
-              <option value="rate-low">Rate: Low to High</option>
-              <option value="region-asc">Region: A-Z</option>
-              <option value="region-desc">Region: Z-A</option>
-              <option value="amount-asc">Amount: Low to High</option>
-              <option value="amount-desc">Amount: High to Low</option>
-            </select>
-            <ArrowsUpDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+          <div className="w-full md:w-64">
+            <Select
+              options={sortOptions}
+              value={activeSortOption}
+              onChange={(opt) => setSortBy(opt.id as SortOption)}
+              className="!space-y-0"
+            />
           </div>
 
           <button onClick={() => setShowFilters(!showFilters)} className={`px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-md transition-all cursor-pointer ${showFilters || selectedRegions.size > 0 ? "bg-yellow-400 text-gray-900" : "bg-white dark:bg-gray-800 border-2 border-yellow-300 dark:border-yellow-700 dark:text-gray-200"}`}>

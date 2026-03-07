@@ -16,7 +16,10 @@ import {
   ExclamationCircleIcon,
   ClockIcon,
   ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon
+  ArrowTrendingDownIcon,
+  WalletIcon,
+  BuildingLibraryIcon,
+  CheckBadgeIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
@@ -36,13 +39,41 @@ interface TradeDetail {
   updated_at: string;
   admin_notes: string | null;
   user_notes: string | null;
-  user_payment_details?: Record<string, string> | null;
+  withdrawal_preference?: 'wallet' | 'direct_payout';
+  attachments?: string | string[] | null; 
+  user_payment_details?: Record<string, any> | string | null;
+  user_payment_method?: {
+    account_name: string;
+    account_number: string;
+    bank_name?: string;
+    branch?: string;
+    payment_method?: {
+      name: string;
+      type: string;
+    };
+  } | null;
   payment_method_id?: number | null; 
   payment_method?: {
     name: string;
     details: Record<string, string>;
   } | null;
+  transaction?: {
+    id: number;
+    reference: string;
+    screenshot: string | null;
+    payment_method: string;
+    amount: string;
+    created_at: string;
+  } | null;
 }
+
+const STORAGE_BASE_URL = 'http://localhost:8000/storage';
+
+const prefixUrl = (url: string | null | undefined) => {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `${STORAGE_BASE_URL}/${url.startsWith('/') ? url.slice(1) : url}`;
+};
 
 export default function TradeDetailPage() {
   const { id } = useParams();
@@ -57,8 +88,17 @@ export default function TradeDetailPage() {
         if (!token || !id) return;
         
         const response: any = await api.get(`/trades/${id}`, token);
-        if (response.data) {
-           const tradeData: TradeDetail = response.data;
+        
+        // Robust unwrapping of the response payload based on common API patterns
+        let dataPayload = response;
+        if (response.data?.data && response.data.data.id) {
+            dataPayload = response.data.data;
+        } else if (response.data && response.data.id) {
+            dataPayload = response.data;
+        }
+        
+        if (dataPayload && dataPayload.id) {
+           const tradeData: TradeDetail = { ...dataPayload };
            
            // If 'buy' trade and we have an ID but no expanded object, fetch company methods to find it
            if (tradeData.trade_type === 'buy' && !tradeData.payment_method && tradeData.payment_method_id) {
@@ -75,7 +115,28 @@ export default function TradeDetailPage() {
                    console.error("Failed to hydrate payment method details", err);
                }
            }
+
+           // Handle attachments that might be JSON strings
+           if (typeof tradeData.attachments === 'string' && tradeData.attachments.startsWith('[')) {
+               try {
+                   tradeData.attachments = JSON.parse(tradeData.attachments);
+               } catch (e) {
+                   console.error("Failed to parse attachments JSON", e);
+               }
+           }
+           
+           // Handle user_payment_details that might be JSON strings
+           if (typeof tradeData.user_payment_details === 'string') {
+               try {
+                   tradeData.user_payment_details = JSON.parse(tradeData.user_payment_details);
+               } catch (e) {
+                   console.error("Failed to parse user_payment_details JSON", e);
+               }
+           }
+
            setTrade(tradeData);
+        } else {
+            console.error("Invalid trade response structure:", response);
         }
       } catch (error) {
         console.error('Failed to fetch trade details', error);
@@ -197,6 +258,46 @@ export default function TradeDetailPage() {
                    <p className="text-blue-600 dark:text-blue-200 text-sm">{trade.admin_notes}</p>
                 </div>
             )}
+
+            {/* Attachments / Card Images Preview - MOVED HERE */}
+            {trade.attachments && (
+                <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-800 pb-4">
+                        {trade.trade_type === 'sell' ? 'Uploaded Asset Card(s)' : 'Proof of Payment'}
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {Array.isArray(trade.attachments) ? (
+                            trade.attachments.map((url, idx) => (
+                                <div key={idx} className="group relative aspect-[4/3] rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img 
+                                        src={prefixUrl(url)} 
+                                        alt={`Attachment ${idx + 1}`} 
+                                        className="w-full h-full object-cover cursor-zoom-in group-hover:scale-105 transition-transform duration-300"
+                                        onClick={() => window.open(prefixUrl(url), '_blank')}
+                                    />
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none flex items-center justify-center">
+                                        <span className="text-white opacity-0 group-hover:opacity-100 font-medium text-sm bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-sm">View Original</span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="group relative aspect-[4/3] rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img 
+                                    src={prefixUrl(trade.attachments as string)} 
+                                    alt="Trade Attachment" 
+                                    className="w-full h-full object-cover cursor-zoom-in group-hover:scale-105 transition-transform duration-300"
+                                    onClick={() => window.open(prefixUrl(trade.attachments as string), '_blank')}
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none flex items-center justify-center">
+                                    <span className="text-white opacity-0 group-hover:opacity-100 font-medium text-sm bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-sm">View Original</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
          </div>
 
          {/* Side Summary Card */}
@@ -225,6 +326,16 @@ export default function TradeDetailPage() {
                      <span className="text-gray-500 text-sm">Rate</span>
                      <span className="font-mono font-medium text-gray-900 dark:text-white">{trade.rate_used}</span>
                   </div>
+
+                  {trade.withdrawal_preference && (
+                      <div className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800">
+                         <span className="text-gray-500 text-sm">Payout to</span>
+                         <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                            {trade.withdrawal_preference === 'wallet' ? <WalletIcon className="w-3 h-3" /> : <BuildingLibraryIcon className="w-3 h-3" />}
+                            {trade.withdrawal_preference === 'wallet' ? 'Wallet' : 'Direct Payout'}
+                         </span>
+                      </div>
+                  )}
                   
                   <div className="pt-4 mt-2">
                      <div className="flex justify-between items-center">
@@ -235,20 +346,102 @@ export default function TradeDetailPage() {
                </div>
             </div>
 
+            {/* Transaction Proof (Admin Uploaded) */}
+            {trade.transaction && (
+                <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-green-100 dark:border-green-900/30 overflow-hidden">
+                   <div className="flex items-center justify-between mb-6">
+                       <h2 className="text-lg font-bold text-gray-900 dark:text-white">Payment Proof</h2>
+                       <CheckBadgeIcon className="w-6 h-6 text-green-500" />
+                   </div>
+                   
+                   <div className="space-y-4">
+                       <div className="flex justify-between items-center text-sm py-2 border-b border-gray-50 dark:border-gray-800">
+                           <span className="text-gray-500">Ref Number</span>
+                           <span className="font-mono font-bold text-gray-900 dark:text-white select-all">{trade.transaction.reference}</span>
+                       </div>
+                       <div className="flex justify-between items-center text-sm py-2 border-b border-gray-50 dark:border-gray-800">
+                           <span className="text-gray-500">Method</span>
+                           <span className="font-medium text-gray-900 dark:text-white">{trade.transaction.payment_method}</span>
+                       </div>
+                       <div className="flex justify-between items-center text-sm py-2 border-b border-gray-50 dark:border-gray-800">
+                           <span className="text-gray-500">Paid On</span>
+                           <span className="font-medium text-gray-900 dark:text-white">{format(new Date(trade.transaction.created_at), 'MMM d, yyyy HH:mm')}</span>
+                       </div>
+
+                       {trade.transaction.screenshot && (
+                           <div className="mt-4">
+                               <p className="text-xs text-gray-400 uppercase font-bold mb-2">Payment Receipt</p>
+                               <div className="rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+                                   {/* eslint-disable-next-line @next/next/no-img-element */}
+                                   <img 
+                                       src={prefixUrl(trade.transaction.screenshot)} 
+                                       alt="Payment Proof" 
+                                       className="w-full h-auto object-cover max-h-64 cursor-zoom-in hover:scale-105 transition-transform"
+                                       onClick={() => window.open(prefixUrl(trade.transaction?.screenshot) || '', '_blank')}
+                                   />
+                               </div>
+                           </div>
+                       )}
+                   </div>
+                </div>
+            )}
+
             {/* Payment Information Card */}
             <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Payment Information</h2>
                
                {/* SELL: User provided details to get paid */}
-               {trade.trade_type === 'sell' && trade.user_payment_details && (
+               {trade.trade_type === 'sell' && (trade.user_payment_details || trade.user_payment_method) && (
                    <div className="space-y-4">
                        <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">Payout Destination</p>
-                       {Object.entries(trade.user_payment_details).map(([key, value]) => (
-                           <div key={key} className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800 last:border-0">
-                               <span className="text-gray-500 text-sm capitalize">{key.replace(/_/g, ' ')}</span>
-                               <span className="font-medium text-gray-900 dark:text-white text-right">{value}</span>
-                           </div>
-                       ))}
+                       
+                       {/* Render Relation Object */}
+                       {trade.user_payment_method && (() => {
+                           const isMomo = trade.user_payment_method?.payment_method?.type?.toLowerCase().includes('momo') || 
+                                          trade.user_payment_method?.payment_method?.name?.toLowerCase().includes('momo') ||
+                                          trade.user_payment_method?.payment_method?.name?.toLowerCase().includes('telecel');
+                           
+                           return (
+                               <>
+                                   <div className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800">
+                                       <span className="text-gray-500 text-sm">Account Name</span>
+                                       <span className="font-medium text-gray-900 dark:text-white text-right">{trade.user_payment_method.account_name}</span>
+                                   </div>
+                                   <div className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800">
+                                       <span className="text-gray-500 text-sm">{isMomo ? 'Phone Number' : 'Account Number'}</span>
+                                       <span className="font-medium text-gray-900 dark:text-white text-right">{trade.user_payment_method.account_number}</span>
+                                   </div>
+                                   {trade.user_payment_method.bank_name && (
+                                       <div className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800">
+                                           <span className="text-gray-500 text-sm">{isMomo ? 'Network Operator' : 'Bank'}</span>
+                                           <span className="font-medium text-gray-900 dark:text-white text-right">{trade.user_payment_method.bank_name}</span>
+                                       </div>
+                                   )}
+                                   {trade.user_payment_method.branch && !isMomo && (
+                                       <div className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800">
+                                           <span className="text-gray-500 text-sm">Branch</span>
+                                           <span className="font-medium text-gray-900 dark:text-white text-right">{trade.user_payment_method.branch}</span>
+                                       </div>
+                                   )}
+                                   {trade.user_payment_method.payment_method?.name && !trade.user_payment_method.bank_name && (
+                                       <div className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800">
+                                           <span className="text-gray-500 text-sm">Provider</span>
+                                           <span className="font-medium text-gray-900 dark:text-white text-right">{trade.user_payment_method.payment_method.name}</span>
+                                       </div>
+                                   )}
+                               </>
+                           );
+                       })()}
+
+                       {/* Render Dictionary JSON */}
+                       {!trade.user_payment_method && trade.user_payment_details && typeof trade.user_payment_details === 'object' && (
+                           Object.entries(trade.user_payment_details).map(([key, value]) => (
+                               <div key={key} className="flex justify-between items-center py-2 border-b border-gray-50 dark:border-gray-800 last:border-0">
+                                   <span className="text-gray-500 text-sm capitalize">{key.replace(/_/g, ' ')}</span>
+                                   <span className="font-medium text-gray-900 dark:text-white text-right">{String(value)}</span>
+                               </div>
+                           ))
+                       )}
                    </div>
                )}
 
@@ -269,9 +462,9 @@ export default function TradeDetailPage() {
                    </div>
                )}
 
-               {/* Fallback if no structured data but notes exist */}
+                {/* Fallback if no structured data but notes exist */}
                {((trade.trade_type === 'sell' && !trade.user_payment_details) || (trade.trade_type === 'buy' && !trade.payment_method)) && (
-                   <div className="text-sm text-gray-500 italic">
+                   <div className="text-sm text-gray-500 italic mt-4">
                        {trade.user_notes ? `Note: ${trade.user_notes}` : 'No detailed payment info available.'}
                    </div>
                )}

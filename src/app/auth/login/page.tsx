@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { EnvelopeIcon, LockClosedIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import GuestGuard from '@/components/auth/GuestGuard';
+import { toast } from 'react-hot-toast';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -18,11 +19,15 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    const loadingToast = toast.loading('Logging in...');
 
     try {
       await login(formData);
+      toast.success('Logged in successfully!', { id: loadingToast });
     } catch (err: any) {
-      setError(err.message || 'Failed to login');
+      const msg = err.message || 'Failed to login';
+      setError(msg);
+      toast.error(msg, { id: loadingToast });
       setIsLoading(false);
     }
   };

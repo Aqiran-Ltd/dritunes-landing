@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { UserIcon, EnvelopeIcon, PhoneIcon, GlobeAltIcon, LockClosedIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import GuestGuard from '@/components/auth/GuestGuard';
+import { toast } from 'react-hot-toast';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -39,15 +40,21 @@ export default function RegisterPage() {
     setFieldErrors({});
 
     if (formData.password !== formData.password_confirmation) {
-      setError("Passwords do not match");
+      const msg = "Passwords do not match";
+      setError(msg);
+      toast.error(msg);
       setIsLoading(false);
       return;
     }
 
+    const loadingToast = toast.loading('Creating your account...');
     try {
       await register(formData);
+      toast.success('Account created successfully!', { id: loadingToast });
     } catch (err: any) {
-      setError(err.message || 'Failed to register');
+      const msg = err.message || 'Failed to register';
+      setError(msg);
+      toast.error(msg, { id: loadingToast });
       if (err.data && err.data.errors) {
           setFieldErrors(err.data.errors);
       } else if (err.data) {

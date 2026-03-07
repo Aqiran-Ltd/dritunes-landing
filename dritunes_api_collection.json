@@ -583,6 +583,210 @@
             ]
         },
         {
+            "name": "User Payment Methods",
+            "description": "Saved bank/mobile money details for payouts.",
+            "item": [
+                {
+                    "name": "List Saved Methods",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/user-payment-methods",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "user-payment-methods"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Payment Method",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"payment_method_id\": 1,\n    \"account_name\": \"John Doe\",\n    \"account_number\": \"0551234567\",\n    \"bank_name\": \"MTN\",\n    \"is_default\": true\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/user-payment-methods",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "user-payment-methods"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Payment Method",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"account_name\": \"John Updated Doe\",\n    \"is_default\": false\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/user-payment-methods/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "user-payment-methods",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Payment Method",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/user-payment-methods/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "user-payment-methods",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Wallet",
+            "description": "Endpoints for balance and withdrawals.",
+            "item": [
+                {
+                    "name": "Get Wallet Balance & Transactions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/wallet",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "wallet"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Request Withdrawal",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"amount\": 500,\n    \"user_payment_method_id\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/wallet/withdraw",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "wallet",
+                                "withdraw"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
             "name": "General Data",
             "description": "Public or shared data used across the app.",
             "item": [
@@ -862,7 +1066,7 @@
                     }
                 },
                 {
-                    "name": "Create Trade (User Sells)",
+                    "name": "Create Trade (User Sells - Direct Payout)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -879,7 +1083,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"user_payment_details\": {\n        \"bank\": \"GTBank\",\n        \"account_number\": \"1234567890\",\n        \"account_name\": \"John Doe\"\n    },\n    \"user_notes\": \"Please process quickly.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -895,7 +1099,44 @@
                                 "trades"
                             ]
                         },
-                        "description": "Create a trade where the User SELLS an asset to the Company.\n\n**Required:** `user_payment_details` so the company can pay the user."
+                        "description": "Create a trade where the User SELLS an asset to the Company with a Direct Payout to a saved account."
+                    }
+                },
+                {
+                    "name": "Create Trade (User Sells - To Wallet)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/trades",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "trades"
+                            ]
+                        },
+                        "description": "Create a trade where the User SELLS an asset to the Company and credits the balance to their Wallet."
                     }
                 },
                 {
