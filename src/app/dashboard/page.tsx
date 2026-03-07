@@ -93,7 +93,7 @@ export default function DashboardPage() {
                       <div className="hidden sm:block w-px h-8 bg-gray-700/50"></div>
                       <div>
                           <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black mb-1">Pending Payouts</p>
-                          <p className="text-xl font-black text-amber-500 italic">₵{parseFloat(dashboardData?.pending_withdrawals || '0').toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                          <p className="text-xl font-black text-amber-500 italic">{dashboardData?.pending_withdrawals || 0}</p>
                       </div>
                       <div className="hidden sm:block w-px h-8 bg-gray-700/50"></div>
                       <div>
