@@ -583,6 +583,41 @@
             ]
         },
         {
+            "name": "Dashboard",
+            "description": "User overview and account highlights.",
+            "item": [
+                {
+                    "name": "Get Dashboard Stats",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/dashboard/stats",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dashboard",
+                                "stats"
+                            ]
+                        },
+                        "description": "Returns a summary of the user's wallet balance, trade counts, total volume, and recent transactions."
+                    }
+                }
+            ]
+        },
+        {
             "name": "User Payment Methods",
             "description": "Saved bank/mobile money details for payouts.",
             "item": [

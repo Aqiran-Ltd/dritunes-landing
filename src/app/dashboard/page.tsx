@@ -21,13 +21,8 @@ import Link from 'next/link';
 export default function DashboardPage() {
   const { user } = useAuth();
 
-  const [recentTrades, setRecentTrades] = useState<any[]>([]);
-  const [stats, setStats] = useState({
-      totalEarnings: 0,
-      pendingPayouts: 0,
-      totalTrades: 0
-  });
   const [isLoading, setIsLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState<any>(null);
 
   // Check if all verifications are complete
   const allVerified = React.useMemo(() => {
@@ -43,35 +38,11 @@ export default function DashboardPage() {
           try {
              const token = localStorage.getItem('access_token');
              if (!token) return;
-             const response: any = await api.get('/trades', token);
              
-             let trades: any[] = [];
-             if (response.data && response.data.data) {
-                 trades = response.data.data;
-             } else if (response.data && Array.isArray(response.data)) {
-                 trades = response.data;
-             } else if (Array.isArray(response)) {
-                 trades = response;
+             const response: any = await api.get('/dashboard/stats', token);
+             if (response.success) {
+                 setDashboardData(response.data);
              }
-
-             // Calculate Stats
-             const earnings = trades
-                .filter((t: any) => t.payment_status === 'paid' || t.trade_status === 'completed') // Adjust based on API reliability
-                .reduce((sum: number, t: any) => sum + parseFloat(t.total_payout || 0), 0);
-            
-             const pending = trades
-                .filter((t: any) => t.payment_status === 'pending' && t.trade_status !== 'rejected')
-                .reduce((sum: number, t: any) => sum + parseFloat(t.total_payout || 0), 0);
-
-             setStats({
-                 totalEarnings: earnings,
-                 pendingPayouts: pending,
-                 totalTrades: trades.length
-             });
-
-             // Top 5 recent
-             setRecentTrades(trades.slice(0, 5));
-
           } catch (e) {
               console.error("Failed to load dashboard data", e);
           } finally {
@@ -105,26 +76,34 @@ export default function DashboardPage() {
              
              <div className="relative z-10 flex flex-col justify-between h-full gap-8">
                  <div className="flex items-start justify-between">
-                    <div>
-                        <p className="text-gray-400 font-medium mb-1">Total Earnings</p>
-                        <h2 className="text-4xl font-bold">₵{stats.totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
-                    </div>
+                     <div>
+                         <p className="text-gray-400 font-medium mb-1 uppercase tracking-widest text-[10px] font-bold">Wallet Balance</p>
+                         <h2 className="text-5xl font-black italic tracking-tighter italic">₵{parseFloat(dashboardData?.wallet_balance || '0').toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+                     </div>
                     <div className="p-3 bg-white/10 rounded-full backdrop-blur-sm">
                         <WalletIcon className="w-6 h-6 text-white" />
                     </div>
                  </div>
 
-                 <div className="flex items-center gap-6">
-                     <div>
-                         <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Pending Payout</p>
-                         <p className="text-xl font-semibold text-green-400">₵{stats.pendingPayouts.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                     </div>
-                     <div className="w-px h-8 bg-gray-700"></div>
-                     <div>
-                         <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Trades</p>
-                         <p className="text-xl font-semibold">{stats.totalTrades}</p>
-                     </div>
-                 </div>
+                  <div className="flex flex-wrap items-center gap-6 sm:gap-12">
+                      <div>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black mb-1">Total Volume</p>
+                          <p className="text-xl font-black text-green-400 italic">₵{parseFloat(dashboardData?.total_volume || '0').toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                      </div>
+                      <div className="hidden sm:block w-px h-8 bg-gray-700/50"></div>
+                      <div>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black mb-1">Pending Payouts</p>
+                          <p className="text-xl font-black text-amber-500 italic">₵{parseFloat(dashboardData?.pending_withdrawals || '0').toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                      </div>
+                      <div className="hidden sm:block w-px h-8 bg-gray-700/50"></div>
+                      <div>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black mb-1">Trades</p>
+                          <p className="text-xl font-black text-white italic">
+                            {dashboardData?.total_trades || 0}
+                            <span className="text-[10px] text-gray-400 ml-2 font-bold not-italic">({dashboardData?.completed_trades || 0} Approved)</span>
+                          </p>
+                      </div>
+                  </div>
              </div>
          </div>
 
@@ -161,55 +140,59 @@ export default function DashboardPage() {
              <div className="py-12 flex justify-center">
                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
              </div>
-         ) : recentTrades.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                <ClockIcon className="w-8 h-8 text-gray-400" />
-                </div>
-                <h3 className="text-gray-900 dark:text-white font-medium mb-1">No activities found</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto">
-                You haven't made any trades yet. Start your first trade to see activity here.
-                </p>
-            </div>
-         ) : (
-             <div className="space-y-3">
-                 {recentTrades.map((trade: any) => (
-                     <div key={trade.id} className="group flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/30 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700">
-                         <div className="flex items-center gap-4">
-                             <div className={`p-3 rounded-2xl ${
-                                 trade.trade_type === 'buy' 
-                                 ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' 
-                                 : 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
-                             }`}>
-                                 {trade.trade_type === 'buy' ? <ArrowTrendingUpIcon className="w-6 h-6" /> : <ArrowTrendingDownIcon className="w-6 h-6" />}
-                             </div>
-                             <div>
-                                 <p className="font-bold text-gray-900 dark:text-white">
-                                     {trade.asset_name ? trade.asset_name.replace(/_/g, ' ') : (trade.trade_type === 'buy' ? 'Buy Order' : 'Sell Order')}
-                                 </p>
-                                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                     {new Date(trade.created_at).toLocaleDateString()} • {trade.trade_number}
-                                 </p>
-                             </div>
-                         </div>
-                         <div className="text-right">
-                             <p className="font-bold text-gray-900 dark:text-white">
-                                 {trade.total_payout ? `₵${parseFloat(trade.total_payout).toFixed(2)}` : 'Pending'}
-                             </p>
-                             <div className="flex items-center justify-end gap-1.5 mt-1">
-                                 <span className={`w-2 h-2 rounded-full ${
-                                     trade.trade_status === 'approved' || trade.trade_status === 'completed' ? 'bg-green-500' : 
-                                     trade.trade_status === 'failed' || trade.trade_status === 'rejected' ? 'bg-red-500' : 'bg-yellow-500'
-                                 }`}></span>
-                                 <p className="text-xs font-medium capitalize text-gray-500">
-                                     {trade.trade_status}
-                                 </p>
-                             </div>
-                         </div>
-                     </div>
-                 ))}
+          ) : dashboardData?.recent_transactions?.length === 0 ? (
+             <div className="flex flex-col items-center justify-center py-12 text-center">
+                 <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                 <ClockIcon className="w-8 h-8 text-gray-400" />
+                 </div>
+                 <h3 className="text-gray-900 dark:text-white font-medium mb-1">No activities found</h3>
+                 <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto">
+                 You haven't made any transactions yet. Start your first trade to see activity here.
+                 </p>
              </div>
-         )}
+          ) : (
+              <div className="space-y-3">
+                  {dashboardData?.recent_transactions?.map((tx: any) => (
+                      <Link 
+                        key={tx.id} 
+                        href={tx.trade ? `/dashboard/history/${tx.trade.id}` : '/dashboard/wallet'}
+                        className="group flex items-center justify-between p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/30 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 cursor-pointer"
+                    >
+                          <div className="flex items-center gap-4">
+                              <div className={`p-3 rounded-2xl ${
+                                  tx.type === 'credit' 
+                                  ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' 
+                                  : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                              }`}>
+                                  {tx.type === 'credit' ? <ArrowTrendingUpIcon className="w-6 h-6" /> : <ArrowTrendingDownIcon className="w-6 h-6" />}
+                              </div>
+                              <div>
+                                  <p className="font-bold text-gray-900 dark:text-white">
+                                      {tx.description || (tx.type === 'credit' ? 'Trade Payout' : 'Withdrawal')}
+                                  </p>
+                                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">
+                                      {new Date(tx.created_at).toLocaleDateString()} • {tx.trade?.trade_number || tx.reference || `TXN-${tx.id.toString().padStart(5, '0')}`}
+                                  </p>
+                              </div>
+                          </div>
+                          <div className="text-right">
+                              <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-red-500'}`}>
+                                  {tx.type === 'credit' ? '+' : '-'}₵{parseFloat(tx.amount).toFixed(2)}
+                              </p>
+                              <div className="flex items-center justify-end gap-1.5 mt-1">
+                                  <span className={`w-2 h-2 rounded-full ${
+                                      tx.status === 'completed' ? 'bg-green-500' : 
+                                      tx.status === 'failed' ? 'bg-red-500' : 'bg-yellow-500'
+                                  }`}></span>
+                                  <p className="text-[10px] font-black uppercase tracking-tighter text-gray-400 italic">
+                                      {tx.status}
+                                  </p>
+                              </div>
+                          </div>
+                      </Link>
+                  ))}
+              </div>
+          )}
       </div>
     </div>
   );
