@@ -579,7 +579,7 @@ export default function RatesPage() {
 
                             {/* Mobile List View */}
                             <div className="md:hidden divide-y divide-gray-100 dark:divide-gray-800">
-                              {cards.map((card, idx) => {
+                              {sortedCards.map((card, idx) => {
                                 const rate = getRate(card.rates, selectedCurrency, deliveryType);
                                 const isAvailable = rate > 0;
                                 return (
