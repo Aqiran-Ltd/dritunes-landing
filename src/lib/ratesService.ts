@@ -3,7 +3,7 @@ import { api } from '@/lib/api';
 // --- Types matching UI expectations ---
 
 export interface Rate {
-  rmbPhysical: number;
+  sourcePhysical: number;
   ghsPhysical: number;
   ghsEcode: number;
   ngnPhysical: number;
@@ -36,15 +36,16 @@ export interface RatesData {
 interface ApiRateItem {
   id: number;
   category: string;       // e.g. "gift_card"
-  asset_name: string;     // e.g. "Apple_US" or "Steam_US"
-  denomination: string;   // e.g. "50-100"
-  country_code: string;   // e.g. "US"
+  asset_name: string;     // e.g. "Asda"
+  denomination: string;   // e.g. "100~500 (P)"
+  country_code: string;   // e.g. "GB"
   type: 'physical' | 'ecode';
-  buy_rate: string;
-  sell_rate: string;      // mapping to GHS rate
-  rmb_rate: string;
+  rate: string;           // The payout rate
+  source_rate: string;    // The base rate before margin
   ngn_physical_rate: string | null;
   ngn_ecode_rate: string | null;
+  margin: string;
+  custom_margin: string | null;
   status: string;
 }
 
@@ -104,7 +105,7 @@ export async function fetchRates(token?: string): Promise<RatesData> {
           region: item.country_code,
           amount: item.denomination,
           rates: {
-            rmbPhysical: parseFloat(item.rmb_rate || '0'), // Assuming RMB rate is consistent
+            sourcePhysical: parseFloat(item.source_rate || '0'), 
             ghsPhysical: 0,
             ghsEcode: 0,
             ngnPhysical: parseFloat(item.ngn_physical_rate || '0'),
@@ -116,17 +117,16 @@ export async function fetchRates(token?: string): Promise<RatesData> {
       }
 
       // Update specific rates based on type
-      const rateVal = parseFloat(item.sell_rate || '0');
+      const rateVal = parseFloat(item.rate || '0');
       
       if (item.type === 'physical') {
         groups[key].rates.ghsPhysical = rateVal;
         groups[key].physicalId = item.id;
-        // Also update shared rates if they were missing (fallback)
-        if (groups[key].rates.rmbPhysical === 0) groups[key].rates.rmbPhysical = parseFloat(item.rmb_rate || '0');
+        if (groups[key].rates.sourcePhysical === 0) groups[key].rates.sourcePhysical = parseFloat(item.source_rate || '0');
       } else {
         groups[key].rates.ghsEcode = rateVal;
         groups[key].ecodeId = item.id;
-        if (groups[key].rates.rmbPhysical === 0) groups[key].rates.rmbPhysical = parseFloat(item.rmb_rate || '0');
+        if (groups[key].rates.sourcePhysical === 0) groups[key].rates.sourcePhysical = parseFloat(item.source_rate || '0');
       }
     });
 

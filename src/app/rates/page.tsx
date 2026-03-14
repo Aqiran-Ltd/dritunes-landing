@@ -141,7 +141,7 @@ export default function RatesPage() {
 
   const getRate = (rate: Rate, currency: Currency, delivery: DeliveryType): number => {
     if (!rate) return 0;
-    if (currency === "RMB") return rate.rmbPhysical;
+    if (currency === "RMB") return rate.sourcePhysical;
     if (currency === "GHS") return delivery === "Physical" ? rate.ghsPhysical : rate.ghsEcode;
     if (currency === "NGN") return delivery === "Physical" ? rate.ngnPhysical : rate.ngnEcode;
     return 0;
@@ -539,7 +539,7 @@ export default function RatesPage() {
                                           {isAvailable && (
                                             <div className="flex items-center gap-2">
                                               
-                                               {/* Platform Trade Button */}
+                                               {/* Trade Button */}
                                               <button
                                                 onClick={() => {
                                                   audit.log('trade_intent_platform', {
@@ -552,9 +552,9 @@ export default function RatesPage() {
                                                   router.push(user ? '/dashboard/trade' : '/auth/login');
                                                 }}
                                                 className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/10 transition-all hover:scale-105"
-                                                title="Instant Trade on Platform"
+                                                title="Trade Now"
                                               >
-                                                <BoltIcon className="w-3.5 h-3.5" /> Platform
+                                                <BoltIcon className="w-3.5 h-3.5" /> Trade Now
                                               </button>
 
                                               {/* WhatsApp Trade Button */}
@@ -608,7 +608,7 @@ export default function RatesPage() {
                                           <button
                                             onClick={() => router.push(user ? '/dashboard/trade' : '/auth/login')}
                                             className="p-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full hover:bg-red-200 transition-colors"
-                                            title="Trade on Platform"
+                                            title="Trade Now"
                                           >
                                             <BoltIcon className="w-5 h-5" />
                                           </button>
