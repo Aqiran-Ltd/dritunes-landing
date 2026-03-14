@@ -10,9 +10,10 @@ interface Rate {
   id: number;
   asset_name: string;
   category: string;
-  sell_rate: string;
+  rate: string;
   type: string;
   country_code: string;
+  denomination: string;
 }
 
 export default function RatesTicker() {
@@ -40,7 +41,7 @@ export default function RatesTicker() {
 
         // Sort by sell_rate desc to show best rates first, take top 15 for a good scroll
         const sortedRates = ratesData
-            .sort((a: Rate, b: Rate) => parseFloat(b.sell_rate) - parseFloat(a.sell_rate))
+            .sort((a: Rate, b: Rate) => parseFloat(b.rate) - parseFloat(a.rate))
             .slice(0, 15);
             
         setRates(sortedRates);
@@ -119,7 +120,7 @@ export default function RatesTicker() {
        >
           {displayRates.map((rate, index) => {
              const style = getCategoryStyle(rate.asset_name);
-             const isHighRate = parseFloat(rate.sell_rate) > 10;
+             const isHighRate = parseFloat(rate.rate) > 10;
              
              return (
                <motion.div 
@@ -147,7 +148,7 @@ export default function RatesTicker() {
                          <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wider">Sell Rate</span>
                          <div className="flex items-baseline gap-0.5">
                              <span className="text-xl font-extrabold text-gray-900 dark:text-white">
-                                 {parseFloat(rate.sell_rate).toFixed(2)}
+                                 {parseFloat(rate.rate).toFixed(2)}
                              </span>
                              <span className="text-xs text-gray-400 font-medium">/$</span>
                          </div>
@@ -157,6 +158,13 @@ export default function RatesTicker() {
                              <ArrowTrendingUpIcon className="w-3 h-3" />
                          </div>
                      )}
+                  </div>
+
+                  {/* Denomination Row */}
+                  <div className="mt-3 pt-2 border-t border-gray-50 dark:border-gray-800/50">
+                     <p className="text-[9px] text-gray-400 dark:text-gray-500 font-medium truncate italic" title={rate.denomination}>
+                       {rate.denomination}
+                     </p>
                   </div>
                </motion.div>
              );
