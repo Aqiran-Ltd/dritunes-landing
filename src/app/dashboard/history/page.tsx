@@ -23,7 +23,7 @@ import { fetchTrades, type TradeQueryParams } from '@/lib/tradeService';
 interface Trade {
   id: number;
   trade_number: string;
-  trade_type: 'buy' | 'sell';
+  trade_type: 'sell';
   asset_name: string;
   amount: string;
   rate_used: string;
@@ -37,7 +37,6 @@ export default function HistoryPage() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [tradeType, setTradeType] = useState<string>('');
   const [assetType, setAssetType] = useState<string>('');
   const [tradeStatus, setTradeStatus] = useState<string>('');
   const [paymentStatus, setPaymentStatus] = useState<string>('');
@@ -61,7 +60,6 @@ export default function HistoryPage() {
         page,
         per_page: pagination.perPage,
         search: searchTerm,
-        trade_type: tradeType || undefined,
         asset_type: assetType || undefined,
         trade_status: tradeStatus || undefined,
         payment_status: paymentStatus || undefined
@@ -94,7 +92,7 @@ export default function HistoryPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchTerm, tradeType, assetType, tradeStatus, paymentStatus]);
+  }, [searchTerm, assetType, tradeStatus, paymentStatus]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -127,11 +125,6 @@ export default function HistoryPage() {
   };
 
   const filterOptions = {
-    tradeType: [
-      { id: 'all', name: 'All Types' },
-      { id: 'buy', name: 'Buy' },
-      { id: 'sell', name: 'Sell' }
-    ],
     assetType: [
       { id: 'all', name: 'All Assets' },
       { id: 'crypto', name: 'Crypto' },
@@ -174,15 +167,6 @@ export default function HistoryPage() {
       <div className="bg-white dark:bg-gray-900 p-4 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-wrap gap-4 items-end">
           <div className="w-full sm:w-44">
               <Select 
-                  label="Trade Type"
-                  options={filterOptions.tradeType}
-                  value={filterOptions.tradeType.find(o => o.id === (tradeType || 'all')) || null}
-                  onChange={(o) => setTradeType(String(o.id) === 'all' ? '' : String(o.id))}
-                  className="!space-y-1"
-              />
-          </div>
-          <div className="w-full sm:w-44">
-              <Select 
                   label="Asset Class"
                   options={filterOptions.assetType}
                   value={filterOptions.assetType.find(o => o.id === (assetType || 'all')) || null}
@@ -211,7 +195,6 @@ export default function HistoryPage() {
           
           <button 
             onClick={() => {
-                setTradeType('');
                 setAssetType('');
                 setTradeStatus('');
                 setPaymentStatus('');
@@ -268,13 +251,9 @@ export default function HistoryPage() {
                                     {trade.asset_name.replace(/_/g, ' ')}
                                 </td>
                                 <td className="px-6 py-4">
-                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest border ${
-                                        trade.trade_type === 'buy' 
-                                        ? 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-900/50'
-                                        : 'bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-900/50'
-                                    }`}>
-                                        {trade.trade_type === 'buy' ? <ArrowTrendingUpIcon className="w-3 h-3" /> : <ArrowTrendingDownIcon className="w-3 h-3" />}
-                                        {trade.trade_type.toUpperCase()}
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest border bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-900/50">
+                                        <ArrowTrendingDownIcon className="w-3 h-3" />
+                                        PAYOUT
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 text-gray-900 dark:text-white font-bold">
