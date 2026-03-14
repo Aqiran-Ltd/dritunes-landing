@@ -613,7 +613,29 @@
                             ]
                         },
                         "description": "Returns a summary of the user's wallet balance, trade counts, total volume, and recent transactions."
-                    }
+                    },
+                    "response": [
+                        {
+                            "name": "Dashboard Stats Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/dashboard/stats",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["dashboard", "stats"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                { "key": "Content-Type", "value": "application/json" }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"status\": true,\n    \"message\": \"Dashboard stats fetched successfully\",\n    \"data\": {\n        \"wallet_balance\": 1500.50,\n        \"pending_withdrawals\": 200.00,\n        \"total_trades\": 25,\n        \"pending_trades\": 2,\n        \"total_volume\": 5000.00,\n        \"recent_trades\": []\n    }\n}"
+                        }
+                    ]
                 }
             ]
         },
@@ -854,10 +876,37 @@
                             ],
                             "path": [
                                 "rates"
+                            ],
+                            "query": [
+                                { "key": "category", "value": "", "description": "Filter by category (gift_card, crypto)" },
+                                { "key": "type", "value": "", "description": "Filter by type (physical, ecode)" },
+                                { "key": "asset_name", "value": "", "description": "Filter by asset name (e.g. Bitcoin, iTunes)" }
                             ]
                         },
-                        "description": "Fetches current exchange rates."
-                    }
+                        "description": "Fetches current exchange rates for all assets. Note: The system now exclusively supports payouts (selling assets for GHC)."
+                    },
+                    "response": [
+                        {
+                            "name": "Rates List Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/rates",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["rates"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                { "key": "Content-Type", "value": "application/json" }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"status\": true,\n    \"message\": \"Rates fetched successfully\",\n    \"data\": [\n        {\n            \"id\": 106,\n            \"category\": \"gift_card\",\n            \"asset_name\": \"Asda\",\n            \"denomination\": \"100~500 (P)\",\n            \"country_code\": \"GB\",\n            \"type\": \"physical\",\n            \"rate\": \"9.88\",\n            \"source_rate\": \"10.28\",\n            \"ngn_physical_rate\": \"1243.10\",\n            \"ngn_ecode_rate\": null,\n            \"margin\": \"0.40\",\n            \"custom_margin\": null,\n            \"status\": \"active\",\n            \"created_by\": 1,\n            \"updated_by\": 1,\n            \"created_at\": \"2026-03-14T01:02:29.000000Z\",\n            \"updated_at\": \"2026-03-14T01:02:29.000000Z\"\n        }\n    ]\n}"
+                        }
+                    ]
                 },
                 {
                     "name": "Get Payment Methods",
@@ -1076,7 +1125,6 @@
                             "query": [
                                 { "key": "per_page", "value": "20", "description": "Number of results per page" },
                                 { "key": "search", "value": "", "description": "Search by trade_number or asset_name" },
-                                { "key": "trade_type", "value": "", "description": "Filter by trade_type (buy, sell)" },
                                 { "key": "asset_type", "value": "", "description": "Filter by asset_type (crypto, gift_card)" },
                                 { "key": "trade_status", "value": "", "description": "Filter by trade_status (pending, approved, rejected, disputed)" },
                                 { "key": "payment_status", "value": "", "description": "Filter by payment_status (pending, paid, failed)" }
@@ -1115,7 +1163,7 @@
                     }
                 },
                 {
-                    "name": "Create Trade (User Sells - Direct Payout)",
+                    "name": "Create Trade (Payout to Account)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -1132,7 +1180,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1148,11 +1196,37 @@
                                 "trades"
                             ]
                         },
-                        "description": "Create a trade where the User SELLS an asset to the Company with a Direct Payout to a saved account."
-                    }
+                        "description": "Create a trade where the User trades an asset for GHC with a Direct Payout to a saved account."
+                    },
+                    "response": [
+                        {
+                            "name": "Create Trade Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/trades",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["trades"]
+                                }
+                            },
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                { "key": "Content-Type", "value": "application/json" }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"status\": true,\n    \"message\": \"Trade created successfully\",\n    \"data\": {\n        \"id\": 1001,\n        \"trade_number\": \"TRD-12345678\",\n        \"reference\": \"DT-ABC-XYZ\",\n        \"asset_name\": \"Steam\",\n        \"amount\": 100,\n        \"payable_amount\": 988.00,\n        \"currency\": \"GHS\",\n        \"status\": \"pending\",\n        \"created_at\": \"2026-03-14T05:00:00.000000Z\"\n    }\n}"
+                        }
+                    ]
                 },
                 {
-                    "name": "Create Trade (User Sells - To Wallet)",
+                    "name": "Create Trade (Payout to Wallet)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -1169,7 +1243,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1185,45 +1259,34 @@
                                 "trades"
                             ]
                         },
-                        "description": "Create a trade where the User SELLS an asset to the Company and credits the balance to their Wallet."
-                    }
-                },
-                {
-                    "name": "Create Trade (User Buys)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "x-api-key",
-                                "value": "{{api_key}}",
-                                "type": "text"
+                        "description": "Create a trade where the User trades an asset for GHC and credits the balance to their Wallet."
+                    },
+                    "response": [
+                        {
+                            "name": "Create Trade Success (Wallet)",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/trades",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["trades"]
+                                }
                             },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"buy\",\n    \"asset_type\": \"crypto\",\n    \"asset_name\": \"BTC\",\n    \"payment_method_id\": 1,\n    \"user_notes\": \"Payment made via MoMo.\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/trades",
-                            "host": [
-                                "{{base_url}}"
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                { "key": "Content-Type", "value": "application/json" }
                             ],
-                            "path": [
-                                "trades"
-                            ]
-                        },
-                        "description": "Create a trade where the User BUYS an asset from the Company.\n\n**Required:** `payment_method_id` (The company account the user paid into)."
-                    }
+                            "cookie": [],
+                            "body": "{\n    \"status\": true,\n    \"message\": \"Trade created successfully\",\n    \"data\": {\n        \"id\": 1002,\n        \"trade_number\": \"TRD-87654321\",\n        \"reference\": \"DT-PQR-LMN\",\n        \"asset_name\": \"Steam\",\n        \"amount\": 100,\n        \"payable_amount\": 988.00,\n        \"currency\": \"GHS\",\n        \"status\": \"pending\",\n        \"created_at\": \"2026-03-14T05:05:00.000000Z\"\n    }\n}"
+                        }
+                    ]
                 }
             ]
         },
