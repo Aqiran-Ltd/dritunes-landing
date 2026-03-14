@@ -72,7 +72,7 @@ const getStorageBaseUrl = () => {
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:8000/storage';
   }
-  return 'https://dritunesconsult.com/storage';
+  return 'https://admin.dritunesconsult.com/storage';
 };
 
 const STORAGE_BASE_URL = getStorageBaseUrl();
