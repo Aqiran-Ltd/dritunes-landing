@@ -41,11 +41,6 @@ interface ApiRateItem {
   country_code: string;   // e.g. "GB"
   type: 'physical' | 'ecode';
   rate: string;           // The payout rate
-  source_rate: string;    // The base rate before margin
-  ngn_physical_rate: string | null;
-  ngn_ecode_rate: string | null;
-  margin: string;
-  custom_margin: string | null;
   status: string;
 }
 
@@ -58,28 +53,9 @@ interface ApiRatesResponse {
 
 // --- Helpers ---
 
-// Helper to clean up asset names (e.g., "Apple_US" -> "Apple")
+// Helper to clean up asset names (Keep exact naming as requested)
 const formatProductName = (assetName: string): string => {
-  return assetName.split('_')[0] || assetName;
-};
-
-// Helper to determine category group from asset name
-const getCategoryName = (assetName: string): string => {
-  const lower = assetName.toLowerCase();
-  if (lower.includes('apple') || lower.includes('itunes')) return 'Apple/iTunes';
-  if (lower.includes('steam')) return 'Steam';
-  if (lower.includes('google')) return 'Google Play';
-  if (lower.includes('amazon')) return 'Amazon';
-  if (lower.includes('xbox') || lower.includes('microsoft')) return 'Xbox';
-  if (lower.includes('vanilla') || lower.includes('visa')) return 'Visa/Vanilla';
-  if (lower.includes('amex')) return 'American Express';
-  if (lower.includes('sephora')) return 'Sephora';
-  if (lower.includes('nordstrom')) return 'Nordstrom';
-  if (lower.includes('nike')) return 'Nike';
-  if (lower.includes('macys')) return 'Macy\'s';
-  if (lower.includes('ebay')) return 'eBay';
-  if (lower.includes('razer')) return 'Razer Gold';
-  return 'Other';
+  return assetName; // Keep exact naming
 };
 
 /**
@@ -101,15 +77,15 @@ export async function fetchRates(token?: string): Promise<RatesData> {
         groups[key] = {
           id: key, // Composite ID
           assetName: item.asset_name,
-          productName: formatProductName(item.asset_name),
+          productName: item.asset_name, // Exact name
           region: item.country_code,
           amount: item.denomination,
           rates: {
-            sourcePhysical: parseFloat(item.source_rate || '0'), 
+            sourcePhysical: parseFloat(item.rate || '0'), 
             ghsPhysical: 0,
             ghsEcode: 0,
-            ngnPhysical: parseFloat(item.ngn_physical_rate || '0'),
-            ngnEcode: parseFloat(item.ngn_ecode_rate || '0'),
+            ngnPhysical: 0, 
+            ngnEcode: 0, 
           },
           physicalId: item.type === 'physical' ? item.id : undefined,
           ecodeId: item.type === 'ecode' ? item.id : undefined,
@@ -122,11 +98,10 @@ export async function fetchRates(token?: string): Promise<RatesData> {
       if (item.type === 'physical') {
         groups[key].rates.ghsPhysical = rateVal;
         groups[key].physicalId = item.id;
-        if (groups[key].rates.sourcePhysical === 0) groups[key].rates.sourcePhysical = parseFloat(item.source_rate || '0');
+        groups[key].rates.sourcePhysical = rateVal;
       } else {
         groups[key].rates.ghsEcode = rateVal;
         groups[key].ecodeId = item.id;
-        if (groups[key].rates.sourcePhysical === 0) groups[key].rates.sourcePhysical = parseFloat(item.source_rate || '0');
       }
     });
 
@@ -134,11 +109,8 @@ export async function fetchRates(token?: string): Promise<RatesData> {
     const categoriesMap: Record<string, Category> = {};
 
     Object.values(groups).forEach(card => {
-        // Use the grouping helper to categorize
-        // We use the full asset name from the ID key to determine category
-        const originalAssetName = card.id.split('_')[0] + (card.id.split('_')[1] ? '_' + card.id.split('_')[1] : ''); 
-        // Actually, let's just use productName + known mappings
-        const catName = getCategoryName(card.productName + '_' + card.region);
+        // Use the exact assetName as the category name
+        const catName = card.assetName;
 
         if (!categoriesMap[catName]) {
             categoriesMap[catName] = {
