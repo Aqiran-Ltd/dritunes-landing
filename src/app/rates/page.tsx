@@ -60,6 +60,8 @@ export default function RatesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
 
   const sortOptions: SelectOption[] = [
     { id: "rate-high", name: "Rate: High to Low" },
@@ -160,6 +162,9 @@ export default function RatesPage() {
     if (n.includes('xbox') || n.includes('microsoft')) return { icon: <GlobeAltIcon className="w-5 h-5" />, color: "from-green-700 to-green-900" };
     if (n.includes('sephora')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-red-600 to-red-800" };
     if (n.includes('amazon')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-yellow-600 to-yellow-800" };
+    if (n.includes('visa') || n.includes('vanilla')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-500 to-blue-700" };
+    if (n.includes('nike')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-orange-500 to-orange-700" };
+    if (n.includes('razer')) return { icon: <BoltIcon className="w-5 h-5" />, color: "from-green-500 to-green-700" };
     return { icon: <GiftIcon className="w-5 h-5" />, color: "from-purple-600 to-purple-800" };
   };
 
@@ -300,10 +305,18 @@ export default function RatesPage() {
 
   const resetFilters = () => {
     setSearchQuery("");
+    setCategorySearch("");
     setSelectedRegions(new Set());
     setShowUnavailable(false);
     setSortBy("rate-high");
   };
+
+  const filteredCategories = useMemo(() => {
+    if (!categorySearch.trim()) return categories;
+    return categories.filter(cat => 
+      cat.name.toLowerCase().includes(categorySearch.toLowerCase())
+    );
+  }, [categories, categorySearch]);
 
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-br from-[#f8fafc] via-yellow-50 to-red-100 dark:from-[#0a0a0a] dark:via-[#171717] dark:to-[#23272f]">
@@ -374,7 +387,7 @@ export default function RatesPage() {
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-lg border-2 border-yellow-200 dark:border-yellow-800 flex flex-wrap gap-4 justify-between items-center">
             <div className="flex gap-2">
               <span className="font-semibold text-gray-700 dark:text-gray-300 self-center">Currency:</span>
-              {(["RMB", "GHS", "NGN"] as Currency[]).map(c => (
+              {(["GHS"] as Currency[]).map(c => (
                 <button key={c} onClick={() => setSelectedCurrency(c)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${selectedCurrency === c ? "bg-yellow-400 text-gray-900 shadow-md" : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300"}`}>{c} {getCurrencySymbol(c)}</button>
               ))}
             </div>
@@ -404,6 +417,7 @@ export default function RatesPage() {
 
           <div className="w-full md:w-64">
             <Select
+              label="Sort By"
               options={sortOptions}
               value={activeSortOption}
               onChange={(opt) => setSortBy(opt.id as SortOption)}
@@ -411,9 +425,11 @@ export default function RatesPage() {
             />
           </div>
 
-          <button onClick={() => setShowFilters(!showFilters)} className={`px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-md transition-all cursor-pointer ${showFilters || selectedRegions.size > 0 ? "bg-yellow-400 text-gray-900" : "bg-white dark:bg-gray-800 border-2 border-yellow-300 dark:border-yellow-700 dark:text-gray-200"}`}>
-            <FunnelIcon className="w-5 h-5" /> Filters {selectedRegions.size > 0 && <span className="bg-red-500 text-white text-xs px-2 rounded-full">{selectedRegions.size}</span>}
-          </button>
+          <div className="flex items-end">
+            <button onClick={() => setShowFilters(!showFilters)} className={`px-6 py-3 rounded-full font-semibold flex items-center gap-2 shadow-md transition-all cursor-pointer ${showFilters || selectedRegions.size > 0 ? "bg-yellow-400 text-gray-900" : "bg-white dark:bg-gray-800 border-2 border-yellow-300 dark:border-yellow-700 dark:text-gray-200"}`}>
+              <FunnelIcon className="w-5 h-5" /> Filters {selectedRegions.size > 0 && <span className="bg-red-500 text-white text-xs px-2 rounded-full">{selectedRegions.size}</span>}
+            </button>
+          </div>
         </div>
 
         {/* Active Filters Panel */}
@@ -430,22 +446,124 @@ export default function RatesPage() {
           )}
         </AnimatePresence>
 
-        {/* Dynamic Category Tabs */}
+        {/* Dynamic Category Tabs / Selector */}
         {!searchQuery && categories.length > 0 && (
-          <div className="w-full max-w-6xl mx-auto mb-8 relative z-10">
-            <div className="flex flex-wrap justify-center gap-4">
-              {categories.map(cat => {
+          <div className="w-full max-w-6xl mx-auto mb-8 relative z-10 px-2 lg:px-0">
+            <div className="flex items-center justify-between mb-4">
+              <button 
+                onClick={() => setShowCategoryModal(true)}
+                className="text-sm font-bold text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors uppercase tracking-wider"
+              >
+                View All {categories.length} Assets
+              </button>
+            </div>
+            
+            <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar mask-fade-right">
+              {categories.slice(0, 10).map(cat => {
                 const style = getCategoryStyle(cat.name);
+                const isActive = activeCategoryName === cat.name;
                 return (
-                  <motion.button key={cat.name} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => { setActiveCategoryName(cat.name); setExpandedRegions(new Set()); setSelectedRegions(new Set()); }}
-                    className={`px-6 py-3 rounded-full font-bold text-lg transition-all shadow-lg flex items-center gap-2 cursor-pointer ${activeCategoryName === cat.name ? `bg-gradient-to-r ${style.color} text-white` : "bg-white dark:bg-gray-800 border-2 border-gray-200"}`}>
+                  <motion.button 
+                    key={cat.name} 
+                    whileHover={{ scale: 1.02 }} 
+                    whileTap={{ scale: 0.98 }} 
+                    onClick={() => { setActiveCategoryName(cat.name); setExpandedRegions(new Set()); setSelectedRegions(new Set()); }}
+                    className={`whitespace-nowrap px-6 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer border-2 ${
+                      isActive 
+                        ? `bg-gradient-to-r ${style.color} text-white border-transparent` 
+                        : "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-red-200 dark:hover:border-red-900"
+                    }`}
+                  >
                     {style.icon} {cat.name}
                   </motion.button>
                 );
               })}
+              <button 
+                onClick={() => setShowCategoryModal(true)}
+                className="whitespace-nowrap px-6 py-2.5 rounded-xl font-bold bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 hover:border-red-400 hover:text-red-500 transition-all shadow-sm"
+              >
+                + More Assets
+              </button>
             </div>
           </div>
         )}
+
+        {/* Category Selection Modal */}
+        <AnimatePresence>
+          {showCategoryModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }}
+                onClick={() => setShowCategoryModal(false)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+              />
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="relative bg-white dark:bg-gray-900 w-full max-w-4xl max-h-[85vh] rounded-[2rem] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col"
+              >
+                <div className="p-8 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-black text-gray-900 dark:text-white">All Trading Assets</h2>
+                    <button onClick={() => setShowCategoryModal(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                      <XMarkIcon className="w-8 h-8 text-gray-400" />
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
+                    <input 
+                      type="text" 
+                      value={categorySearch}
+                      onChange={(e) => setCategorySearch(e.target.value)}
+                      placeholder="Find a brand (e.g. Steam, Apple, Nike...)"
+                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 text-lg font-medium"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {filteredCategories.map(cat => {
+                      const style = getCategoryStyle(cat.name);
+                      const isActive = activeCategoryName === cat.name;
+                      return (
+                        <button
+                          key={cat.name}
+                          onClick={() => {
+                            setActiveCategoryName(cat.name);
+                            setExpandedRegions(new Set());
+                            setSelectedRegions(new Set());
+                            setShowCategoryModal(false);
+                          }}
+                          className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 group ${
+                            isActive 
+                              ? `bg-gray-50 dark:bg-gray-800 border-red-500 ring-4 ring-red-500/10` 
+                              : "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 hover:border-red-400 hover:shadow-lg hover:y-[-2px]"
+                          }`}
+                        >
+                          <div className={`p-4 rounded-2xl bg-gradient-to-br ${style.color} text-white shadow-lg shadow-black/5 group-hover:scale-110 transition-transform [&>svg]:w-8 [&>svg]:h-8`}>
+                            {style.icon}
+                          </div>
+                          <span className={`font-bold text-sm text-center ${isActive ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}>
+                            {cat.name}
+                          </span>
+                        </button>
+                      );
+                    })}
+                    {filteredCategories.length === 0 && (
+                      <div className="col-span-full py-12 text-center">
+                        <p className="text-gray-500 dark:text-gray-400 text-lg">No assets found matching &quot;{categorySearch}&quot;</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Results List */}
         <div className="w-full max-w-6xl mx-auto relative z-10 pb-20">

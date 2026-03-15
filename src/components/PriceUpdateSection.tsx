@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -6,8 +6,16 @@ import {
   ArrowPathIcon,
   CalculatorIcon,
   BoltIcon,
-  ChatBubbleLeftEllipsisIcon
+  ChatBubbleLeftEllipsisIcon,
+  DevicePhoneMobileIcon,
+  ShoppingBagIcon,
+  GlobeAltIcon,
+  GiftIcon,
+  ArrowRightIcon,
+  FireIcon,
+  MagnifyingGlassIcon
 } from "@heroicons/react/24/outline";
+import { Select, type SelectOption } from '@/components/ui/Select';
 import { useRouter } from "next/navigation";
 import { Category } from "@/lib/ratesService";
 import { parseAmountRule, validateAmount, getHelperText } from "@/lib/validation";
@@ -101,7 +109,6 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
     const rate = selectedType === "physical"
       ? (activeCard.rates.ghsPhysical || 0)
       : (activeCard.rates.ghsEcode || 0);
-
     return {
       currentRate: rate,
       calculatedValue: validation.isValid ? (amt * rate) : 0,
@@ -110,6 +117,42 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
       validationHelper: helper
     };
   }, [activeCard, selectedType, amount]);
+
+  // -- Helpers --
+  const getCategoryStyle = (name: string) => {
+    const n = (name || "").toLowerCase();
+    if (n.includes('apple') || n.includes('itunes')) return { icon: <DevicePhoneMobileIcon className="w-5 h-5" />, color: "from-gray-600 to-gray-800" };
+    if (n.includes('steam')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-600 to-blue-800" };
+    if (n.includes('google')) return { icon: <GlobeAltIcon className="w-5 h-5" />, color: "from-green-600 to-green-800" };
+    if (n.includes('xbox') || n.includes('microsoft')) return { icon: <GlobeAltIcon className="w-5 h-5" />, color: "from-green-700 to-green-900" };
+    if (n.includes('sephora')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-red-600 to-red-800" };
+    if (n.includes('amazon')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-yellow-600 to-yellow-800" };
+    if (n.includes('visa') || n.includes('vanilla')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-500 to-blue-700" };
+    if (n.includes('nike')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-orange-500 to-orange-700" };
+    if (n.includes('razer')) return { icon: <BoltIcon className="w-5 h-5" />, color: "from-green-500 to-green-700" };
+    return { icon: <GiftIcon className="w-5 h-5" />, color: "from-purple-600 to-purple-800" };
+  };
+
+  const categoryOptions: SelectOption[] = useMemo(() => {
+    return initialCategories.map(c => ({
+      id: c.name,
+      name: c.name,
+      icon: getCategoryStyle(c.name).icon
+    }));
+  }, [initialCategories]);
+
+  const regionOptions: SelectOption[] = useMemo(() => {
+    return activeRegions.map(r => ({ id: r, name: r }));
+  }, [activeRegions]);
+
+  const cardOptions: SelectOption[] = useMemo(() => {
+    return availableCards.map((c, i) => ({ id: String(i), name: c.amount }));
+  }, [availableCards]);
+
+  const typeOptions: SelectOption[] = [
+    { id: 'physical', name: 'Physical Card' },
+    { id: 'ecode', name: 'E-Code' }
+  ];
 
   // -- WhatsApp Action -- //
   const handleTrade = () => {
@@ -137,7 +180,8 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
         }
       });
     });
-    return list.sort(() => 0.5 - Math.random()).slice(0, 20);
+    // Return first 30 rates stably to prevent hydration mismatch
+    return list.slice(0, 30);
   }, [initialCategories]);
 
   return (
@@ -179,81 +223,43 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
 
               {/* Categories & Regions Row */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</label>
-                  <div className="relative">
-                    <select
-                      value={selectedCatName}
-                      onChange={(e) => setSelectedCatName(e.target.value)}
-                      className="w-full appearance-none bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all cursor-pointer truncate pr-8"
-                    >
-                      {initialCategories.length === 0 && <option>Loading...</option>}
-                      {initialCategories.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                  </div>
+                <div className="relative group">
+                  <Select
+                    label="Category"
+                    options={categoryOptions}
+                    value={selectedCatName ? categoryOptions.find(opt => opt.id === selectedCatName) || null : null}
+                    onChange={(opt) => setSelectedCatName(opt.id as string)}
+                    searchable
+                    placeholder="e.g. Steam, Apple..."
+                  />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Region</label>
-                  <div className="relative">
-                    <select
-                      value={selectedRegion}
-                      onChange={(e) => setSelectedRegion(e.target.value)}
-                      className="w-full appearance-none bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all cursor-pointer truncate pr-8"
-                      disabled={!activeCategory}
-                    >
-                      {activeRegions.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                  </div>
-                </div>
+                <Select
+                  label="Region"
+                  options={regionOptions}
+                  value={selectedRegion ? { id: selectedRegion, name: selectedRegion } : null}
+                  onChange={(opt) => setSelectedRegion(opt.id as string)}
+                  placeholder="Select Region"
+                />
               </div>
 
               {/* Card Option & Type Row */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Card Amount</label>
-                  <div className="relative">
-                    <select
-                      value={selectedCardId}
-                      onChange={(e) => setSelectedCardId(Number(e.target.value))}
-                      className="w-full appearance-none bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all cursor-pointer truncate pr-8"
-                      disabled={!selectedRegion}
-                    >
-                      {availableCards.map((card, idx) => (
-                        <option key={idx} value={idx}>
-                          {card.amount || "Any Amount"}
-                        </option>
-                      ))}
-                      {availableCards.length === 0 && <option value={-1}>No cards</option>}
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                  </div>
-                </div>
+                <Select
+                  label="Card Amount"
+                  options={cardOptions}
+                  value={selectedCardId >= 0 && cardOptions[selectedCardId] ? cardOptions[selectedCardId] : null}
+                  onChange={(opt) => setSelectedCardId(Number(opt.id))}
+                  placeholder="Select Amount"
+                  disabled={!selectedRegion}
+                />
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</label>
-                  <div className="relative">
-                    <select
-                      value={selectedType}
-                      onChange={(e) => setSelectedType(e.target.value as "physical" | "ecode")}
-                      className="w-full appearance-none bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all cursor-pointer truncate pr-8"
-                    >
-                      <option value="physical">Physical Card</option>
-                      <option value="ecode">E-Code</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                  </div>
-                </div>
+                <Select
+                  label="Type"
+                  options={typeOptions}
+                  value={selectedType === "physical" ? typeOptions[0] : typeOptions[1]}
+                  onChange={(opt) => setSelectedType(opt.id as "physical" | "ecode")}
+                />
               </div>
 
               {/* Amount Input */}
