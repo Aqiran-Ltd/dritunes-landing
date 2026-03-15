@@ -1,4 +1,5 @@
 "use client";
+import React, { useState, useEffect } from "react";
 
 import { motion } from "framer-motion";
 import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
@@ -8,6 +9,11 @@ import Link from "next/link";
 
 export default function HeroSection() {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-red-50 to-red-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">
@@ -64,7 +70,7 @@ export default function HeroSection() {
         >
           <div className="relative w-32 h-32 mx-auto mb-6">
             <Image
-              src={resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+              src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
               alt="Dr iTunes Logo"
               fill
               className="object-contain drop-shadow-2xl"

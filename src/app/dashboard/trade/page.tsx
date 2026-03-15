@@ -18,7 +18,11 @@ import {
   PhotoIcon,
   XCircleIcon,
   WalletIcon,
-  CheckIcon
+  CheckIcon,
+  DevicePhoneMobileIcon,
+  ShoppingBagIcon,
+  GlobeAltIcon,
+  GiftIcon
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
@@ -80,6 +84,21 @@ export default function TradePage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+
+  // -- Helpers --
+  const getCategoryStyle = (name: string) => {
+    const n = (name || "").toLowerCase();
+    if (n.includes('apple') || n.includes('itunes')) return { icon: <DevicePhoneMobileIcon className="w-5 h-5" />, color: "from-gray-600 to-gray-800" };
+    if (n.includes('steam')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-600 to-blue-800" };
+    if (n.includes('google')) return { icon: <GlobeAltIcon className="w-5 h-5" />, color: "from-green-600 to-green-800" };
+    if (n.includes('xbox') || n.includes('microsoft')) return { icon: <GlobeAltIcon className="w-5 h-5" />, color: "from-green-700 to-green-900" };
+    if (n.includes('sephora')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-red-600 to-red-800" };
+    if (n.includes('amazon')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-yellow-600 to-yellow-800" };
+    if (n.includes('visa') || n.includes('vanilla')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-500 to-blue-700" };
+    if (n.includes('nike')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-orange-500 to-orange-700" };
+    if (n.includes('razer')) return { icon: <BoltIcon className="w-5 h-5" />, color: "from-green-500 to-green-700" };
+    return { icon: <GiftIcon className="w-5 h-5" />, color: "from-purple-600 to-purple-800" };
+  };
 
   // -- Fetch Data --
   useEffect(() => {
@@ -235,11 +254,19 @@ export default function TradePage() {
                   </h3>
                   
                   <div className="space-y-4">
-                      <div>
+                       <div>
                           <Select
                             label="Category"
-                            options={categories.map(c => ({ id: c.name, name: c.name }))}
-                            value={selectedCatName ? { id: selectedCatName, name: selectedCatName } : null}
+                            options={categories.map(c => ({ 
+                              id: c.name, 
+                              name: c.name,
+                              icon: getCategoryStyle(c.name).icon
+                            }))}
+                            value={selectedCatName ? { 
+                              id: selectedCatName, 
+                              name: selectedCatName,
+                              icon: getCategoryStyle(selectedCatName).icon
+                            } : null}
                             onChange={(opt) => setSelectedCatName(opt.name)}
                             searchable
                           />
@@ -248,22 +275,23 @@ export default function TradePage() {
                       <div className="grid grid-cols-2 gap-4">
                           <div>
                               <Select
-                                label="Region"
-                                options={activeRegions.map(r => ({ id: r, name: r }))}
-                                value={selectedRegion ? { id: selectedRegion, name: selectedRegion } : null}
-                                onChange={(opt) => setSelectedRegion(opt.name)}
-                              />
+                            label="Region"
+                            options={activeRegions.map(r => ({ id: r, name: r }))}
+                            value={selectedRegion ? { id: selectedRegion, name: selectedRegion } : null}
+                            onChange={(opt) => setSelectedRegion(opt.id as string)}
+                            placeholder="Select Region"
+                          />
                           </div>
                           <div>
                               <Select
-                                label="Type"
-                                options={[
-                                    { id: 'physical', name: 'Physical Card' },
-                                    { id: 'ecode', name: 'E-Code' }
-                                ]}
-                                value={selectedType === 'physical' ? { id: 'physical', name: 'Physical Card' } : { id: 'ecode', name: 'E-Code' }}
-                                onChange={(opt) => setSelectedType(opt.id as any)}
-                              />
+                            label="Type"
+                            options={[
+                                { id: 'physical', name: 'Physical Card' },
+                                { id: 'ecode', name: 'E-Code' }
+                            ]}
+                            value={selectedType === 'physical' ? { id: 'physical', name: 'Physical Card' } : { id: 'ecode', name: 'E-Code' }}
+                            onChange={(opt) => setSelectedType(opt.id as 'physical' | 'ecode')}
+                          />
                           </div>
                       </div>
 
@@ -272,7 +300,9 @@ export default function TradePage() {
                             label="Card Amount on Label"
                             options={availableCards.map((c, i) => ({ id: i, name: c.amount }))}
                             value={selectedCardId >= 0 && availableCards[selectedCardId] ? { id: selectedCardId, name: availableCards[selectedCardId].amount } : null}
-                            onChange={(opt) => setSelectedCardId(opt.id as number)}
+                            onChange={(opt) => setSelectedCardId(Number(opt.id))}
+                            placeholder="Select Amount"
+                            disabled={!selectedRegion}
                           />
                       </div>
 

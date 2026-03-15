@@ -20,9 +20,14 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,7 +64,7 @@ export default function Navigation() {
           >
             <div className="relative w-12 h-12 lg:w-14 lg:h-14">
               <Image
-                src={resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+                src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                 alt="Dr iTunes Logo"
                 fill
                 className="object-contain"
@@ -110,7 +115,7 @@ export default function Navigation() {
               whileTap={{ scale: 0.95 }}
               className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
             >
-              {resolvedTheme === 'dark' ? (
+              {mounted && resolvedTheme === 'dark' ? (
                 <SunIcon className="h-5 w-5" />
               ) : (
                 <MoonIcon className="h-5 w-5" />
@@ -203,7 +208,7 @@ export default function Navigation() {
               whileTap={{ scale: 0.95 }}
               className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
             >
-              {resolvedTheme === 'dark' ? (
+              {mounted && resolvedTheme === 'dark' ? (
                 <SunIcon className="h-5 w-5" />
               ) : (
                 <MoonIcon className="h-5 w-5" />

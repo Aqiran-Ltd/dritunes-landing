@@ -1,8 +1,8 @@
 {
     "info": {
-        "_postman_id": "dritunes-api-v2.1",
-        "name": "Dritunes Admin/Mobile API",
-        "description": "# Dritunes API Documentation\n\nThis collection contains all API endpoints for the Dritunes platform, including Authentication, User Management, KYC, Trades, and Public services.\n\n## Authentication\nAuthentication is handled via **Laravel Sanctum**. \n- **Register/Login** endpoints return a Bearer Token.\n- This token is automatically saved to the collection variable `access_token` by the tests scripts in this collection.\n- Protected endpoints automatically use this token.\n\n## Global Headers\nAll requests must include:\n- `Accept: application/json`\n- `x-api-key: {{api_key}}` (Middleware Security)",
+        "_postman_id": "dritunes-consult-api-v2.1",
+        "name": "Dr iTunes Consult Admin/Mobile API",
+        "description": "# Dr iTunes Consult API Documentation\n\nThis collection contains all API endpoints for the Dr iTunes Consult platform, including Authentication, User Management, KYC, Trades, and Public services.\n\n## Authentication\nAuthentication is handled via **Laravel Sanctum**. \n- **Register/Login** endpoints return a Bearer Token.\n- This token is automatically saved to the collection variable `access_token` by the tests scripts in this collection.\n- Protected endpoints automatically use this token.\n\n## Global Headers\nAll requests must include:\n- `Accept: application/json`\n- `x-api-key: {{api_key}}` (Middleware Security)",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "variable": [
@@ -854,9 +854,14 @@
                             ],
                             "path": [
                                 "rates"
+                            ],
+                            "query": [
+                                { "key": "category", "value": "", "description": "Filter by category (gift_card, crypto)" },
+                                { "key": "type", "value": "", "description": "Filter by type (physical, ecode)" },
+                                { "key": "asset_name", "value": "", "description": "Search by asset name (e.g. Steam, iTunes)" }
                             ]
                         },
-                        "description": "Fetches current exchange rates."
+                        "description": "Fetches current exchange rates. \n\n### Response Structure:\n- **id**: Internal ID\n- **category**: `gift_card` or `crypto`\n- **asset_name**: Normalized platform name (e.g., Steam, iTunes)\n- **denomination**: Card value or range (e.g., 50 fixed, 10-500)\n- **country_code**: ISO 2-letter country code (US, GB, CA, EU, etc.)\n- **type**: `physical` or `ecode`\n- **rate**: Current buying rate in GHS\n- **source_rate**: Base rate from the source sheet\n- **ngn_physical_rate**: NGN rate for physical cards (if applicable)\n- **ngn_ecode_rate**: NGN rate for E-codes (if applicable)\n- **notes**: Specific spending conditions or time requirements (e.g., \"Need 2H spending\")"
                     }
                 },
                 {
@@ -1076,7 +1081,6 @@
                             "query": [
                                 { "key": "per_page", "value": "20", "description": "Number of results per page" },
                                 { "key": "search", "value": "", "description": "Search by trade_number or asset_name" },
-                                { "key": "trade_type", "value": "", "description": "Filter by trade_type (buy, sell)" },
                                 { "key": "asset_type", "value": "", "description": "Filter by asset_type (crypto, gift_card)" },
                                 { "key": "trade_status", "value": "", "description": "Filter by trade_status (pending, approved, rejected, disputed)" },
                                 { "key": "payment_status", "value": "", "description": "Filter by payment_status (pending, paid, failed)" }
@@ -1115,7 +1119,7 @@
                     }
                 },
                 {
-                    "name": "Create Trade (User Sells - Direct Payout)",
+                    "name": "Create Trade (Payout to Account)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -1132,7 +1136,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1148,11 +1152,11 @@
                                 "trades"
                             ]
                         },
-                        "description": "Create a trade where the User SELLS an asset to the Company with a Direct Payout to a saved account."
+                        "description": "Create a trade where the User trades an asset for GHC with a Direct Payout to a saved account."
                     }
                 },
                 {
-                    "name": "Create Trade (User Sells - To Wallet)",
+                    "name": "Create Trade (Payout to Wallet)",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -1169,7 +1173,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"sell\",\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1185,44 +1189,7 @@
                                 "trades"
                             ]
                         },
-                        "description": "Create a trade where the User SELLS an asset to the Company and credits the balance to their Wallet."
-                    }
-                },
-                {
-                    "name": "Create Trade (User Buys)",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "x-api-key",
-                                "value": "{{api_key}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"trade_type\": \"buy\",\n    \"asset_type\": \"crypto\",\n    \"asset_name\": \"BTC\",\n    \"payment_method_id\": 1,\n    \"user_notes\": \"Payment made via MoMo.\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/trades",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "trades"
-                            ]
-                        },
-                        "description": "Create a trade where the User BUYS an asset from the Company.\n\n**Required:** `payment_method_id` (The company account the user paid into)."
+                        "description": "Create a trade where the User trades an asset for GHC and credits the balance to their Wallet."
                     }
                 }
             ]
@@ -1582,6 +1549,124 @@
                         "description": "Logs a frontend event to the audit trail."
                     },
                     "response": []
+                }
+            ]
+        },
+        {
+            "name": "Rate History",
+            "description": "Paginated log of every rate change. Requires authentication.",
+            "item": [
+                {
+                    "name": "Get Rate History",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "x-api-key", "value": "{{api_key}}", "type": "text" },
+                            { "key": "Accept", "value": "application/json", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/rates/history",
+                            "host": ["{{base_url}}"],
+                            "path": ["rates", "history"],
+                            "query": [
+                                { "key": "asset_name", "value": "", "description": "Partial match on asset name (e.g. Amazon)" },
+                                { "key": "category", "value": "", "description": "gift_card | crypto" },
+                                { "key": "action", "value": "", "description": "created | updated" },
+                                { "key": "rate_id", "value": "", "description": "Filter by specific rate ID" },
+                                { "key": "from", "value": "", "description": "Start date (YYYY-MM-DD)" },
+                                { "key": "to", "value": "", "description": "End date (YYYY-MM-DD)" },
+                                { "key": "per_page", "value": "20", "description": "Results per page (max 100)" }
+                            ]
+                        },
+                        "description": "Returns a paginated log of all rate changes. Supports filtering by asset, category, action, rate ID, and date range."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Analytics & Trends",
+            "description": "Chart-ready analytics endpoints for the dashboard. All require authentication.",
+            "item": [
+                {
+                    "name": "Trade Summary",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "x-api-key", "value": "{{api_key}}", "type": "text" },
+                            { "key": "Accept", "value": "application/json", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/trends/summary",
+                            "host": ["{{base_url}}"],
+                            "path": ["trends", "summary"],
+                            "query": [
+                                { "key": "days", "value": "30", "description": "Lookback window in days (default 30, max 365)" }
+                            ]
+                        },
+                        "description": "Returns quick-stat KPIs for a summary card row: total trades, volume (GHS), pending/declined counts, and % change vs. the previous equivalent window. Also returns the user's top asset."
+                    }
+                },
+                {
+                    "name": "Trade Volume Chart",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "x-api-key", "value": "{{api_key}}", "type": "text" },
+                            { "key": "Accept", "value": "application/json", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/trends/volume",
+                            "host": ["{{base_url}}"],
+                            "path": ["trends", "volume"],
+                            "query": [
+                                { "key": "days", "value": "30", "description": "7 | 14 | 30 | 90 | 365 (default 30)" },
+                                { "key": "metric", "value": "volume", "description": "volume (GHS payout) | count (# of trades)" }
+                            ]
+                        },
+                        "description": "Returns daily approved trade volume or count as a continuous date series (missing days = 0). Ideal for a line or bar chart. Response includes `labels` (dates) and a `dataset` object."
+                    }
+                },
+                {
+                    "name": "Asset Distribution Chart",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "x-api-key", "value": "{{api_key}}", "type": "text" },
+                            { "key": "Accept", "value": "application/json", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/trends/distribution",
+                            "host": ["{{base_url}}"],
+                            "path": ["trends", "distribution"],
+                            "query": [
+                                { "key": "days", "value": "30", "description": "Lookback window (default 30, max 365)" },
+                                { "key": "asset_type", "value": "", "description": "crypto | gift_card (omit for all)" }
+                            ]
+                        },
+                        "description": "Returns per-asset trade counts and total payouts. Ideal for a pie or doughnut chart. Response includes `labels`, `dataset.counts`, `dataset.payouts`, and a full `breakdown` array."
+                    }
+                },
+                {
+                    "name": "Rate Trend Chart",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "x-api-key", "value": "{{api_key}}", "type": "text" },
+                            { "key": "Accept", "value": "application/json", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/trends/rates?asset_name=Amazon",
+                            "host": ["{{base_url}}"],
+                            "path": ["trends", "rates"],
+                            "query": [
+                                { "key": "asset_name", "value": "Amazon", "description": "Required. Partial asset name match." },
+                                { "key": "category", "value": "", "description": "gift_card | crypto (optional)" },
+                                { "key": "days", "value": "30", "description": "Lookback window (default 30, max 365)" },
+                                { "key": "granularity", "value": "day", "description": "day (default) | hour" }
+                            ]
+                        },
+                        "description": "Returns avg/min/max rate history points for a specific asset from the rate_histories table. Ideal for a line chart showing price movement. Also returns the current live rate(s) for the asset."
+                    }
                 }
             ]
         }

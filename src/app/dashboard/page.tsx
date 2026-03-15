@@ -6,16 +6,17 @@ import {
   ArrowTrendingUpIcon, 
   ArrowTrendingDownIcon,
   ClockIcon, 
-  ShieldCheckIcon,
+  ChartBarIcon,
   WalletIcon,
-  CurrencyDollarIcon,
   ChevronRightIcon
 } from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api';
 import RatesTicker from '@/components/dashboard/RatesTicker';
 import QuickActions from '@/components/dashboard/QuickActions';
 import { VerificationStatus } from '@/components/auth/VerificationStatus';
+import TrendsSummaryCards from '@/components/dashboard/TrendsSummaryCards';
+import VolumeChart from '@/components/dashboard/VolumeChart';
+import AssetDistributionChart from '@/components/dashboard/AssetDistributionChart';
 import Link from 'next/link';
 
 export default function DashboardPage() {
@@ -122,6 +123,34 @@ export default function DashboardPage() {
       <div className="space-y-4">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Quick Actions</h2>
           <QuickActions />
+      </div>
+
+      {/* Analytics & Trends */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <ChartBarIcon className="w-5 h-5 text-red-600 dark:text-red-500" />
+            </span>
+            Analytics &amp; Trends
+          </h2>
+          <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-1 rounded-full border border-gray-100 dark:border-gray-800">
+            Last 30 days
+          </span>
+        </div>
+
+        {/* KPI Summary Cards */}
+        <TrendsSummaryCards days={30} />
+
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <VolumeChart />
+          </div>
+          <div className="lg:col-span-1">
+            <AssetDistributionChart />
+          </div>
+        </div>
       </div>
 
       {/* Recent Activity */}

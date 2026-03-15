@@ -1,4 +1,5 @@
 "use client";
+import React, { useState, useEffect } from "react";
 
 import { motion } from "framer-motion";
 import { 
@@ -13,6 +14,11 @@ import Link from "next/link";
 
 export default function StatsSection() {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const stats = [
     {
@@ -73,7 +79,7 @@ export default function StatsSection() {
           >
             <div className="relative w-6 h-6 mr-3">
               <Image
-                src={resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+                src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                 alt="Dr iTunes Logo"
                 fill
                 className="object-contain"

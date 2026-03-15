@@ -22,6 +22,7 @@ interface SelectProps {
   error?: string;
   className?: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 export function Select({
@@ -34,6 +35,7 @@ export function Select({
   error,
   className = '',
   icon: leadingIcon,
+  disabled = false,
 }: SelectProps) {
   const [query, setQuery] = useState('');
 
@@ -53,13 +55,14 @@ export function Select({
         </label>
       )}
 
-      <Listbox value={value ?? undefined} onChange={onChange}>
+      <Listbox value={value ?? undefined} onChange={onChange} disabled={disabled}>
         <div className="relative">
           <ListboxButton
             className={`
-              relative w-full cursor-pointer rounded-2xl py-3 pl-4 pr-10 text-left
+              relative w-full rounded-2xl py-3 pl-4 pr-10 text-left
               bg-gray-50 dark:bg-gray-900 
               border-2 transition-all duration-300 ease-out
+              ${disabled ? 'opacity-50 cursor-not-allowed grayscale-[0.5]' : 'cursor-pointer'}
               ${error 
                 ? 'border-red-500 focus:ring-red-200' 
                 : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:ring-4 focus:ring-red-500/10'

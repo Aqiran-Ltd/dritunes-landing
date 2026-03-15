@@ -19,14 +19,23 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 // Floating Particles Component
 const FloatingParticles = () => {
-  const particles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 4 + 2,
-    duration: Math.random() * 20 + 10,
-    delay: Math.random() * 5
-  }));
+  const [mounted, setMounted] = React.useState(false);
+  const [particles, setParticles] = React.useState<{id:number,x:number,y:number,size:number,duration:number,delay:number}[]>([]);
+
+  React.useEffect(() => {
+    setMounted(true);
+    const p = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      duration: Math.random() * 20 + 10,
+      delay: Math.random() * 5
+    }));
+    setParticles(p);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -42,7 +51,7 @@ const FloatingParticles = () => {
           }}
           animate={{
             y: [0, -100, 0],
-            x: [0, Math.random() * 50 - 25, 0],
+            x: [0, 25, 0],
             opacity: [0.6, 1, 0.6],
             scale: [1, 1.5, 1]
           }}
@@ -115,6 +124,11 @@ const ServiceCard = ({ service }: { service: Service }) => {
 
 export default function AboutPage() {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const services: Service[] = [
     {
@@ -231,7 +245,7 @@ export default function AboutPage() {
               className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0 mb-4 md:mb-0 drop-shadow-xl"
             >
               <Image
-                src={resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+                src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                 alt="Dr iTunes Logo"
                 fill
                 className="object-contain"
@@ -337,7 +351,7 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src="/logo/red-black.png"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                   alt="Dr iTunes Logo"
                   fill
                   className="object-contain"
@@ -454,7 +468,7 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src="/logo/red-black.png"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                   alt="Dr iTunes Logo"
                   fill
                   className="object-contain"
@@ -523,7 +537,7 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src="/logo/red-black.png"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                   alt="Dr iTunes Logo"
                   fill
                   className="object-contain"
@@ -632,7 +646,7 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src="/logo/red-black.png"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
                   alt="Dr iTunes Logo"
                   fill
                   className="object-contain"
