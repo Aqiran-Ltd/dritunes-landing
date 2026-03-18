@@ -191,6 +191,15 @@
                                 "type": "text"
                             }
                         ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"yourpassword\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
                         "url": {
                             "raw": "{{base_url}}/auth/delete",
                             "host": [
@@ -201,7 +210,7 @@
                                 "delete"
                             ]
                         },
-                        "description": "Permanently deletes the user account and revokes all tokens."
+                        "description": "Permanently deletes the user account. Requires the user to confirm their email and password."
                     }
                 },
                 {
@@ -1216,7 +1225,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"subscriber@example.com\"\n}",
+                            "raw": "{\n    \"email\": \"subscriber@example.com\",\n    \"name\": \"John Doe\",\n    \"phone\": \"+233200000000\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1233,7 +1242,105 @@
                                 "subscribe"
                             ]
                         },
-                        "description": "Subscribes a visitor to the newsletter."
+                        "description": "Subscribes a visitor to the newsletter. Now triggers a double opt-in verification email. The user will not be 'subscribed' (receiving bulk mail) until they click the link in the verification email."
+                    }
+                },
+                {
+                    "name": "Newsletter Verify",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/newsletter/verify?token=EXAMPLE_TOKEN&email=user@example.com",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "newsletter",
+                                "verify"
+                            ],
+                            "query": [
+                                { "key": "token", "value": "EXAMPLE_TOKEN" },
+                                { "key": "email", "value": "user@example.com" }
+                            ]
+                        },
+                        "description": "Verifies a newsletter subscription using the token sent via email."
+                    }
+                },
+                {
+                    "name": "Newsletter Unsubscribe",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/newsletter/unsubscribe?email=user@example.com",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "newsletter",
+                                "unsubscribe"
+                            ],
+                            "query": [
+                                { "key": "email", "value": "user@example.com" }
+                            ]
+                        },
+                        "description": "Unsubscribes a user from the newsletter."
+                    }
+                },
+                {
+                    "name": "Postmark Webhook",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"RecordType\": \"Bounce\",\n    \"Email\": \"bounced@example.com\",\n    \"Description\": \"The server was unable to deliver your message (hard bounce).\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/postmark/webhook",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "postmark",
+                                "webhook"
+                            ]
+                        },
+                        "description": "Internal endpoint for Postmark to report Bounces and Spam Complaints. This endpoint is public as it is triggered by Postmark services."
                     }
                 },
                 {

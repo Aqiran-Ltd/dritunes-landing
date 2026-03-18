@@ -59,7 +59,7 @@ export const api = {
   get: <T>(endpoint: string, token?: string) => request<T>(endpoint, { method: 'GET', token }),
   post: <T>(endpoint: string, body: any, token?: string) => request<T>(endpoint, { method: 'POST', body: JSON.stringify(body), token }),
   put: <T>(endpoint: string, body: any, token?: string) => request<T>(endpoint, { method: 'PUT', body: JSON.stringify(body), token }),
-  delete: <T>(endpoint: string, token?: string) => request<T>(endpoint, { method: 'DELETE', token }),
+  delete: <T>(endpoint: string, token?: string, body?: any) => request<T>(endpoint, { method: 'DELETE', ...(body ? { body: JSON.stringify(body) } : {}), token }),
   postForm: async <T>(endpoint: string, formData: FormData, token?: string): Promise<T> => {
     const requestHeaders: any = {
       'Accept': 'application/json',
