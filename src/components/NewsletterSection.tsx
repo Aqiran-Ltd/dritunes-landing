@@ -8,20 +8,41 @@ import {
   SparklesIcon,
   ShieldCheckIcon,
   ArrowTrendingUpIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  ExclamationCircleIcon
 } from "@heroicons/react/24/outline";
+import { api } from "@/lib/api";
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      await api.post("/newsletter/subscribe", {
+        name,
+        email,
+        phone
+      });
+      
       setIsSubscribed(true);
       setEmail("");
-      // Reset after 3 seconds
-      setTimeout(() => setIsSubscribed(false), 3000);
+      setName("");
+      setPhone("");
+      // Success message will stay visible
+    } catch (err: any) {
+      console.error("Newsletter subscription error:", err);
+      setError(err.message || "Something went wrong. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -110,6 +131,8 @@ export default function NewsletterSection() {
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
                   <input
                     type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your full name"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500/20 transition-all duration-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
@@ -132,6 +155,8 @@ export default function NewsletterSection() {
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Phone Number (Optional)</label>
                   <input
                     type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="Enter your phone number for SMS updates"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-500/20 transition-all duration-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
@@ -153,24 +178,48 @@ export default function NewsletterSection() {
                   whileHover={{ scale: 1.02, y: -3 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="group w-full px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center"
+                  disabled={isLoading}
+                  className={`group w-full px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  Subscribe to Newsletter
-                  <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                  {isLoading ? (
+                    <div className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Subscribing...
+                    </div>
+                  ) : (
+                    <>
+                      Subscribe to Newsletter
+                      <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                    </>
+                  )}
                 </motion.button>
               </form>
 
-              {/* Success Message */}
+              {/* Success & Error Messages */}
               <AnimatePresence>
                 {isSubscribed && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    className="mt-6 flex items-center justify-center text-green-600 dark:text-green-400"
+                    className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 rounded-xl flex items-center text-green-700 dark:text-green-300"
                   >
-                    <CheckCircleIcon className="w-5 h-5 mr-2" />
-                    <span className="font-medium">Successfully subscribed!</span>
+                    <CheckCircleIcon className="w-6 h-6 mr-3 flex-shrink-0" />
+                    <span className="font-medium text-sm">Please check your email to confirm your subscription!</span>
+                  </motion.div>
+                )}
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl flex items-center text-red-700 dark:text-red-300"
+                  >
+                    <ExclamationCircleIcon className="w-6 h-6 mr-3 flex-shrink-0" />
+                    <span className="font-medium text-sm">{error}</span>
                   </motion.div>
                 )}
               </AnimatePresence>
