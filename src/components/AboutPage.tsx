@@ -133,36 +133,36 @@ export default function AboutPage() {
   const services: Service[] = [
     {
       icon: CurrencyDollarIcon,
-      title: "Cryptocurrency & P2P Trading Education",
-      description: "Expert-led workshops, seminars, and one-on-one mentorship on trading via platforms like Binance, Kucoin, and Bybit.",
+      title: "Direct Payout Trading",
+      description: "Our core workflow enables instant liquidity. Trade your digital assets and receive GHS directly into your Mobile Money or Bank account in minutes.",
       gradient: "from-green-500 to-green-600",
       delay: 0.1
     },
     {
       icon: ComputerDesktopIcon,
-      title: "Tech & Digital Literacy Bootcamps",
-      description: "Practical ICT and coding sessions targeted at youth from rural and underserved communities in Northern Ghana.",
+      title: "Digital Literacy Bootcamps",
+      description: "We don't just trade; we transition. Practical ICT and coding sessions designed for the youth of Northern Ghana to thrive in the global gig economy.",
       gradient: "from-blue-500 to-blue-600",
       delay: 0.2
     },
     {
       icon: BuildingOfficeIcon,
-      title: "Business Digitalization Consulting",
-      description: "Tailored support for SMEs and startups looking to transition their operations online.",
+      title: "P2P & BlockChain Education",
+      description: "Master the art of peer-to-peer exchanges. We provide expert-led mentorship on navigating platforms like Binance and Kucoin safely.",
       gradient: "from-purple-500 to-purple-600",
       delay: 0.3
     },
     {
       icon: AcademicCapIcon,
-      title: "Web & Software Development",
-      description: "High-quality, secure web applications, e-learning platforms, digital portfolios, and database systems.",
+      title: "SME Digitalization",
+      description: "Helping local businesses in West Africa transition from paper-based operations to robust, digital-first workflows.",
       gradient: "from-orange-500 to-orange-600",
       delay: 0.4
     },
     {
       icon: GlobeAltIcon,
       title: "Community Innovation Hubs",
-      description: "Plans underway to launch innovation hubs and ICT labs to provide access to tools, internet, and training.",
+      description: "We are building physical labs across the north to provide high-speed internet, tools, and a collaborative space for tech dreamers.",
       gradient: "from-red-500 to-red-600",
       delay: 0.5
     }
@@ -294,14 +294,14 @@ export default function AboutPage() {
             className="max-w-4xl mx-auto mb-16"
           >
             <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-              Founded by visionary IT entrepreneur Alhassan Abdul-Hanan, popularly known as Dr. iTunes, 
-              Dr iTunes Consult (Global Limited) is a forward-thinking digital consultancy dedicated to 
-              empowering youth and businesses across Northern Ghana through education in digital innovation, 
-              cryptocurrency, and financial technologies.
+              Founded by visionary IT entrepreneur <span className="font-bold text-red-600 dark:text-red-400">Alhassan Abdul-Hanan</span>, popularly known as <span className="italic">Dr. iTunes</span>, 
+              Dr iTunes Consult (Global Limited) is more than a consultancy—it&apos;s a digital movement. 
+              We are dedicated to dismantling the digital divide in Northern Ghana by turning complex technologies into accessible tools for financial freedom.
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              Rooted in deep community values and futuristic thinking, the company is designed to bridge 
-              the gap between underprivileged regions and the rapidly evolving global digital economy.
+              From our instant payout trading workflows to our community-driven ICT bootcamps, we are 
+              reimagining how the West African youth engages with the global digital economy. 
+              Rooted in trust and powered by innovation, we bridge the gap between rural potential and global opportunity.
             </p>
           </motion.div>
         </div>
@@ -510,6 +510,86 @@ export default function AboutPage() {
               <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
             </motion.button>
           </motion.div>
+        </div>
+      </section>
+
+      {/* How We Work Section */}
+      <section className="py-24 px-4 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 relative overflow-hidden">
+        {/* Decorative background for the section */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-3xl md:text-5xl font-black mb-8 text-gray-900 dark:text-white leading-tight">
+                A Workflow <br />
+                <span className="text-red-600">Built on Trust</span>
+              </h2>
+              <div className="space-y-8">
+                {[
+                  {
+                    title: "Instant Liquidity",
+                    desc: "Whether it's crypto or gift cards, our direct payout system ensures you get your GHS in minutes, directly to your MoMo or Bank.",
+                    num: "01"
+                  },
+                  {
+                    title: "Secure Verification",
+                    desc: "Our multi-tier KYC process ensures every trade is legitimate and every user is protected by industry-standard encryption.",
+                    num: "02"
+                  },
+                  {
+                    title: "24/7 Human-Centric Support",
+                    desc: "Technology is our tool, but human connection is our priority. Our team is available round the clock for any assistance.",
+                    num: "03"
+                  }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-6 group">
+                    <span className="text-4xl font-black text-gray-200 dark:text-gray-800 shrink-0 group-hover:text-red-500/20 transition-colors duration-300">{item.num}</span>
+                    <div>
+                      <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-red-600 transition-colors duration-300">{item.title}</h4>
+                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="relative aspect-square bg-gradient-to-br from-red-50 to-red-100 dark:from-gray-800/50 dark:to-gray-900/50 rounded-3xl overflow-hidden flex items-center justify-center border border-red-200 dark:border-red-900/30 shadow-2xl"
+            >
+              <div className="absolute inset-0 bg-grid opacity-20" />
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                className="w-48 h-48 border-4 border-dashed border-red-500/20 rounded-full flex items-center justify-center"
+              >
+                <div className="w-32 h-32 border-4 border-dashed border-red-500/40 rounded-full" />
+              </motion.div>
+              <div className="absolute flex flex-col items-center">
+                <div className="relative w-32 h-32 mb-4 animate-pulse-slow">
+                  <Image
+                    src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
+                    alt="Dr iTunes Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <div className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-gray-100 dark:border-gray-700">
+                  <span className="text-xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Pioneering Progress</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

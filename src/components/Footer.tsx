@@ -329,6 +329,8 @@ export default function Footer() {
                 <a href="/terms" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Terms of Service</a>
                 <span className="text-gray-600">•</span>
                 <a href="/cookies" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Cookie Policy</a>
+                <span className="text-gray-600">•</span>
+                <a href="/auth/delete-account" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Delete Account</a>
               </div>
             </div>
             
