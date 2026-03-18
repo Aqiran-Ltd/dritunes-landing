@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import AboutPage from "@/components/AboutPage";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn about Dr iTunes Consult, Ghana's leading digital asset trading company. Our mission is to provide secure, fast, and reliable crypto and gift card exchange services.",
+};
 
 export default function About() {
   return (
