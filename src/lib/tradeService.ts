@@ -22,6 +22,7 @@ export interface TradePayload {
   payment_account_number?: string;  
   notes?: string;
   user_notes?: string;
+  denomination?: string;
   user_payment_details?: Record<string, any>;
   attachments?: File[]; // Array of attachment files
 }

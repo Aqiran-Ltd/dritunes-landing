@@ -42,11 +42,11 @@ export default function TradePage() {
   const [selectedCatName, setSelectedCatName] = useState<string>('');
   const [selectedRegion, setSelectedRegion] = useState<string>('');
   const [selectedCardId, setSelectedCardId] = useState<number>(-1);
-  const [selectedType, setSelectedType] = useState<'physical' | 'ecode'>('physical');
-  const [amount, setAmount] = useState<string>('100');
+  const [selectedType, setSelectedType] = useState<'physical' | 'ecode' | null>(null);
+  const [amount, setAmount] = useState<string>('');
   
   // -- Payout Details --
-  const [withdrawalPreference, setWithdrawalPreference] = useState<'wallet' | 'direct_payout'>('direct_payout');
+  const [withdrawalPreference, setWithdrawalPreference] = useState<'wallet' | 'direct_payout' | null>(null);
   const [selectedUserMethodId, setSelectedUserMethodId] = useState<number>(-1);
   
   // -- Attachment --
@@ -112,14 +112,9 @@ export default function TradePage() {
         ]);
         
         setCategories(ratesData.categories);
-        if (ratesData.categories.length > 0) setSelectedCatName(ratesData.categories[0].name);
         
         setCompanyPaymentMethods(paymentData);
         setUserPaymentMethods(userMethodsData);
-        
-        const defaultMethod = userMethodsData.find(m => m.is_default);
-        if (defaultMethod) setSelectedUserMethodId(defaultMethod.id);
-        else if (userMethodsData.length > 0) setSelectedUserMethodId(userMethodsData[0].id);
 
         fetchSocials().then(s => {
           if (s.whatsapp) setWhatsappLink(s.whatsapp);
@@ -134,6 +129,20 @@ export default function TradePage() {
     init();
   }, []);
 
+  // -- Auto-select settlement or deselect when switching --
+  useEffect(() => {
+    if (withdrawalPreference === 'direct_payout' && selectedUserMethodId === -1 && userPaymentMethods.length > 0) {
+      const defaultMethod = userPaymentMethods.find(m => m.is_default);
+      if (defaultMethod) {
+        setSelectedUserMethodId(defaultMethod.id);
+      } else {
+        setSelectedUserMethodId(userPaymentMethods[0].id);
+      }
+    } else if (withdrawalPreference === 'wallet' && selectedUserMethodId !== -1) {
+      setSelectedUserMethodId(-1);
+    }
+  }, [withdrawalPreference, userPaymentMethods, selectedUserMethodId]);
+
   // -- Derived Data Logic --
   const activeCategory = useMemo(() => categories.find(c => c.name === selectedCatName), [categories, selectedCatName]);
   
@@ -143,8 +152,8 @@ export default function TradePage() {
   }, [activeCategory]);
 
   useEffect(() => {
-    if (activeRegions.length > 0 && !activeRegions.includes(selectedRegion)) {
-        setSelectedRegion(activeRegions[0]);
+    if (activeRegions.length > 0 && selectedRegion && !activeRegions.includes(selectedRegion)) {
+        setSelectedRegion('');
     }
   }, [activeRegions, selectedRegion]);
 
@@ -154,8 +163,7 @@ export default function TradePage() {
   }, [activeCategory, selectedRegion]);
 
   useEffect(() => {
-     if (availableCards.length > 0) setSelectedCardId(0);
-     else setSelectedCardId(-1);
+     setSelectedCardId(-1);
   }, [availableCards]);
 
   const activeCard = useMemo(() => {
@@ -164,7 +172,7 @@ export default function TradePage() {
   }, [availableCards, selectedCardId]);
 
   const currentRate = useMemo(() => {
-     if (!activeCard) return 0;
+     if (!activeCard || !selectedType) return 0;
      return selectedType === 'physical' ? activeCard.rates.ghsPhysical : activeCard.rates.ghsEcode;
   }, [activeCard, selectedType]);
 
@@ -175,8 +183,10 @@ export default function TradePage() {
   }, [amount, currentRate]);
 
   const isValid = useMemo(() => {
-      return !!activeCard && estimatedPayout > 0 && parseFloat(amount) > 0;
-  }, [activeCard, estimatedPayout, amount]);
+      const amt = parseFloat(amount);
+      const isWithdrawalValid = withdrawalPreference === 'wallet' || (withdrawalPreference === 'direct_payout' && selectedUserMethodId !== -1);
+      return !!activeCard && !!selectedType && estimatedPayout > 0 && !isNaN(amt) && amt > 0 && isWithdrawalValid;
+  }, [activeCard, selectedType, estimatedPayout, amount, withdrawalPreference, selectedUserMethodId]);
 
   // -- Submit Handler --
   const handleSubmit = async () => {
@@ -194,6 +204,7 @@ export default function TradePage() {
           asset_name: activeCard.assetName,
           asset_type: 'gift_card',
           user_notes: userNotes,
+          denomination: activeCard.amount,
           withdrawal_preference: withdrawalPreference
       };
 
@@ -289,8 +300,14 @@ export default function TradePage() {
                                 { id: 'physical', name: 'Physical Card' },
                                 { id: 'ecode', name: 'E-Code' }
                             ]}
-                            value={selectedType === 'physical' ? { id: 'physical', name: 'Physical Card' } : { id: 'ecode', name: 'E-Code' }}
+                            value={selectedType === 'physical' 
+                                ? { id: 'physical', name: 'Physical Card' } 
+                                : selectedType === 'ecode' 
+                                    ? { id: 'ecode', name: 'E-Code' }
+                                    : null
+                            }
                             onChange={(opt) => setSelectedType(opt.id as 'physical' | 'ecode')}
+                            placeholder="Select Type"
                           />
                           </div>
                       </div>
@@ -403,7 +420,7 @@ export default function TradePage() {
                           <button
                               type="button"
                               onClick={() => setWithdrawalPreference('direct_payout')}
-                              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
+                              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all cursor-pointer ${
                                   withdrawalPreference === 'direct_payout' 
                                   ? 'bg-white dark:bg-gray-700 shadow-sm text-red-600' 
                                   : 'text-gray-400 hover:text-gray-600'
@@ -414,7 +431,7 @@ export default function TradePage() {
                           <button
                               type="button"
                               onClick={() => setWithdrawalPreference('wallet')}
-                              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
+                              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all cursor-pointer ${
                                   withdrawalPreference === 'wallet' 
                                   ? 'bg-white dark:bg-gray-700 shadow-sm text-red-600' 
                                   : 'text-gray-400 hover:text-gray-600'
@@ -509,7 +526,7 @@ export default function TradePage() {
 
                        <div className="text-center mt-4">
                              <p className="text-xs text-gray-400 mb-2">Need help? Chat with us.</p>
-                             <button onClick={() => window.open(whatsappLink)} className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-200 transition-colors">
+                             <button onClick={() => window.open(whatsappLink)} className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-200 transition-colors cursor-pointer">
                                  WhatsApp Support
                              </button>
                        </div>
@@ -544,7 +561,7 @@ export default function TradePage() {
                   <button 
                     onClick={handleSubmit} 
                     disabled={!isValid || submitting}
-                    className="w-full py-3 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                   >
                       {submitting ? <ArrowPathIcon className="w-5 h-5 animate-spin" /> : <PaperAirplaneIcon className="w-5 h-5 -rotate-45" />}
                       {submitting ? 'Processing...' : 'Start Payout Trade'}

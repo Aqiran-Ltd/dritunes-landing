@@ -1145,7 +1145,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"denomination\": \"100\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1182,7 +1182,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"denomination\": \"100\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
