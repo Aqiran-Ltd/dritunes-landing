@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // @ts-ignore - turbopack.root is required to silence the workspace root warning in Next.js 16
+  turbopack: {
+    root: '.',
+  },
 };
 
 
