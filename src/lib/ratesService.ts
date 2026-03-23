@@ -19,11 +19,15 @@ export interface GiftCard {
   rates: Rate;
   physicalId?: number; // ID for physical trade
   ecodeId?: number;    // ID for ecode trade
+  logoUrl?: string;    // Brand logo URL
+  brandNote?: string;  // Brand-specific note
 }
 
 export interface Category {
   name: string; // e.g. "Apple/iTunes"
   cards: GiftCard[];
+  logoUrl?: string; // Icon/logo for the category
+  note?: string;    // Note for the category
 }
 
 export interface RatesData {
@@ -32,6 +36,14 @@ export interface RatesData {
 }
 
 // --- API Response Types ---
+
+interface ApiGiftCardGroup {
+  id: number;
+  name: string;
+  image_url: string;
+  note: string | null;
+  rates_count: number;
+}
 
 interface ApiRateItem {
   id: number;
@@ -42,6 +54,12 @@ interface ApiRateItem {
   type: 'physical' | 'ecode';
   rate: string;           // The payout rate
   status: string;
+  gift_card?: {
+    id: number;
+    name: string;
+    image_url: string;
+    note: string | null;
+  };
 }
 
 interface ApiRatesResponse {
@@ -51,12 +69,28 @@ interface ApiRatesResponse {
   };
 }
 
+// --- Brand/Group Type ---
+export interface GiftCardBrand extends ApiGiftCardGroup {}
+
 // --- Helpers ---
 
 // Helper to clean up asset names (Keep exact naming as requested)
 const formatProductName = (assetName: string): string => {
   return assetName; // Keep exact naming
 };
+
+/**
+ * Fetch all gift card groups (brands)
+ */
+export async function fetchGiftCardGroups(token?: string): Promise<GiftCardBrand[]> {
+  try {
+    const response = await api.get<{ success: boolean; data: ApiGiftCardGroup[] }>('/gift-cards', token);
+    return response.data;
+  } catch (error) {
+    console.error('fetchGiftCardGroups Error:', error);
+    return [];
+  }
+}
 
 /**
  * Fetch and map rates from the API
@@ -89,6 +123,8 @@ export async function fetchRates(token?: string): Promise<RatesData> {
           },
           physicalId: item.type === 'physical' ? item.id : undefined,
           ecodeId: item.type === 'ecode' ? item.id : undefined,
+          logoUrl: item.gift_card?.image_url,
+          brandNote: item.gift_card?.note || undefined,
         };
       }
 
@@ -115,7 +151,9 @@ export async function fetchRates(token?: string): Promise<RatesData> {
         if (!categoriesMap[catName]) {
             categoriesMap[catName] = {
                 name: catName,
-                cards: []
+                cards: [],
+                logoUrl: card.logoUrl,
+                note: card.brandNote
             };
         }
         categoriesMap[catName].cards.push(card);

@@ -21,6 +21,11 @@ interface Rate {
   type: string;
   country_code: string;
   denomination: string;
+  gift_card?: {
+    id: number;
+    name: string;
+    image_url: string;
+  };
 }
 
 const SparklineTooltip = ({ active, payload }: any) => {
@@ -270,8 +275,10 @@ export default function RatesTicker() {
                >
                   {/* Normal content */}
                   <div className="flex items-start justify-between mb-3">
-                     <div className={`p-2 rounded-xl ${style.bg} ${style.text}`}>
-                        {style.icon}
+                     <div className={`p-2 rounded-xl ${style.bg} ${style.text} flex items-center justify-center w-10 h-10 overflow-hidden`}>
+                        {rate.gift_card?.image_url ? (
+                          <img src={rate.gift_card.image_url} alt={rate.asset_name} className="w-full h-full object-contain" />
+                        ) : style.icon}
                      </div>
                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-0.5 rounded-full">
                          {rate.country_code}

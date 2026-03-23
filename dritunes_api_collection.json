@@ -841,6 +841,64 @@
             "description": "Public or shared data used across the app.",
             "item": [
                 {
+                    "name": "List Gift Card Groups",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/gift-cards",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "gift-cards"
+                            ]
+                        },
+                        "description": "Returns a list of all active gift card groups (brands) with metadata like logo URL and notes."
+                    }
+                },
+                {
+                    "name": "Get Rates by Group",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/gift-cards/1/rates",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "gift-cards",
+                                "1",
+                                "rates"
+                            ]
+                        },
+                        "description": "Returns all active rates for a specific gift card group. Includes the group details object in the response."
+                    }
+                },
+                {
                     "name": "Get Rates",
                     "request": {
                         "method": "GET",
@@ -870,7 +928,7 @@
                                 { "key": "asset_name", "value": "", "description": "Search by asset name (e.g. Steam, iTunes)" }
                             ]
                         },
-                        "description": "Fetches current exchange rates. \n\n### Response Structure:\n- **id**: Internal ID\n- **category**: `gift_card` or `crypto`\n- **asset_name**: Normalized platform name (e.g., Steam, iTunes)\n- **denomination**: Card value or range (e.g., 50 fixed, 10-500)\n- **country_code**: ISO 2-letter country code (US, GB, CA, EU, etc.)\n- **type**: `physical` or `ecode`\n- **rate**: Current buying rate in GHS\n- **source_rate**: Base rate from the source sheet\n- **ngn_physical_rate**: NGN rate for physical cards (if applicable)\n- **ngn_ecode_rate**: NGN rate for E-codes (if applicable)\n- **notes**: Specific spending conditions or time requirements (e.g., \"Need 2H spending\")"
+                        "description": "Fetches current exchange rates. \n\n### Response Structure:\n- **id**: Internal ID\n- **category**: `gift_card` or `crypto`\n- **asset_name**: Normalized platform name (e.g., Steam, iTunes)\n- **denomination**: Card value or range (e.g., 50 fixed, 10-500)\n- **country_code**: ISO 2-letter country code (US, GB, CA, EU, etc.)\n- **type**: `physical` or `ecode`\n- **rate**: Current buying rate in GHS\n- **source_rate**: Base rate from the source sheet\n- **ngn_physical_rate**: NGN rate for physical cards (if applicable)\n- **ngn_ecode_rate**: NGN rate for E-codes (if applicable)\n- **notes**: Specific spending conditions or time requirements (e.g., \"Need 2H spending\")\n- **gift_card**: Group details (if category is `gift_card`)\n    - **name**: Platform name\n    - **image**: Public URL of the gift card logo\n    - **note**: Additional manual notes for the group"
                     }
                 },
                 {

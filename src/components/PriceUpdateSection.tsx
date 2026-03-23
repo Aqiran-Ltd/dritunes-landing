@@ -137,7 +137,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
     return initialCategories.map(c => ({
       id: c.name,
       name: c.name,
-      icon: getCategoryStyle(c.name).icon
+      icon: c.logoUrl ? <img src={c.logoUrl} alt={c.name} className="w-5 h-5 object-contain rounded-sm" /> : getCategoryStyle(c.name).icon
     }));
   }, [initialCategories]);
 

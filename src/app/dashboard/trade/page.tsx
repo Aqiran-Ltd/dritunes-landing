@@ -271,12 +271,12 @@ export default function TradePage() {
                             options={categories.map(c => ({ 
                               id: c.name, 
                               name: c.name,
-                              icon: getCategoryStyle(c.name).icon
+                              icon: c.logoUrl ? <img src={c.logoUrl} alt={c.name} className="w-5 h-5 object-contain rounded-sm" /> : getCategoryStyle(c.name).icon
                             }))}
                             value={selectedCatName ? { 
                               id: selectedCatName, 
                               name: selectedCatName,
-                              icon: getCategoryStyle(selectedCatName).icon
+                              icon: activeCategory?.logoUrl ? <img src={activeCategory.logoUrl} alt={selectedCatName} className="w-5 h-5 object-contain rounded-sm" /> : getCategoryStyle(selectedCatName).icon
                             } : null}
                             onChange={(opt) => setSelectedCatName(opt.name)}
                             searchable
