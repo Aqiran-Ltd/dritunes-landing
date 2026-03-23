@@ -5,7 +5,7 @@ export interface Socials {
   telegram: string;
   instagram: string;
   facebook: string;
-  twitter: string;
+  x_twitter: string;
   tiktok: string;
   youtube: string;
 }
@@ -24,7 +24,7 @@ export async function fetchSocials(): Promise<Socials> {
       telegram: '',
       instagram: '',
       facebook: '',
-      twitter: '',
+      x_twitter: '',
       tiktok: '',
       youtube: ''
     };
