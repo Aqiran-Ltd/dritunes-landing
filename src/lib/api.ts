@@ -19,12 +19,12 @@ export const getBackendBaseUrl = () => {
     if (apiUrl.startsWith('http')) {
       return apiUrl.split('/api/v1')[0].replace('://www.', '://');
     }
-    // If no absolute NEXT_PUBLIC_API_URL, fallback to origin (assuming proxy/same-host)
-    return window.location.origin;
+    // Robust fallback for production assets if env is missing or relative
+    return 'https://admin.dritunesconsult.com';
   }
   
   // Server-side: use BACKEND_URL
-  const backendUrl = process.env.BACKEND_URL || apiUrl || 'http://127.0.0.1:8000';
+  const backendUrl = process.env.BACKEND_URL || apiUrl || 'https://admin.dritunesconsult.com';
   return backendUrl.split('/api/v1')[0].replace('://www.', '://');
 };
 
