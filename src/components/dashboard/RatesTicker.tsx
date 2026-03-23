@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { api } from '@/lib/api';
+import { api, resolveImageUrl } from '@/lib/api';
 import { fetchTrendsRates, type TrendsRates } from '@/lib/analyticsService';
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon, FireIcon } from '@heroicons/react/24/solid';
 import { DevicePhoneMobileIcon, ShoppingBagIcon, GlobeAltIcon, GiftIcon } from '@heroicons/react/24/outline';
@@ -277,7 +277,7 @@ export default function RatesTicker() {
                   <div className="flex items-start justify-between mb-3">
                      <div className={`p-2 rounded-xl ${style.bg} ${style.text} flex items-center justify-center w-10 h-10 overflow-hidden`}>
                         {rate.gift_card?.image_url ? (
-                          <img src={rate.gift_card.image_url} alt={rate.asset_name} className="w-full h-full object-contain" />
+                          <img src={resolveImageUrl(rate.gift_card.image_url)} alt={rate.asset_name} className="w-full h-full object-contain" />
                         ) : style.icon}
                      </div>
                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-0.5 rounded-full">

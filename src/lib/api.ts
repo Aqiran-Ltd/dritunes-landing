@@ -7,6 +7,33 @@ const getBaseUrl = () => {
   return `${backendUrl}/api/v1`;
 };
 
+/**
+ * Get the base URL of the backend (without /api/v1)
+ * Used for resolving image paths
+ */
+export const getBackendBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    if (apiUrl.startsWith('http')) {
+      return apiUrl.split('/api/v1')[0];
+    }
+    return window.location.origin;
+  }
+  return (process.env.BACKEND_URL || 'http://127.0.0.1:8000').split('/api/v1')[0];
+};
+
+/**
+ * Resolves a relative image path into an absolute URL
+ */
+export const resolveImageUrl = (path: string | null | undefined) => {
+  if (!path) return undefined;
+  if (path.startsWith('http')) return path;
+  if (path.startsWith('data:')) return path;
+  
+  const baseUrl = getBackendBaseUrl();
+  return `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+};
+
 // We no longer need the key explicitly in client-side code, it's injected by middleware
 // const API_KEY = process.env.NEXT_PUBLIC_API_KEY || ''; 
 

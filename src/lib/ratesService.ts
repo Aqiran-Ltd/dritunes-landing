@@ -1,4 +1,4 @@
-import { api } from '@/lib/api';
+import { api, resolveImageUrl } from '@/lib/api';
 
 // --- Types matching UI expectations ---
 
@@ -85,7 +85,10 @@ const formatProductName = (assetName: string): string => {
 export async function fetchGiftCardGroups(token?: string): Promise<GiftCardBrand[]> {
   try {
     const response = await api.get<{ success: boolean; data: ApiGiftCardGroup[] }>('/gift-cards', token);
-    return response.data;
+    return (response.data || []).map(group => ({
+      ...group,
+      image_url: resolveImageUrl(group.image_url) || group.image_url
+    }));
   } catch (error) {
     console.error('fetchGiftCardGroups Error:', error);
     return [];
@@ -123,7 +126,7 @@ export async function fetchRates(token?: string): Promise<RatesData> {
           },
           physicalId: item.type === 'physical' ? item.id : undefined,
           ecodeId: item.type === 'ecode' ? item.id : undefined,
-          logoUrl: item.gift_card?.image_url,
+          logoUrl: resolveImageUrl(item.gift_card?.image_url),
           brandNote: item.gift_card?.note || undefined,
         };
       }
