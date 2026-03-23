@@ -7,39 +7,6 @@ const getBaseUrl = () => {
   return `${backendUrl}/api/v1`;
 };
 
-/**
- * Get the base URL of the backend (without /api/v1)
- * Used for resolving image paths
- */
-export const getBackendBaseUrl = () => {
-  // Use NEXT_PUBLIC_API_URL if available as it should be the source of truth for the API host
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-  
-  if (typeof window !== 'undefined') {
-    if (apiUrl.startsWith('http')) {
-      return apiUrl.split('/api/v1')[0].replace('://www.', '://');
-    }
-    // Robust fallback for production assets if env is missing or relative
-    return 'https://admin.dritunesconsult.com';
-  }
-  
-  // Server-side: use BACKEND_URL
-  const backendUrl = process.env.BACKEND_URL || apiUrl || 'https://admin.dritunesconsult.com';
-  return backendUrl.split('/api/v1')[0].replace('://www.', '://');
-};
-
-/**
- * Resolves a relative image path into an absolute URL
- */
-export const resolveImageUrl = (path: string | null | undefined) => {
-  if (!path) return undefined;
-  if (path.startsWith('http')) return path;
-  if (path.startsWith('data:')) return path;
-  
-  const baseUrl = getBackendBaseUrl();
-  return `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
-};
-
 // We no longer need the key explicitly in client-side code, it's injected by middleware
 // const API_KEY = process.env.NEXT_PUBLIC_API_KEY || ''; 
 

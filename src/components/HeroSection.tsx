@@ -6,6 +6,7 @@ import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 import Link from "next/link";
+import { track } from "@vercel/analytics";
 
 export default function HeroSection() {
   const { resolvedTheme } = useTheme();
@@ -139,6 +140,7 @@ export default function HeroSection() {
             <motion.button
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => track('CTA Click', { label: 'Start Trading Now', location: 'Hero' })}
               className="group px-10 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg min-w-[220px] flex items-center justify-center"
             >
               Start Trading Now

@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { fetchSocials, Socials } from "@/lib/socialService";
 import { useEffect } from "react";
+import { track } from "@vercel/analytics";
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,6 +42,7 @@ export default function ContactPage() {
         content: `${formData.message}\n\nPhone: ${formData.phone}`
       });
       
+      track('Contact Form Submitted', { subject: formData.subject });
       toast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (error: any) {
@@ -424,6 +426,7 @@ export default function ContactPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 whileHover={{ y: -10 }}
+                onClick={() => track('Social Link Click', { platform: social.name, location: 'Contact Page' })}
                 className="group relative flex flex-col items-center p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-[2rem] transition-all duration-300 hover:bg-white/10 hover:border-white/20"
               >
                 <div className={`w-16 h-16 bg-gradient-to-br ${social.color} rounded-2xl flex items-center justify-center text-white text-2xl font-black mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>

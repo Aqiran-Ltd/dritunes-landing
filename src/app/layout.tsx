@@ -6,6 +6,7 @@ import { SettingsProvider } from "@/contexts/SettingsContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { Toaster } from "react-hot-toast";
 import JsonLd from "@/components/JsonLd";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const urbanist = Urbanist({
@@ -171,6 +172,7 @@ export default function RootLayout({
             <SettingsProvider>
               <NotificationProvider>
                 {children}
+                <Analytics />
                 <Toaster position="top-right" />
               </NotificationProvider>
             </SettingsProvider>

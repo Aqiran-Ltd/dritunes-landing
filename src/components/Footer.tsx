@@ -13,6 +13,7 @@ import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { fetchSocials, Socials } from '@/lib/socialService';
 import { useEffect, useState } from "react";
+import { track } from "@vercel/analytics";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -288,6 +289,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => track('Social Link Click', { platform: social.name })}
                     className={`w-12 h-12 ${social.bgColor} rounded-xl flex items-center justify-center text-white transition-all duration-300 shadow-lg hover:shadow-xl`}
                     title={social.name}
                   >

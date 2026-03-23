@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { api } from "@/lib/api";
 import { toast } from "react-hot-toast";
+import { track } from "@vercel/analytics";
 
 export default function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,6 +35,7 @@ export default function ContactSection() {
         content: `${formData.message}\n\nPhone: ${formData.phone}`
       });
       
+      track('Contact Form Submitted', { subject: formData.subject, location: 'Contact Section' });
       toast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (error: any) {
