@@ -11,6 +11,8 @@ interface User {
   email: string;
   phone_number?: string;
   country?: string;
+  profile_picture?: string;
+  profile_picture_url?: string;
   phone_verified_at?: string | null;
   email_verified_at?: string | null;
 }
@@ -23,6 +25,7 @@ interface AuthContextType {
   login: (credentials: any) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (userData: User) => void;
   verifyOtp: (token: string, type: 'phone' | 'email') => Promise<void>;
   resendOtp: (type: 'phone' | 'email') => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
@@ -146,6 +149,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateUser = (userData: User) => {
+    setUser(userData);
+  };
+
   const logout = async () => {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -236,7 +243,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, isLoading, login, register, logout, verifyOtp, resendOtp, forgotPassword, resetPassword }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, isLoading, login, register, logout, updateUser, verifyOtp, resendOtp, forgotPassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

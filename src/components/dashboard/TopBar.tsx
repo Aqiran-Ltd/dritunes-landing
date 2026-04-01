@@ -70,11 +70,14 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
         {/* Notifications */}
         <NotificationsDropdown />
 
-        {/* Profile Dropdown Trigger */}
         <div className="flex items-center gap-3 pl-2 border-l border-gray-200 dark:border-gray-800">
           <div className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-red-500/20 transition-all cursor-pointer">
              <div className="w-full h-full bg-gradient-to-tr from-red-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
-                {user?.name?.charAt(0) || 'U'}
+                {user?.profile_picture_url ? (
+                    <img src={user.profile_picture_url} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                    user?.name?.charAt(0) || 'U'
+                )}
              </div>
           </div>
         </div>

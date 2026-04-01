@@ -98,24 +98,6 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-white dark:bg-black px-2 text-gray-500">Or continue with</span>
-        </div>
-      </div>
-
-       <div className="grid grid-cols-2 gap-4">
-          <Button variant="outline" type="button">
-             Google
-          </Button>
-          <Button variant="outline" type="button">
-             Apple
-          </Button>
-       </div>
-
       <div className="text-center text-sm">
         <span className="text-gray-500 dark:text-gray-400">Don't have an account? </span>
         <Link href="/auth/register" className="font-semibold text-red-600 hover:text-red-500 transition-colors">

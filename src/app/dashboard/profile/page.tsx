@@ -17,6 +17,7 @@ import {
 import { toast } from 'react-hot-toast';
 
 function ProfileForm({ user }: { user: any }) {
+    const { updateUser } = useAuth();
     const [name, setName] = useState(user.name);
     const [phone, setPhone] = useState(user.phone_number || '');
     const [country, setCountry] = useState(user.country || '');
@@ -42,6 +43,7 @@ function ProfileForm({ user }: { user: any }) {
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         const loadingToast = toast.loading('Updating profile...');
+        setIsLoading(true);
         try {
             // Prepare FormData (for file upload support)
             const formData = new FormData();
@@ -54,24 +56,23 @@ function ProfileForm({ user }: { user: any }) {
             if (state) formData.append('state', state);
 
             if (photo) {
-                formData.append('profile_image', photo);
+                formData.append('profile_picture', photo);
             }
             
             const token = localStorage.getItem('access_token');
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1'}/user/profile`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                },
-                body: formData
-            });
-
-            const data = await response.json();
+            const data = await api.postForm<any>('/user/profile', formData, token || undefined);
             
-            if (response.ok) {
-                 toast.success('Profile updated successfully!', { id: loadingToast });
-                 setMessage('Profile updated successfully!');
+            // If the request didn't throw (handled by api utility for non-2xx),
+            // and status is not explicitly false, treat it as a success.
+            if (data.status !== false) {
+                 // The backend returns the updated user object in data.data or data
+                 const updatedUser = data.data || data.user || data;
+                 if (updatedUser && updatedUser.id) {
+                     updateUser(updatedUser);
+                 }
+                 
+                 toast.success(data.message || 'Profile updated successfully!', { id: loadingToast });
+                 setMessage(data.message || 'Profile updated successfully!');
             } else {
                  throw new Error(data.message || 'Failed to update profile.');
             }
@@ -94,8 +95,8 @@ function ProfileForm({ user }: { user: any }) {
                     <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden border-2 border-gray-200 dark:border-gray-700">
                         {photoPreview ? (
                             <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                        ) : user.profile_image ? (
-                             <img src={user.profile_image} alt={user.name} className="w-full h-full object-cover" />
+                        ) : user.profile_picture_url ? (
+                             <img src={user.profile_picture_url} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
                             <UserCircleIcon className="w-12 h-12 text-gray-400" />
                         )}
@@ -261,8 +262,12 @@ export default function ProfilePage() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 
           <div className="relative">
-             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-red-500/20">
-                 {user.name.charAt(0)}
+             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-red-500/20 overflow-hidden border-2 border-white dark:border-gray-800">
+                 {user.profile_picture_url ? (
+                     <img src={user.profile_picture_url} alt={user.name} className="w-full h-full object-cover" />
+                 ) : (
+                     user.name.charAt(0)
+                 )}
              </div>
              <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-900 p-1 rounded-full border border-gray-100 dark:border-gray-800 shadow-sm">
                  {user.phone_verified_at && user.email_verified_at ? (
