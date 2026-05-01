@@ -23,6 +23,12 @@
             "value": "",
             "type": "string",
             "description": "Bearer token returned after login/register"
+        },
+        {
+            "key": "trade_number",
+            "value": "TRD-20260501-XXXX",
+            "type": "string",
+            "description": "Trade number (format TRD-YYYYMMDD-XXXX) used to fetch a specific trade"
         }
     ],
     "auth": {
@@ -1173,16 +1179,16 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/trades/1",
+                            "raw": "{{base_url}}/trades/{{trade_number}}",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "trades",
-                                "1"
+                                "{{trade_number}}"
                             ]
                         },
-                        "description": "Gets details of a specific trade by ID."
+                        "description": "Gets details of a specific trade by its trade number (e.g. `TRD-20260501-A8K2`). Set the `trade_number` collection variable before sending."
                     }
                 },
                 {
@@ -1203,7 +1209,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"denomination\": \"100\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"quantity\": 1,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"denomination\": \"100\",\n    \"withdrawal_preference\": \"direct_payout\",\n    \"user_payment_method_id\": 1,\n    \"user_notes\": \"Please process quickly.\",\n    \"code\": null\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1219,7 +1225,7 @@
                                 "trades"
                             ]
                         },
-                        "description": "Create a trade where the User trades an asset for GHC with a Direct Payout to a saved account."
+                        "description": "Create a trade where the User trades an asset for GHC with a Direct Payout to a saved account.\n\n**Fields:**\n- `quantity` *(optional int)* — Number of cards being traded.\n- `code` *(optional string)* — Ecode / gift card code. Required by the frontend for ecode-type rates; submit `null` for physical cards."
                     }
                 },
                 {
@@ -1240,7 +1246,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"denomination\": \"100\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\"\n}",
+                            "raw": "{\n    \"rate_id\": 1,\n    \"amount\": 100,\n    \"quantity\": 1,\n    \"asset_type\": \"gift_card\",\n    \"asset_name\": \"Steam\",\n    \"denomination\": \"100\",\n    \"withdrawal_preference\": \"wallet\",\n    \"user_notes\": \"Credit my wallet.\",\n    \"code\": null\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1256,7 +1262,7 @@
                                 "trades"
                             ]
                         },
-                        "description": "Create a trade where the User trades an asset for GHC and credits the balance to their Wallet."
+                        "description": "Create a trade where the User trades an asset for GHC and credits the balance to their Wallet.\n\n**Fields:**\n- `quantity` *(optional int)* — Number of cards being traded.\n- `code` *(optional string)* — Ecode / gift card code. Required by the frontend for ecode-type rates; submit `null` for physical cards."
                     }
                 }
             ]

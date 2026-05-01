@@ -10,6 +10,20 @@ import { fetchSocials, Socials } from "@/lib/socialService";
 import { useEffect } from "react";
 import { track } from "@vercel/analytics";
 
+function extractPhone(url: string | null | undefined, fallback: string): string {
+  if (!url) return fallback;
+  try {
+    const path = new URL(url).pathname.replace(/^\//, '');
+    const digits = path.replace(/[^\d]/g, '');
+    if (digits.length >= 7) return `+${digits}`;
+  } catch {
+    // not a valid URL — use as-is if it looks like a number
+    const digits = url.replace(/[^\d]/g, '');
+    if (digits.length >= 7) return `+${digits}`;
+  }
+  return url;
+}
+
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [socials, setSocials] = useState<Socials | null>(null);
@@ -260,7 +274,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Phone Support</h3>
-                  <p className="text-gray-300 font-medium">{socials?.whatsapp || "+233548434599"}</p>
+                  <p className="text-gray-300 font-medium">{extractPhone(socials?.whatsapp, "+233548434599")}</p>
                   <p className="text-sm text-white/60">Available 24/7</p>
                 </div>
               </div>
@@ -280,7 +294,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">WhatsApp & Telegram</h3>
-                  <p className="text-gray-300 font-medium">{socials?.whatsapp || "+233548434599"}</p>
+                  <p className="text-gray-300 font-medium">{extractPhone(socials?.whatsapp, "+233548434599")}</p>
                   <p className="text-sm text-white/60">Instant messaging</p>
                 </div>
               </div>
