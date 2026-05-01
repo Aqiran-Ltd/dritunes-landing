@@ -238,7 +238,7 @@ export default function HistoryPage() {
                           {trades.map((trade) => (
                              <tr 
                                 key={trade.id} 
-                                onClick={() => router.push(`/dashboard/history/${trade.id}`)}
+                                onClick={() => router.push(`/dashboard/history/${trade.trade_number}`)}
                                 className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer group"
                              >
                                 <td className="px-6 py-4 text-gray-500 dark:text-gray-400 whitespace-nowrap">
