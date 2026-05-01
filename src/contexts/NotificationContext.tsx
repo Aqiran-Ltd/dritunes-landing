@@ -5,6 +5,7 @@ import { messaging } from "@/lib/firebase";
 import { getToken, onMessage } from "firebase/messaging";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
+import { playNotificationSound } from "@/lib/notificationSound";
 
 interface NotificationContextType {
   fcmToken: string | null;
@@ -48,7 +49,8 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
       // Handle foreground messages
       const unsubscribe = onMessage(messaging, (payload) => {
         console.log("Foreground message received:", payload);
-        
+        playNotificationSound();
+
         toast.custom((t) => (
           <div
             className={`${

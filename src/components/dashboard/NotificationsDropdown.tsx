@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
+import { playNotificationSound } from '@/lib/notificationSound';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
@@ -26,6 +27,7 @@ export default function NotificationsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const prevUnreadRef = useRef<number | null>(null);
   const router = useRouter();
 
   // Close dropdown when clicking outside
@@ -48,15 +50,19 @@ export default function NotificationsDropdown() {
       if (!token) return;
       
       const response: any = await api.get('/notifications', token);
-      if (response && Array.isArray(response.data)) {
-        // According to standard Laravel structure, response might be { data: [...] } or just [...]
-        // Adjust based on actual API response if needed. Assuming standard resource collection.
-      setNotifications(response.data);
-      setUnreadCount(response.data.filter((n: Notification) => !n.read_at).length);
-      } else if (Array.isArray(response)) {
-          setNotifications(response);
-          setUnreadCount(response.filter((n: Notification) => !n.read_at).length);
+      const list: Notification[] = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response) ? response : [];
+
+      const newUnread = list.filter((n: Notification) => !n.read_at).length;
+
+      if (prevUnreadRef.current !== null && newUnread > prevUnreadRef.current) {
+        playNotificationSound();
       }
+      prevUnreadRef.current = newUnread;
+
+      setNotifications(list);
+      setUnreadCount(newUnread);
     } catch (error) {
       console.error('Failed to fetch notifications', error);
     } finally {
