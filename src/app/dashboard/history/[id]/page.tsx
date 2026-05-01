@@ -31,6 +31,7 @@ interface TradeDetail {
   asset_type: 'gift_card' | 'crypto';
   asset_name: string;
   amount: string;
+  code: string | null;
   rate_id: number;
   rate_used: string;
   total_payout: string;
@@ -306,8 +307,8 @@ export default function TradeDetailPage() {
                         {trade.rate?.country_code ? (
                            <>
                               {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img 
-                                 src={`https://flagcdn.com/w40/${trade.rate.country_code.toLowerCase()}.png`} 
+                              <img
+                                 src={`https://flagcdn.com/w40/${trade.rate.country_code.toLowerCase()}.png`}
                                  alt={trade.rate.country_code}
                                  className="w-5 h-auto rounded-sm shadow-sm"
                               />
@@ -335,10 +336,77 @@ export default function TradeDetailPage() {
                      </p>
                   </div>
                </div>
+
+               {trade.code && (
+                  <div className="mt-6 p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl">
+                     <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">E-Code</p>
+                     <p className="font-mono font-black text-gray-900 dark:text-white select-all tracking-wider">{trade.code}</p>
+                  </div>
+               )}
             </div>
 
-            {/* Attachments / Card Images */}
-            {trade.attachments && (
+            {/* Payment Details */}
+            <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-8 shadow-sm border border-gray-100 dark:border-gray-800">
+               <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em]">Payment Details</h2>
+                  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest ${
+                     trade.withdrawal_preference === 'wallet'
+                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                        : 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400'
+                  }`}>
+                     {trade.withdrawal_preference === 'wallet' ? <WalletIcon className="w-3.5 h-3.5" /> : <BuildingLibraryIcon className="w-3.5 h-3.5" />}
+                     {trade.withdrawal_preference === 'wallet' ? 'Wallet Credit' : 'Direct Payout'}
+                  </div>
+               </div>
+
+               {trade.withdrawal_preference === 'wallet' ? (
+                  <div className="flex items-center gap-4 p-5 bg-blue-50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-900/20">
+                     <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                        <WalletIcon className="w-5 h-5" />
+                     </div>
+                     <div>
+                        <p className="text-sm font-black text-gray-900 dark:text-white">Credited to Wallet</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Funds were added to your Dr iTunes wallet balance.</p>
+                     </div>
+                  </div>
+               ) : trade.user_payment_method ? (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                     <div className="p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl col-span-2 md:col-span-2">
+                        <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Account Holder</p>
+                        <p className="font-black text-gray-900 dark:text-white truncate">{trade.user_payment_method.account_name}</p>
+                     </div>
+                     <div className="p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl">
+                        <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Network / Bank</p>
+                        <p className="font-black text-gray-900 dark:text-white uppercase truncate">{trade.user_payment_method.bank_name || 'N/A'}</p>
+                     </div>
+                     <div className="p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl">
+                        <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Type</p>
+                        <p className="font-black text-gray-900 dark:text-white uppercase truncate">{trade.user_payment_method.payment_type || 'N/A'}</p>
+                     </div>
+                     <div className="p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl col-span-2 md:col-span-4">
+                        <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Account Number</p>
+                        <p className="font-mono font-black text-gray-900 dark:text-white select-all tracking-wider">{trade.user_payment_method.account_number}</p>
+                     </div>
+                  </div>
+               ) : trade.user_payment_details ? (
+                  <div className="grid grid-cols-2 gap-4">
+                     {Object.entries(trade.user_payment_details as Record<string, any>).map(([key, value]) => (
+                        <div key={key} className="p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl">
+                           <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">{key.replace(/_/g, ' ')}</p>
+                           <p className="font-black text-gray-900 dark:text-white truncate uppercase">{String(value)}</p>
+                        </div>
+                     ))}
+                  </div>
+               ) : (
+                  <div className="text-center py-6">
+                     <WalletIcon className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                     <p className="text-sm font-bold text-gray-400 italic">No payment destination on record.</p>
+                  </div>
+               )}
+            </div>
+
+            {/* Attachments / Card Images — only for physical card trades */}
+            {trade.attachments && trade.rate?.type !== 'ecode' && (
                 <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-8 shadow-sm border border-gray-100 dark:border-gray-800">
                     <h2 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] mb-8">Verification Assets</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
