@@ -2,17 +2,17 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { fetchRates, type Category, type GiftCard } from '@/lib/ratesService';
-import { createTrade, fetchCompanyPaymentMethods, type PaymentMethod } from '@/lib/tradeService';
+import { fetchRates, type Category } from '@/lib/ratesService';
+import { createTrade } from '@/lib/tradeService';
 import { fetchUserPaymentMethods, type UserPaymentMethod } from '@/lib/paymentMethodService';
 import { fetchSocials } from '@/lib/socialService';
 import { Button } from '@/components/ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Select } from '@/components/ui/Select';
-import { 
-  ArrowPathIcon, 
-  BoltIcon, 
-  CheckCircleIcon, 
+import {
+  ArrowPathIcon,
+  BoltIcon,
+  CheckCircleIcon,
   BuildingLibraryIcon,
   ClipboardDocumentCheckIcon,
   PhotoIcon,
@@ -28,12 +28,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
 export default function TradePage() {
-  const { user } = useAuth();
+  useAuth();
   const router = useRouter();
 
   // -- Data State --
   const [categories, setCategories] = useState<Category[]>([]);
-  const [companyPaymentMethods, setCompanyPaymentMethods] = useState<PaymentMethod[]>([]);
   const [userPaymentMethods, setUserPaymentMethods] = useState<UserPaymentMethod[]>([]);
   const [whatsappLink, setWhatsappLink] = useState('https://wa.me/233548434599'); 
   const [loadingRates, setLoadingRates] = useState(true);
@@ -49,7 +48,8 @@ export default function TradePage() {
   const [withdrawalPreference, setWithdrawalPreference] = useState<'wallet' | 'direct_payout' | null>(null);
   const [selectedUserMethodId, setSelectedUserMethodId] = useState<number>(-1);
   
-  // -- Attachment --
+  // -- Trade Details --
+  const [code, setCode] = useState<string>('');
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -60,12 +60,12 @@ export default function TradePage() {
     e.preventDefault();
     setIsDragging(true);
   };
-  
+
   const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setIsDragging(false);
   };
-  
+
   const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setIsDragging(false);
@@ -73,7 +73,7 @@ export default function TradePage() {
       setAttachments(prev => [...prev, ...Array.from(e.dataTransfer.files)]);
     }
   };
-  
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setAttachments(prev => [...prev, ...Array.from(e.target.files!)]);
@@ -105,15 +105,12 @@ export default function TradePage() {
     const init = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const [ratesData, paymentData, userMethodsData] = await Promise.all([
+        const [ratesData, userMethodsData] = await Promise.all([
              fetchRates(),
-             fetchCompanyPaymentMethods(''),
              token ? fetchUserPaymentMethods(token) : Promise.resolve([])
         ]);
-        
+
         setCategories(ratesData.categories);
-        
-        setCompanyPaymentMethods(paymentData);
         setUserPaymentMethods(userMethodsData);
 
         fetchSocials().then(s => {
@@ -185,8 +182,10 @@ export default function TradePage() {
   const isValid = useMemo(() => {
       const amt = parseFloat(amount);
       const isWithdrawalValid = withdrawalPreference === 'wallet' || (withdrawalPreference === 'direct_payout' && selectedUserMethodId !== -1);
-      return !!activeCard && !!selectedType && estimatedPayout > 0 && !isNaN(amt) && amt > 0 && isWithdrawalValid;
-  }, [activeCard, selectedType, estimatedPayout, amount, withdrawalPreference, selectedUserMethodId]);
+      const isCodeValid = selectedType !== 'ecode' || code.trim().length > 0;
+      const isAttachmentsValid = selectedType !== 'physical' || attachments.length > 0;
+      return !!activeCard && !!selectedType && estimatedPayout > 0 && !isNaN(amt) && amt > 0 && isWithdrawalValid && isCodeValid && isAttachmentsValid;
+  }, [activeCard, selectedType, estimatedPayout, amount, code, attachments, withdrawalPreference, selectedUserMethodId]);
 
   // -- Submit Handler --
   const handleSubmit = async () => {
@@ -205,7 +204,8 @@ export default function TradePage() {
           asset_type: 'gift_card',
           user_notes: userNotes,
           denomination: activeCard.amount,
-          withdrawal_preference: withdrawalPreference
+          withdrawal_preference: withdrawalPreference,
+          code: selectedType === 'ecode' ? code.trim() : null,
       };
 
       if (withdrawalPreference === 'direct_payout') {
@@ -325,8 +325,8 @@ export default function TradePage() {
 
                       <div>
                           <label className="block text-sm font-medium text-gray-500 mb-1">Total Amount ($)</label>
-                          <input 
-                            type="number" 
+                          <input
+                            type="number"
                             value={amount}
                             onChange={e => setAmount(e.target.value)}
                             className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 font-bold text-lg"
@@ -334,16 +334,30 @@ export default function TradePage() {
                           />
                       </div>
 
-                      <div>
-                          <label className="block text-sm font-medium text-gray-500 mb-1">Upload Card images</label>
+                      {selectedType === 'ecode' ? (
+                          <div>
+                              <label className="block text-sm font-medium text-gray-500 mb-1">
+                                  E-Code <span className="text-red-500">*</span>
+                              </label>
+                              <input
+                                  type="text"
+                                  value={code}
+                                  onChange={e => setCode(e.target.value)}
+                                  className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 font-mono"
+                                  placeholder="Enter your gift card code..."
+                              />
+                          </div>
+                      ) : (
+                          <div>
+                              <label className="block text-sm font-medium text-gray-500 mb-1">Upload Card Images</label>
                               <label
                                   htmlFor="file-upload"
                                   onDragOver={handleDragOver}
                                   onDragLeave={handleDragLeave}
                                   onDrop={handleDrop}
                                   className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
-                                      isDragging 
-                                      ? 'border-red-500 bg-red-50/5 dark:bg-red-500/10' 
+                                      isDragging
+                                      ? 'border-red-500 bg-red-50/5 dark:bg-red-500/10'
                                       : 'border-gray-300 dark:border-gray-700 hover:border-red-500/80 dark:hover:border-red-500 bg-gray-50 dark:bg-gray-800'
                                   }`}
                               >
@@ -354,13 +368,13 @@ export default function TradePage() {
                                                   <div key={idx} className="flex flex-col items-center">
                                                       <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm group">
                                                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                          <img 
-                                                              src={URL.createObjectURL(file)} 
-                                                              alt="Preview" 
+                                                          <img
+                                                              src={URL.createObjectURL(file)}
+                                                              alt="Preview"
                                                               className="object-cover w-full h-full"
                                                           />
-                                                          <button 
-                                                              type="button" 
+                                                          <button
+                                                              type="button"
                                                               onClick={(e) => {
                                                                   e.preventDefault();
                                                                   setAttachments(prev => prev.filter((_, i) => i !== idx));
@@ -376,18 +390,17 @@ export default function TradePage() {
                                               ))}
                                           </div>
                                       )}
-                                      
                                       <div className={`flex flex-col items-center justify-center ${attachments.length > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-4' : ''}`}>
                                           <PhotoIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
                                           <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2 relative">
                                               <span className="font-medium text-red-600 hover:text-red-500">
                                                   {attachments.length > 0 ? 'Click to add more' : 'Click to upload'}
                                               </span>
-                                              <input 
-                                                  id="file-upload" 
-                                                  name="file-upload" 
-                                                  type="file" 
-                                                  className="sr-only" 
+                                              <input
+                                                  id="file-upload"
+                                                  name="file-upload"
+                                                  type="file"
+                                                  className="sr-only"
                                                   accept="image/*"
                                                   multiple
                                                   onChange={handleFileChange}
@@ -401,6 +414,7 @@ export default function TradePage() {
                                   </div>
                               </label>
                           </div>
+                      )}
                   </div>
               </div>
           </div>

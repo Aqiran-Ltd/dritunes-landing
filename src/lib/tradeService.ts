@@ -14,17 +14,17 @@ export interface TradePayload {
   asset_name: string;
   asset_type: 'gift_card' | 'crypto';
   payment_method_id?: number;
-  // Additional fields for Sell mode
   withdrawal_preference?: 'wallet' | 'direct_payout';
   user_payment_method_id?: number;
-  payment_method_name?: string;     
-  payment_account_name?: string;    
-  payment_account_number?: string;  
+  payment_method_name?: string;
+  payment_account_name?: string;
+  payment_account_number?: string;
   notes?: string;
   user_notes?: string;
   denomination?: string;
   user_payment_details?: Record<string, any>;
-  attachments?: File[]; // Array of attachment files
+  attachments?: File[];
+  code?: string | null;
 }
 
 export async function fetchCompanyPaymentMethods(token: string): Promise<PaymentMethod[]> {
@@ -39,30 +39,22 @@ export async function fetchCompanyPaymentMethods(token: string): Promise<Payment
 
 export async function createTrade(token: string, payload: TradePayload) {
   try {
-    const hasAttachments = payload.attachments && payload.attachments.length > 0;
-    
-    if (hasAttachments) {
+    if (payload.attachments && payload.attachments.length > 0) {
       const formData = new FormData();
-      // Append all payload fields to FormData
       Object.entries(payload).forEach(([key, value]) => {
-        if (value !== undefined) {
+        if (value !== undefined && value !== null) {
           if (key === 'user_payment_details') {
             formData.append(key, JSON.stringify(value));
           } else if (key === 'attachments') {
-            // Append each file in the attachments array
-            const files = value as File[];
-            files.forEach(file => {
-               formData.append('attachments[]', file);
-            });
+            (value as File[]).forEach(file => formData.append('attachments[]', file));
           } else {
             formData.append(key, value as any);
           }
         }
       });
       return await api.postForm('/trades', formData, token);
-    } else {
-      return await api.post('/trades', payload, token);
     }
+    return await api.post('/trades', payload, token);
   } catch (error) {
     console.error('Create Trade Error:', error);
     throw error;
