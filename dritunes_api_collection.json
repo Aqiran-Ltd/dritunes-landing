@@ -1018,7 +1018,7 @@
                                 "settings"
                             ]
                         },
-                        "description": "Fetches general settings including trade configurations (WhatsApp)."
+                        "description": "Fetches general settings including trade configurations (WhatsApp) and system maintenance status (maintenance_mode, maintenance_message)."
                     }
                 }
             ]

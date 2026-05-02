@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import MaintenanceGuard from "@/components/MaintenanceGuard";
 import { Toaster } from "react-hot-toast";
 import JsonLd from "@/components/JsonLd";
 import { Analytics } from "@vercel/analytics/react";
@@ -170,11 +171,13 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <SettingsProvider>
-              <NotificationProvider>
-                {children}
-                <Analytics />
-                <Toaster position="top-right" />
-              </NotificationProvider>
+              <MaintenanceGuard>
+                <NotificationProvider>
+                  {children}
+                  <Analytics />
+                  <Toaster position="top-right" />
+                </NotificationProvider>
+              </MaintenanceGuard>
             </SettingsProvider>
           </AuthProvider>
         </ThemeProvider>

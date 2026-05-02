@@ -54,7 +54,14 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const data = await response.json();
 
   if (!response.ok) {
-    throw new ApiError(response.status, data.message || 'Something went wrong', data);
+    let message = data.message || 'Something went wrong';
+    
+    // Add specific handling for Rate Limiting
+    if (response.status === 429) {
+      message = 'Too many requests. Please slow down and try again in a moment.';
+    }
+    
+    throw new ApiError(response.status, message, data);
   }
 
   return data;

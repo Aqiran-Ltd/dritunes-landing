@@ -6,6 +6,8 @@ import { api } from '@/lib/api';
 interface Settings {
   offer_trade_via_whatsapp: boolean;
   whatsapp_number: string;
+  maintenance_mode: boolean;
+  maintenance_message: string;
 }
 
 interface NotificationSettings {
@@ -45,7 +47,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       // Fallback defaults if verification fails or no settings found
       setSettings({
           offer_trade_via_whatsapp: false,
-          whatsapp_number: '233548434599' // fallback
+          whatsapp_number: '233548434599', // fallback
+          maintenance_mode: false,
+          maintenance_message: 'The system is currently undergoing maintenance. Please check back later.'
       });
     }
   };
