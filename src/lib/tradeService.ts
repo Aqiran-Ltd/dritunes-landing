@@ -12,7 +12,7 @@ export interface TradePayload {
   amount: number;
   rate_id: number;
   asset_name: string;
-  asset_type: 'gift_card' | 'crypto';
+  asset_type: 'gift_card';
   payment_method_id?: number;
   withdrawal_preference?: 'wallet' | 'direct_payout';
   user_payment_method_id?: number;

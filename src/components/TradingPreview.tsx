@@ -1,10 +1,8 @@
 "use client";
 
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { audit } from "@/lib/audit";
 import { 
-  CurrencyDollarIcon, 
   ArrowRightIcon,
   ChartBarIcon,
   ShieldCheckIcon,
@@ -13,59 +11,12 @@ import {
   RocketLaunchIcon,
   GlobeAltIcon,
   DevicePhoneMobileIcon,
-  ComputerDesktopIcon,
-  SparklesIcon
+  ComputerDesktopIcon
 } from "@heroicons/react/24/outline";
 
 export default function TradingPreview() {
-  const [activeTab, setActiveTab] = useState("crypto");
-  const [currentPrice, setCurrentPrice] = useState(43250);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
-
-  // Simulate live price updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPrice(prev => prev + (Math.random() - 0.5) * 100);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const cryptoData = [
-    {
-      id: "btc",
-      name: "Bitcoin",
-      symbol: "BTC",
-      price: currentPrice,
-      change: "+2.4%",
-      volume: "₵2.5M",
-      icon: "₿",
-      color: "from-orange-500 to-yellow-500",
-      sparkline: [100, 120, 110, 130, 125, 140, 135, 150]
-    },
-    {
-      id: "eth",
-      name: "Ethereum",
-      symbol: "ETH",
-      price: 2680,
-      change: "+1.8%",
-      volume: "₵1.8M",
-      icon: "Ξ",
-      color: "from-blue-500 to-purple-500",
-      sparkline: [80, 85, 90, 88, 95, 92, 98, 100]
-    },
-    {
-      id: "usdt",
-      name: "USDT",
-      symbol: "USDT",
-      price: 1.00,
-      change: "0.0%",
-      volume: "₵3.2M",
-      icon: "₮",
-      color: "from-green-500 to-teal-500",
-      sparkline: [100, 100, 100, 100, 100, 100, 100, 100]
-    }
-  ];
 
   const giftCards = [
     {
@@ -200,7 +151,7 @@ export default function TradingPreview() {
             className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed"
           >
             Experience the future of digital trading with our cutting-edge platform. 
-            Trade crypto and gift cards with unmatched speed, security, and convenience.
+            Trade gift cards with unmatched speed, security, and convenience.
           </motion.p>
         </motion.div>
 
@@ -224,122 +175,30 @@ export default function TradingPreview() {
               <div className="text-green-400 text-sm font-mono">● LIVE</div>
             </div>
 
-            {/* Tab Buttons */}
-            <div className="flex space-x-2 mb-8">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab("crypto")}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  activeTab === "crypto"
-                    ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg"
-                    : "bg-white/10 text-gray-300 hover:bg-white/20"
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <CurrencyDollarIcon className="w-5 h-5" />
-                  <span>Crypto Trading</span>
-                </div>
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab("giftcards")}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  activeTab === "giftcards"
-                    ? "bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg"
-                    : "bg-white/10 text-gray-300 hover:bg-white/20"
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <SparklesIcon className="w-5 h-5" />
-                  <span>Gift Cards</span>
-                </div>
-              </motion.button>
-            </div>
-
             {/* Trading Content */}
-            <AnimatePresence mode="wait">
-              {activeTab === "crypto" && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              {giftCards.map((card, index) => (
                 <motion.div
-                  key="crypto"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+                  key={card.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  viewport={{ once: true }}
+                  className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300"
                 >
-                  {cryptoData.map((crypto, index) => (
-                    <motion.div
-                      key={crypto.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300"
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 bg-gradient-to-br ${crypto.color} rounded-xl flex items-center justify-center text-2xl font-bold`}>
-                          {crypto.icon}
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-400">{crypto.symbol}</div>
-                          <div className="text-green-400 text-sm">{crypto.change}</div>
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-bold text-white mb-2">{crypto.name}</h3>
-                      <div className="text-2xl font-bold text-white mb-2">₵{crypto.price.toLocaleString()}</div>
-                      <div className="text-sm text-gray-400 mb-4">Volume: {crypto.volume}</div>
-                      
-                      {/* Sparkline Chart */}
-                      <div className="flex items-end space-x-1 h-12">
-                        {crypto.sparkline.map((value, i) => (
-                          <motion.div
-                            key={i}
-                            initial={{ height: 0 }}
-                            animate={{ height: `${(value / 150) * 100}%` }}
-                            transition={{ duration: 0.5, delay: index * 0.1 + i * 0.05 }}
-                            className="flex-1 bg-gradient-to-t from-red-500 to-orange-500 rounded-sm opacity-60"
-                          />
-                        ))}
-                      </div>
-                    </motion.div>
-                  ))}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${card.color} rounded-xl flex items-center justify-center text-2xl`}>
+                      {card.icon}
+                    </div>
+                    <div className="text-green-400 text-sm">● {card.status}</div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">{card.name}</h3>
+                  <div className="text-2xl font-bold text-white mb-2">{card.rate}</div>
+                  <div className="text-sm text-gray-400">per $1</div>
                 </motion.div>
-              )}
-
-              {activeTab === "giftcards" && (
-                <motion.div
-                  key="giftcards"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 md:grid-cols-3 gap-6"
-                >
-                  {giftCards.map((card, index) => (
-                    <motion.div
-                      key={card.name}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300"
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 bg-gradient-to-br ${card.color} rounded-xl flex items-center justify-center text-2xl`}>
-                          {card.icon}
-                        </div>
-                        <div className="text-green-400 text-sm">● {card.status}</div>
-                      </div>
-                      <h3 className="text-xl font-bold text-white mb-2">{card.name}</h3>
-                      <div className="text-2xl font-bold text-white mb-2">{card.rate}</div>
-                      <div className="text-sm text-gray-400">per $1</div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+              ))}
+            </div>
           </div>
         </motion.div>
 

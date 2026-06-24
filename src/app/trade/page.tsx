@@ -3,12 +3,10 @@ import TradePage from '@/components/TradePage';
 
 export const metadata: Metadata = {
   title: 'Trade Now',
-  description: 'Start trading your gift cards and crypto assets with Dr iTunes Consult. Instant payouts, secure processing, and the best rates in Ghana.',
+  description: 'Start trading your gift cards with Dr iTunes Consult. Instant payouts, secure processing, and the best rates in Ghana.',
   keywords: [
     "trade gift cards Ghana",
-    "sell Bitcoin Ghana",
-    "sell USDT Ghana",
-    "crypto exchange Tamale",
+    "gift card exchange Tamale",
     "gift card trading app",
     "instant MoMo payment gift cards"
   ],

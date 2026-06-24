@@ -127,7 +127,7 @@ export default function HistoryPage() {
   const filterOptions = {
     assetType: [
       { id: 'all', name: 'All Assets' },
-      { id: 'crypto', name: 'Crypto' },
+
       { id: 'gift_card', name: 'Gift Card' }
     ],
     tradeStatus: [

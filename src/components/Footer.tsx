@@ -301,7 +301,7 @@ export default function Footer() {
               {/* Newsletter Signup */}
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
                 <h5 className="text-sm font-semibold text-white mb-2">Stay Updated</h5>
-                <p className="text-xs text-gray-400 mb-3">Get the latest crypto news and trading tips</p>
+                <p className="text-xs text-gray-400 mb-3">Get the latest digital finance news and trading tips</p>
                 <div className="flex space-x-2">
                   <input
                     type="email"

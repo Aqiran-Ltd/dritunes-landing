@@ -18,7 +18,7 @@ export default function FeaturesSection() {
     {
       icon: CurrencyDollarIcon,
       title: "Best Exchange Rates",
-      description: "Get the most competitive rates for your crypto and gift card trades. We offer market-leading prices with no hidden fees.",
+      description: "Get the most competitive rates for your gift card trades. We offer market-leading prices with no hidden fees.",
       gradient: "from-green-500 to-green-600",
       delay: 0.1
     },
@@ -39,7 +39,7 @@ export default function FeaturesSection() {
     {
       icon: UserGroupIcon,
       title: "Expert Team",
-      description: "Our experienced team of crypto and digital finance experts ensures you get the best guidance and service.",
+      description: "Our experienced team of e-commerce and digital finance experts ensures you get the best guidance and service.",
       gradient: "from-orange-500 to-orange-600",
       delay: 0.4
     },
@@ -53,7 +53,7 @@ export default function FeaturesSection() {
     {
       icon: AcademicCapIcon,
       title: "Workshops & Events",
-      description: "Join our educational workshops and events to learn about crypto trading and digital finance.",
+      description: "Join our educational workshops and events to learn about digital entrepreneurship and digital finance.",
       gradient: "from-indigo-500 to-indigo-600",
       delay: 0.6
     }
@@ -97,7 +97,7 @@ export default function FeaturesSection() {
             Why Choose <span className="text-gradient">Dr iTunes</span>
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            We provide the best crypto and gift card trading experience in Ghana with unmatched security, support, and rates.
+            We provide the best gift card trading experience in Ghana with unmatched security, support, and rates.
           </p>
         </motion.div>
 

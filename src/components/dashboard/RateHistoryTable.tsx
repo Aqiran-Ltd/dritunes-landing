@@ -189,7 +189,7 @@ export default function RateHistoryTable() {
             >
               <option value="">All</option>
               <option value="gift_card">Gift Card</option>
-              <option value="crypto">Crypto</option>
+
             </select>
           </div>
           <div>

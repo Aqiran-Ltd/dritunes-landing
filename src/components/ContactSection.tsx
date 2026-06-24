@@ -110,7 +110,7 @@ export default function ContactSection() {
             Ready to <span className="text-gradient">Start Trading</span>?
           </h2>
           <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-            Join thousands of satisfied customers who trust Dr iTunes Consult for their crypto and gift card trading needs.
+            Join thousands of satisfied customers who trust Dr iTunes Consult for their gift card trading needs.
           </p>
         </motion.div>
 

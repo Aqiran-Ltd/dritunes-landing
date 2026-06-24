@@ -9,6 +9,8 @@ import {
   BanknotesIcon,
   ExclamationTriangleIcon
 } from "@heroicons/react/24/outline";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 export default function TermsOfService() {
   const terms = [
@@ -21,7 +23,7 @@ export default function TermsOfService() {
     {
       title: "2. The Trading Workflow",
       icon: ArrowPathIcon,
-      content: "When you initiate a trade, you will receive a live quote based on current market rates. Quotes are valid for a limited time (typically 15-30 minutes). Once you confirm the trade and provide the asset (Gift Card or Crypto), our team verifies the asset before processing the payout.",
+      content: "When you initiate a trade, you will receive a live quote based on current market rates. Quotes are valid for a limited time (typically 15-30 minutes). Once you confirm the trade and provide the asset (Gift Card), our team verifies the asset before processing the payout.",
       color: "orange"
     },
     {
@@ -45,8 +47,10 @@ export default function TermsOfService() {
   ];
 
   return (
-    <div className="pt-32 pb-20 min-h-screen bg-gradient-to-br from-white via-gray-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="max-w-4xl mx-auto px-4">
+    <main className="flex flex-col min-h-screen bg-gradient-to-br from-white via-gray-50 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <Navigation />
+      <div className="flex-1 pt-32 pb-20">
+        <div className="max-w-4xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -121,6 +125,8 @@ export default function TermsOfService() {
           Last Updated: March 18, 2026
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+    </main>
   );
 }

@@ -131,7 +131,7 @@ export default function ContactPage() {
             Ready to <span className="text-gradient">Start Trading</span>?
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-            Join thousands of satisfied customers who trust Dr iTunes Consult for their crypto and gift card trading needs.
+            Join thousands of satisfied customers who trust Dr iTunes Consult for their gift card trading needs.
           </p>
         </motion.div>
 
@@ -418,7 +418,7 @@ export default function ContactPage() {
         >
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connect on <span className="text-gradient">Social Media</span></h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Follow us for real-time rate updates, crypto news, and exclusive trading offers across all our official channels.</p>
+            <p className="text-gray-400 max-w-2xl mx-auto">Follow us for real-time rate updates, digital finance news, and exclusive trading offers across all our official channels.</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">

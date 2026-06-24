@@ -27,15 +27,15 @@ export default function QuickActions() {
        </Link>
 
        <Link 
-          href="/dashboard/trade?type=sell_crypto"
+          href="/dashboard/rates"
           className="group relative overflow-hidden bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 transition-transform hover:scale-[1.02] hover:border-red-100 dark:hover:border-red-900/30"
        >
           <div className="relative z-10">
              <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-3 text-blue-600 dark:text-blue-400">
                 <QrCodeIcon className="w-6 h-6" />
              </div>
-             <h3 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">Sell Crypto</h3>
-             <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">BTC, USDT, ETH</p>
+             <h3 className="font-bold text-lg text-gray-900 dark:text-white leading-tight">View Rates</h3>
+             <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">Check current prices</p>
           </div>
        </Link>
 

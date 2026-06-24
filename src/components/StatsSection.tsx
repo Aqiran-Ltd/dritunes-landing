@@ -92,7 +92,7 @@ export default function StatsSection() {
             Trusted by <span className="text-gradient">Thousands</span> Across Ghana
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Our commitment to excellence has made us Ghana&apos;s most trusted crypto and gift card trading service.
+            Our commitment to excellence has made us Ghana&apos;s most trusted gift card trading service.
           </p>
         </motion.div>
 

@@ -56,7 +56,7 @@ export default function AboutSection() {
           </h2>
           
           <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-4xl mx-auto">
-            Founded in the heart of Tamale, Dr iTunes Consult has grown from a local startup to Ghana&apos;s most trusted crypto and gift card trading service. We offer both online trading via WhatsApp/Telegram and a physical store – giving you the flexibility to trade however you prefer.
+            Founded in the heart of Tamale, Dr iTunes Consult has grown from a local startup to Ghana&apos;s most trusted gift card trading service. We offer both online trading via WhatsApp/Telegram and a physical store – giving you the flexibility to trade however you prefer.
           </p>
         </motion.div>
 
@@ -149,7 +149,7 @@ export default function AboutSection() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Instant Trading</h3>
               <p className="text-gray-600 leading-relaxed">
-                Get the best rates instantly. Our platform ensures fast transactions whether you&apos;re trading crypto or gift cards.
+                Get the best rates instantly. Our platform ensures fast transactions whether you&apos;re trading gift cards.
               </p>
             </div>
           </motion.div>
@@ -240,51 +240,7 @@ export default function AboutSection() {
               </div>
 
               {/* Trading Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Crypto Trading Panel */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 1.1 }}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700"
-                >
-                  <div className="flex items-center mb-6">
-                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-white font-bold text-sm">₿</span>
-                    </div>
-                    <h4 className="text-white text-xl font-bold">Crypto Trading</h4>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {[
-                      { name: "Bitcoin", symbol: "BTC", price: "₵450,000", change: "+2.5%" },
-                      { name: "Ethereum", symbol: "ETH", price: "₵28,500", change: "+1.8%" },
-                      { name: "USDT", symbol: "USDT", price: "₵15.20", change: "+0.3%" }
-                    ].map((crypto, idx) => (
-                      <motion.div
-                        key={crypto.symbol}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 1.2 + idx * 0.1 }}
-                        whileHover={{ scale: 1.02, x: 5 }}
-                        className="bg-gray-700 rounded-xl p-4 hover:bg-gray-600 transition-all duration-300 cursor-pointer"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="text-white font-semibold">{crypto.name}</div>
-                            <div className="text-gray-400 text-sm">{crypto.symbol}</div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-white font-bold">{crypto.price}</div>
-                            <div className="text-green-400 text-sm">{crypto.change}</div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
+              <div className="grid grid-cols-1 gap-8">
 
                 {/* Gift Card Trading Panel */}
                 <motion.div

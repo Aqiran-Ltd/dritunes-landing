@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn about Dr iTunes Consult, Ghana's leading digital asset trading company. Our mission is to provide secure, fast, and reliable crypto and gift card exchange services.",
+  description: "Learn about Dr iTunes Consult, Ghana's leading ICT consultancy and gift card trading company. Our mission is to provide secure, fast, and reliable digital services.",
 };
 
 export default function About() {

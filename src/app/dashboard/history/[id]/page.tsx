@@ -28,7 +28,7 @@ interface TradeDetail {
   id: number;
   trade_number: string;
   user_id: number;
-  asset_type: 'gift_card' | 'crypto';
+  asset_type: 'gift_card';
   asset_name: string;
   amount: string;
   code: string | null;
@@ -326,7 +326,7 @@ export default function TradeDetailPage() {
                   <div className="space-y-1 p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl">
                      <p className="text-[10px] text-gray-400 font-bold uppercase">Card Type</p>
                      <p className="font-black text-gray-900 dark:text-white capitalize">
-                        {trade.asset_type === 'crypto' ? 'Crypto' : (trade.rate?.type || 'Gift Card')}
+                        {trade.rate?.type || 'Gift Card'}
                      </p>
                   </div>
                   <div className="space-y-1 p-5 bg-red-50 dark:bg-red-900/10 rounded-3xl border border-red-100 dark:border-red-900/20">

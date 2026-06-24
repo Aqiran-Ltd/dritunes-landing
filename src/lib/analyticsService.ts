@@ -154,7 +154,7 @@ export function fetchTrendsVolume(
 export function fetchTrendsDistribution(
   token: string,
   days = 30,
-  asset_type?: 'crypto' | 'gift_card'
+  asset_type?: 'gift_card'
 ) {
   const q = new URLSearchParams({ days: String(days) });
   if (asset_type) q.set('asset_type', asset_type);

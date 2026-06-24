@@ -147,8 +147,8 @@ export default function AboutPage() {
     },
     {
       icon: BuildingOfficeIcon,
-      title: "P2P & BlockChain Education",
-      description: "Master the art of peer-to-peer exchanges. We provide expert-led mentorship on navigating platforms like Binance and Kucoin safely.",
+      title: "Digital Entrepreneurship",
+      description: "Master the art of online business. We provide expert-led mentorship on navigating modern digital payment systems and e-commerce platforms safely.",
       gradient: "from-purple-500 to-purple-600",
       delay: 0.3
     },
@@ -169,7 +169,7 @@ export default function AboutPage() {
   ];
 
   const achievements = [
-    "Trained over 500 youth in crypto trading fundamentals and safe digital practices.",
+    "Trained over 500 youth in digital entrepreneurship fundamentals and safe digital practices.",
     "Spearheaded AITES Dream Tour, a tech-cultural project encouraging tech students to explore Ghana's heritage.",
     "Developed several in-house and client-based digital platforms and automated systems.",
     "Built strategic partnerships with local institutions to promote tech awareness and financial inclusion."
@@ -179,7 +179,7 @@ export default function AboutPage() {
     "Establish physical digital learning centers across Northern Ghana.",
     "Expand into fintech tools that allow African users to engage with digital assets more easily.",
     "Launch a scholarship program for underprivileged but talented youth.",
-    "Partner with NGOs, government agencies, and global blockchain platforms."
+    "Partner with NGOs, government agencies, and global e-commerce platforms."
   ];
 
   return (
@@ -415,7 +415,7 @@ export default function AboutPage() {
                 </h3>
                 <ul className="space-y-4 text-lg text-gray-700 dark:text-gray-300">
                   {[
-                    "Educate and mentor youth on cryptocurrency, blockchain, and digital finance.",
+                    "Educate and mentor youth on digital literacy, SME digitalization, and digital finance tools.",
                     "Provide consultancy services in digital business setup, website development, and P2P trading.",
                     "Promote digital literacy and entrepreneurial skills in underserved regions.",
                     "Build digital ecosystems that create sustainable income streams for the African youth."
@@ -535,7 +535,7 @@ export default function AboutPage() {
                 {[
                   {
                     title: "Instant Liquidity",
-                    desc: "Whether it's crypto or gift cards, our direct payout system ensures you get your GHS in minutes, directly to your MoMo or Bank.",
+                    desc: "Our direct payout system ensures you get your GHS in minutes, directly to your MoMo or Bank.",
                     num: "01"
                   },
                   {
@@ -645,12 +645,12 @@ export default function AboutPage() {
               <div className="space-y-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed text-justify">
                 <p>
                   Alhassan Abdul-Hanan (Dr. iTunes) is a Ghanaian tech entrepreneur, digital educator, 
-                  and cryptocurrency trader. He served as President of the Computer Science Department 
+                  and e-commerce specialist. He served as President of the Computer Science Department 
                   and the Association of Information Technology Students (AITES) at Tamale Technical University.
                 </p>
                 <p>
-                  Dr. iTunes began his journey in cryptocurrency trading in 2018, and since then, has gained 
-                  mastery in peer-to-peer (P2P) exchanges and blockchain technologies. His passion for education, 
+                  Dr. iTunes began his journey in digital entrepreneurship in 2018, and since then, has gained 
+                  mastery in e-commerce and digital finance technologies. His passion for education, 
                   impact, and digital inclusion led to the founding of Dr iTunes Consult to mentor the next 
                   generation of African tech innovators.
                 </p>

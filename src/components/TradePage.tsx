@@ -40,7 +40,7 @@ export default function TradePage() {
             <CurrencyDollarIcon className="w-6 h-6 mr-2 text-red-500 animate-bounce" />
             Start Trading with Dr iTunes
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Trade Crypto & Gift Cards Easily</h1>
+          <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Trade Gift Cards Easily</h1>
           <p className="text-lg md:text-2xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-4">Follow these simple steps to get the best rates and fastest service in Ghana!</p>
         </motion.div>
         {/* Creative Divider */}
@@ -53,8 +53,8 @@ export default function TradePage() {
                 <CreditCardIcon className="w-10 h-10 text-red-500 bg-red-100 dark:bg-red-900/30 rounded-full p-2" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">1. Choose Your Card or Crypto</h2>
-                <p className="text-gray-600 dark:text-gray-300">Select the type of gift card or cryptocurrency you want to trade. We accept iTunes, Amazon, Steam, Bitcoin, USDT, and more.</p>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">1. Choose Your Card</h2>
+                <p className="text-gray-600 dark:text-gray-300">Select the type of gift card you want to trade. We accept iTunes, Amazon, Steam, and more.</p>
               </div>
             </li>
             <li className="flex items-start space-x-4">
@@ -81,7 +81,7 @@ export default function TradePage() {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">4. Complete Your Trade</h2>
-                <p className="text-gray-600 dark:text-gray-300">Send your card or crypto, receive your payment instantly via your preferred method (Mobile Money, Bank, etc.).</p>
+                <p className="text-gray-600 dark:text-gray-300">Send your card, receive your payment instantly via your preferred method (Mobile Money, Bank, etc.).</p>
               </div>
             </li>
           </ol>

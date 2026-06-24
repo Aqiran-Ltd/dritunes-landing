@@ -9,8 +9,8 @@ import Footer from "@/components/Footer";
 import { fetchRates } from "@/lib/ratesService";
 
 export const metadata: Metadata = {
-  title: "Home | Dr iTunes Consult - Ghana's Trusted Crypto & Gift Card Service",
-  description: "Securely trade Bitcoin, USDT, and Gift Cards at the best rates in Ghana. Visit our Tamale store or trade online 24/7.",
+  title: "Home | Dr iTunes Consult - Ghana's Trusted Gift Card Service",
+  description: "Securely trade Gift Cards at the best rates in Ghana. Visit our Tamale store or trade online 24/7.",
 };
 
 export const revalidate = 60; // Revalidate every 60 seconds

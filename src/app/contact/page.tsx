@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Get in touch with Dr iTunes Consult. Visit our physical store in Tamale, reach out on WhatsApp, or send us an email for all your crypto and gift card trading inquiries.",
+  description: "Get in touch with Dr iTunes Consult. Visit our physical store in Tamale, reach out on WhatsApp, or send us an email for all your gift card trading inquiries.",
 };
 
 export default function Contact() {
