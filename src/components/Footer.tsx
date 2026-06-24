@@ -124,7 +124,7 @@ export default function Footer() {
                 </div>
               </Link>
               <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed mb-6">
-                Ghana&apos;s premier crypto and gift card trading service. Trusted by thousands for secure, fast, and reliable transactions with 24/7 support.
+                Ghana&apos;s premier gift card trading service. Trusted by thousands for secure, fast, and reliable transactions with 24/7 support.
               </p>
               
               {/* Trust Badges */}

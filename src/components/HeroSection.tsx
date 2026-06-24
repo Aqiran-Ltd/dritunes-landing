@@ -124,7 +124,7 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.6 }}
           className="text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed"
         >
-          Ghana&apos;s Premier <span className="text-red-400 font-bold">Crypto & Gift Card</span> Trading Service
+          Ghana&apos;s Premier <span className="text-red-400 font-bold">Gift Card</span> Trading Service
           <br />
           <span className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium">Online Trading • Physical Store • 24/7 Support</span>
         </motion.p>
