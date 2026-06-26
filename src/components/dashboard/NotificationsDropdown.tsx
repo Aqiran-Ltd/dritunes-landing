@@ -3,18 +3,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from '@/lib/api';
 import { playNotificationSound } from '@/lib/notificationSound';
-import { BellIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { 
+  BellIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ExclamationTriangleIcon,
+  InformationCircleIcon,
+  WalletIcon,
+  ArrowRightIcon
+} from '@heroicons/react/24/outline';
 
 interface Notification {
   id: string;
   type: string;
+  title?: string;
+  body?: string;
   data: {
-    message?: string;
     title?: string;
-    action_url?: string;
+    body?: string;
+    message?: string;
+    type?: string;
+    reference_id?: string | number;
+    status?: string;
+    icon?: string;
+    color?: string;
     [key: string]: any;
   };
   read_at: string | null;
@@ -107,15 +122,51 @@ export default function NotificationsDropdown() {
     }
   };
 
-  const handleNotificationClick = async (notification: Notification) => {
+  const handleNotificationClick = async (notification: Notification, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    
     if (!notification.read_at) {
       await markAsRead(notification.id);
     }
     
-    if (notification.data.action_url) {
-      router.push(notification.data.action_url);
+    const { type, reference_id, trade_number, action_url, icon } = notification.data;
+    
+    if (action_url) {
+      router.push(action_url);
+      setIsOpen(false);
+      return;
+    }
+
+    if (type === 'transaction_update' || icon === 'payments') {
+      router.push(`/dashboard/wallet`);
+      setIsOpen(false);
+    } else if (type === 'trade_created' || type === 'trade_update' || trade_number) {
+      router.push(`/dashboard/history/${trade_number || reference_id}`);
       setIsOpen(false);
     }
+  };
+
+  const getIconAndColor = (data: Notification['data']) => {
+    const colorType = data.color || 'info';
+    const iconType = data.icon || 'info';
+
+    let ColorClass = 'text-blue-500 bg-blue-50 dark:bg-blue-900/20';
+    let Icon = InformationCircleIcon;
+
+    if (colorType === 'success') {
+      ColorClass = 'text-green-500 bg-green-50 dark:bg-green-900/20';
+    } else if (colorType === 'danger' || colorType === 'error') {
+      ColorClass = 'text-red-500 bg-red-50 dark:bg-red-900/20';
+    } else if (colorType === 'warning') {
+      ColorClass = 'text-amber-500 bg-amber-50 dark:bg-amber-900/20';
+    }
+
+    if (iconType === 'check_circle') Icon = CheckCircleIcon;
+    if (iconType === 'cancel' || iconType === 'error') Icon = XCircleIcon;
+    if (iconType === 'warning') Icon = ExclamationTriangleIcon;
+    if (iconType === 'payments') Icon = WalletIcon;
+
+    return { Icon, ColorClass };
   };
 
   const toggleDropdown = () => {
@@ -174,28 +225,61 @@ export default function NotificationsDropdown() {
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {notifications.map((notification) => (
-                    <button
-                      key={notification.id}
-                      onClick={() => handleNotificationClick(notification)}
-                      className={`w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex gap-3 ${
-                        !notification.read_at ? 'bg-red-50/30 dark:bg-red-900/5' : ''
-                      }`}
-                    >
-                      <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${!notification.read_at ? 'bg-red-500' : 'bg-transparent'}`}></div>
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-sm ${!notification.read_at ? 'font-semibold text-gray-900 dark:text-white' : 'font-medium text-gray-700 dark:text-gray-300'}`}>
-                          {notification.data.title || 'Notification'}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
-                           {notification.data.message || 'You have a new notification.'}
-                        </p>
-                        <p className="text-[10px] text-gray-400 mt-2">
-                          {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
-                        </p>
+                  {notifications.map((notification) => {
+                    const { Icon, ColorClass } = getIconAndColor(notification.data);
+                    const title = notification.title || notification.data.title || 'Notification';
+                    const body = notification.body || notification.data.body || notification.data.message || 'You have a new notification.';
+                    const hasAction = notification.data.type === 'trade_update' || 
+                                      notification.data.type === 'trade_created' || 
+                                      notification.data.type === 'transaction_update' || 
+                                      !!notification.data.trade_number ||
+                                      notification.data.icon === 'payments' ||
+                                      !!notification.data.action_url;
+                    
+                    return (
+                      <div
+                        key={notification.id}
+                        onClick={(e) => handleNotificationClick(notification, e)}
+                        className={`group relative w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-all duration-200 cursor-pointer flex flex-col gap-3 ${
+                          !notification.read_at ? 'bg-red-50/30 dark:bg-red-900/10' : ''
+                        }`}
+                      >
+                        <div className="flex gap-3">
+                          <div className={`mt-0.5 p-2 rounded-full h-fit flex-shrink-0 ${ColorClass}`}>
+                             <Icon className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start">
+                              <p className={`text-sm pr-2 ${!notification.read_at ? 'font-bold text-gray-900 dark:text-white' : 'font-semibold text-gray-700 dark:text-gray-200'}`}>
+                                {title}
+                              </p>
+                              {!notification.read_at && (
+                                <span className="w-2 h-2 mt-1.5 rounded-full bg-red-500 flex-shrink-0 animate-pulse"></span>
+                              )}
+                            </div>
+                            <p className={`text-xs mt-1 leading-relaxed ${!notification.read_at ? 'text-gray-700 dark:text-gray-300' : 'text-gray-500 dark:text-gray-400'}`}>
+                               {body}
+                            </p>
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 font-medium tracking-wide uppercase">
+                              {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {hasAction && (
+                          <div className="mt-1 pl-11">
+                            <button
+                              onClick={(e) => handleNotificationClick(notification, e)}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
+                            >
+                              View Details
+                              <ArrowRightIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    </button>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

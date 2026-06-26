@@ -291,7 +291,7 @@ export default function WalletPage() {
                )}
              </div>
 
-             {wallet && wallet.transactions.last_page > 1 && (
+             {wallet && wallet.transactions.total > 0 && (
                   <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
                       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                           Page {pagination.currentPage} of {pagination.lastPage}
