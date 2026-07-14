@@ -126,6 +126,37 @@ export default function TradePage() {
     init();
   }, []);
 
+  // -- Pre-fill from URL Params --
+  useEffect(() => {
+    if (categories.length > 0 && typeof window !== 'undefined' && !selectedCatName) {
+      const params = new URLSearchParams(window.location.search);
+      const asset = params.get('asset');
+      const region = params.get('region');
+      const cardLabel = params.get('card');
+      const amt = params.get('amount');
+      const type = params.get('type');
+      
+      if (asset) setSelectedCatName(asset);
+      if (region) setSelectedRegion(region);
+      
+      if (amt) {
+        setAmount(amt);
+      } else if (cardLabel) {
+        // Extract all numbers from the string (including decimals) to handle ranges like "50~100"
+        const numbers = cardLabel.match(/\d+(\.\d+)?/g);
+        if (numbers && numbers.length > 0) {
+          const highest = Math.max(...numbers.map(Number));
+          setAmount(highest.toString());
+        }
+      }
+
+      if (type) {
+        if (type.toLowerCase() === 'physical') setSelectedType('physical');
+        else if (type.toLowerCase() === 'e-code' || type.toLowerCase() === 'ecode') setSelectedType('ecode');
+      }
+    }
+  }, [categories, selectedCatName]);
+
   // -- Auto-select settlement or deselect when switching --
   useEffect(() => {
     if (withdrawalPreference === 'direct_payout' && selectedUserMethodId === -1 && userPaymentMethods.length > 0) {
@@ -160,7 +191,15 @@ export default function TradePage() {
   }, [activeCategory, selectedRegion]);
 
   useEffect(() => {
-     setSelectedCardId(-1);
+      let nextId = -1;
+      if (typeof window !== 'undefined') {
+          const params = new URLSearchParams(window.location.search);
+          const cardLabel = params.get('card') || params.get('amount'); // fallback to 'amount' for legacy links
+          if (cardLabel && availableCards.length > 0) {
+              nextId = availableCards.findIndex(c => c.amount === cardLabel);
+          }
+      }
+      setSelectedCardId(nextId);
   }, [availableCards]);
 
   const activeCard = useMemo(() => {

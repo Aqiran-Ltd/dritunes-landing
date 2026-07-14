@@ -19,7 +19,8 @@ import {
   WalletIcon,
   BuildingLibraryIcon,
   CheckBadgeIcon,
-  XMarkIcon
+  XMarkIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,7 +37,7 @@ interface TradeDetail {
   rate_used: string;
   total_payout: string;
   payment_status: 'pending' | 'paid' | 'failed';
-  trade_status: 'pending' | 'approved' | 'rejected' | 'disputed';
+  trade_status: 'pending' | 'in_progress' | 'approved' | 'rejected' | 'disputed';
   withdrawal_preference: 'wallet' | 'direct_payout';
   attachments: string[];
   user_notes: string | null;
@@ -159,6 +160,8 @@ export default function TradeDetailPage() {
         return 'text-red-600 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/50';
       case 'disputed':
         return 'text-orange-600 bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-900/50';
+      case 'in_progress':
+        return 'text-blue-600 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-900/50';
       default: 
         return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/50';
     }
@@ -174,6 +177,8 @@ export default function TradeDetailPage() {
         return <XCircleIcon className="w-5 h-5" />;
       case 'disputed':
         return <ExclamationCircleIcon className="w-5 h-5" />;
+      case 'in_progress':
+        return <ArrowPathIcon className="w-5 h-5 animate-spin" />;
       default: 
         return <ClockIcon className="w-5 h-5" />;
     }

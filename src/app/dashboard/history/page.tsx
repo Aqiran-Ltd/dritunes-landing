@@ -13,7 +13,8 @@ import {
   MagnifyingGlassIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  AdjustmentsHorizontalIcon
+  AdjustmentsHorizontalIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -28,7 +29,7 @@ interface Trade {
   amount: string;
   rate_used: string;
   total_payout: string;
-  trade_status: 'pending' | 'approved' | 'rejected' | 'disputed';
+  trade_status: 'pending' | 'in_progress' | 'approved' | 'rejected' | 'disputed';
   payment_status: 'pending' | 'paid' | 'failed';
   created_at: string;
 }
@@ -104,6 +105,8 @@ export default function HistoryPage() {
         return 'text-red-600 bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/50';
       case 'disputed':
         return 'text-orange-600 bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-900/50';
+      case 'in_progress':
+        return 'text-blue-600 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-900/50';
       default: // pending
         return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-900/50';
     }
@@ -119,6 +122,8 @@ export default function HistoryPage() {
         return <XCircleIcon className="w-4 h-4" />;
       case 'disputed':
         return <ExclamationCircleIcon className="w-4 h-4" />;
+      case 'in_progress':
+        return <ArrowPathIcon className="w-4 h-4 animate-spin" />;
       default: // pending
         return <ClockIcon className="w-4 h-4" />;
     }
@@ -133,6 +138,7 @@ export default function HistoryPage() {
     tradeStatus: [
       { id: 'all', name: 'All Status' },
       { id: 'pending', name: 'Pending' },
+      { id: 'in_progress', name: 'In Progress' },
       { id: 'approved', name: 'Approved' },
       { id: 'rejected', name: 'Rejected' },
       { id: 'disputed', name: 'Disputed' }

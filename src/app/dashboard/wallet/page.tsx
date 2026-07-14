@@ -229,10 +229,11 @@ export default function WalletPage() {
                         options={[
                             { id: 'all', name: 'All' },
                             { id: 'pending', name: 'Pending' },
+                            { id: 'in_progress', name: 'In Progress' },
                             { id: 'completed', name: 'Completed' },
                             { id: 'failed', name: 'Failed' }
                         ]}
-                        value={[{ id: 'all', name: 'All' }, { id: 'pending', name: 'Pending' }, { id: 'completed', name: 'Completed' }, { id: 'failed', name: 'Failed' }].find(o => o.id === (txStatus || 'all')) || null}
+                        value={[{ id: 'all', name: 'All' }, { id: 'pending', name: 'Pending' }, { id: 'in_progress', name: 'In Progress' }, { id: 'completed', name: 'Completed' }, { id: 'failed', name: 'Failed' }].find(o => o.id === (txStatus || 'all')) || null}
                         onChange={(o) => setTxStatus(String(o.id) === 'all' ? '' : String(o.id))}
                         className="!space-y-1"
                     />
@@ -277,7 +278,8 @@ export default function WalletPage() {
                          </p>
                          <span className={`text-[10px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded ${
                            tx.status === 'completed' ? 'text-green-600 bg-green-50' : 
-                           tx.status === 'failed' ? 'text-red-600 bg-red-50' : 'text-amber-600 bg-amber-50'
+                           tx.status === 'failed' ? 'text-red-600 bg-red-50' : 
+                           tx.status === 'in_progress' ? 'text-blue-600 bg-blue-50' : 'text-amber-600 bg-amber-50'
                          }`}>
                            {tx.status}
                          </span>
@@ -482,7 +484,8 @@ export default function WalletPage() {
                             <div className="flex items-center justify-center gap-2">
                                 <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded w-fit ${
                                     selectedTx.status === 'completed' ? 'text-green-600 bg-green-100 dark:bg-green-900/30' : 
-                                    selectedTx.status === 'failed' ? 'text-red-600 bg-red-100 dark:bg-red-900/30' : 'text-amber-600 bg-amber-100 dark:bg-amber-900/30'
+                                    selectedTx.status === 'failed' ? 'text-red-600 bg-red-100 dark:bg-red-900/30' : 
+                                    selectedTx.status === 'in_progress' ? 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' : 'text-amber-600 bg-amber-100 dark:bg-amber-900/30'
                                     }`}>
                                     {selectedTx.status}
                                 </span>

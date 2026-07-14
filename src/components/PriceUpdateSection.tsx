@@ -306,7 +306,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
 
               <div className={`grid gap-3 ${settings?.offer_trade_via_whatsapp ? 'grid-cols-2' : 'grid-cols-1'}`}>
                  <button
-                   onClick={() => router.push('/dashboard/trade')}
+                   onClick={() => router.push(`/dashboard/trade?asset=${encodeURIComponent(selectedCatName)}&region=${encodeURIComponent(selectedRegion)}&card=${encodeURIComponent(activeCard?.amount || '')}&amount=${encodeURIComponent(amount)}&type=${encodeURIComponent(selectedType)}`)}
                    disabled={!isValid || calculatedValue <= 0}
                    className="w-full py-4 bg-red-600 hover:bg-red-700 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-900/20"
                  >

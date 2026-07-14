@@ -4,7 +4,7 @@ export interface WalletTransaction {
   id: number;
   amount: string;
   type: 'credit' | 'debit';
-  status: 'pending' | 'completed' | 'failed';
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
   reference: string;
   description: string;
   created_at: string;
