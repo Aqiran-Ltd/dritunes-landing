@@ -6,13 +6,14 @@ import { getToken, onMessage } from "firebase/messaging";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { 
+import {
   BellAlertIcon as BellRing,
   ArrowRightIcon as ArrowRight,
   CheckCircleIcon as CheckCircle2,
   XCircleIcon,
   ExclamationCircleIcon as AlertCircle,
-  WalletIcon as Wallet
+  WalletIcon as Wallet,
+  ChatBubbleLeftRightIcon
 } from "@heroicons/react/24/outline";
 import { playNotificationSound } from "@/lib/notificationSound";
 
@@ -66,6 +67,10 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
         const type = data.type as string | undefined;
         const referenceId = data.reference_id as string | undefined;
         const tradeNumber = data.trade_number as string | undefined;
+        // Chat messages currently only send `trade_id` (numeric PK), not `trade_number`.
+        // The trade detail route/API resolve by trade_number, so this fallback may 404 —
+        // ideally the backend adds trade_number to the chat notification payload.
+        const tradeId = data.trade_id as string | undefined;
         const status = data.status as string | undefined;
         const icon = data.icon as string | undefined;
 
@@ -100,6 +105,12 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
             iconColor = "text-amber-500";
             bgColor = "bg-amber-50 dark:bg-amber-900/20";
           }
+        } else if (type === "trade_message") {
+          const idToUse = tradeNumber || tradeId;
+          targetRoute = idToUse ? `/dashboard/history/${idToUse}` : "/dashboard/history";
+          Icon = ChatBubbleLeftRightIcon;
+          iconColor = "text-red-500";
+          bgColor = "bg-red-50 dark:bg-red-900/20";
         }
 
         toast.custom((t) => (
@@ -121,7 +132,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
                 </p>
               </div>
             </div>
-            {(type === "trade_created" || type === "trade_update" || type === "transaction_update") && (
+            {(type === "trade_created" || type === "trade_update" || type === "transaction_update" || type === "trade_message") && (
               <div className="border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50 flex divide-x divide-gray-100 dark:divide-slate-700">
                 <button
                   onClick={() => {

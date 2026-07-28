@@ -24,6 +24,8 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TradeChatPanel } from '@/components/dashboard/TradeChatPanel';
+import { resolveStorageUrl } from '@/lib/storage';
 
 interface TradeDetail {
   id: number;
@@ -68,22 +70,7 @@ interface TradeDetail {
   user_payment_details?: Record<string, any> | string | null;
 }
 
-const getStorageBaseUrl = () => {
-  if (typeof window === 'undefined') return 'http://localhost:8000/storage';
-  const { hostname } = window.location;
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8000/storage';
-  }
-  return 'https://admin.dritunesconsult.com/storage';
-};
-
-const STORAGE_BASE_URL = getStorageBaseUrl();
-
-const prefixUrl = (url: string | null | undefined) => {
-  if (!url) return '';
-  if (url.startsWith('http')) return url;
-  return `${STORAGE_BASE_URL}/${url.startsWith('/') ? url.slice(1) : url}`;
-};
+const prefixUrl = resolveStorageUrl;
 
 export default function TradeDetailPage() {
   const { id } = useParams();
@@ -457,14 +444,14 @@ export default function TradeDetailPage() {
                 </div>
             )}
 
-            {/* Detailed Notes - Chat Style */}
+            {/* Original submission notes — kept separate from the live chat thread below */}
             {(trade.user_notes || trade.admin_notes) && (
               <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-8 shadow-sm border border-gray-100 dark:border-gray-800">
-                 <h2 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] mb-8">Communication Log</h2>
+                 <h2 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] mb-8">Trade Notes</h2>
                  <div className="space-y-6">
                     {trade.user_notes && (
                       <div className="max-w-[85%]">
-                         <p className="text-[10px] text-gray-500 font-bold uppercase ml-4 mb-2">User Note</p>
+                         <p className="text-[10px] text-gray-500 font-bold uppercase ml-4 mb-2">Your Note</p>
                          <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-[2rem] rounded-tl-none border border-gray-100 dark:border-gray-800">
                             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">"{trade.user_notes}"</p>
                          </div>
@@ -481,6 +468,9 @@ export default function TradeDetailPage() {
                  </div>
               </div>
             )}
+
+            {/* Live trade chat */}
+            <TradeChatPanel tradeNumber={trade.trade_number} />
          </div>
 
          {/* RIGHT COLUMN: Payout Info */}

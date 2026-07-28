@@ -1,0 +1,453 @@
+{
+    "data": [
+        {
+            "id": "98feb2b7-d758-4139-9c3c-66b85fd14dc4",
+            "type": "general",
+            "title": "Trade Approved",
+            "body": "Your trade #TRD-20260626-FHLE has been approved.",
+            "data": {
+                "title": "Trade Approved",
+                "body": "Your trade #TRD-20260626-FHLE has been approved.",
+                "type": "trade_update",
+                "reference_id": 8,
+                "trade_id": 8,
+                "trade_number": "TRD-20260626-FHLE",
+                "status": "approved",
+                "amount": "200.00",
+                "asset_name": "Google Play",
+                "icon": "check_circle",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T18:04:05.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "dc61c5d6-7420-4511-be0c-636af4ec485b",
+            "type": "general",
+            "title": "Payment Sent",
+            "body": "Payment for trade #TRD-20260520-0YLR has been sent.",
+            "data": {
+                "title": "Payment Sent",
+                "body": "Payment for trade #TRD-20260520-0YLR has been sent.",
+                "trade_id": 3,
+                "trade_number": "TRD-20260520-0YLR",
+                "status": "approved",
+                "amount": "100.00",
+                "asset_name": "iTunes",
+                "icon": "payments",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T17:40:19.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "6e371e71-cc38-4cfd-a7ee-e3ab4e412767",
+            "type": "general",
+            "title": "Trade Approved",
+            "body": "Your trade #TRD-20260520-0YLR has been approved.",
+            "data": {
+                "title": "Trade Approved",
+                "body": "Your trade #TRD-20260520-0YLR has been approved.",
+                "trade_id": 3,
+                "trade_number": "TRD-20260520-0YLR",
+                "status": "approved",
+                "amount": "100.00",
+                "asset_name": "iTunes",
+                "icon": "check_circle",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T17:39:24.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "df479ee9-7460-4282-ba8b-4c3295afa017",
+            "type": "general",
+            "title": "Trade Created",
+            "body": "Your trade #TRD-20260626-FHLE for 200.00 has been submitted.",
+            "data": {
+                "title": "Trade Created",
+                "body": "Your trade #TRD-20260626-FHLE for 200.00 has been submitted.",
+                "trade_id": 8,
+                "trade_number": "TRD-20260626-FHLE",
+                "amount": "200.00",
+                "asset_name": "Google Play",
+                "status": "pending",
+                "icon": "receipt_long",
+                "color": "info"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T17:38:07.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "2c60a93a-58e0-418f-a3fa-4d41acefd82e",
+            "type": "general",
+            "title": "Payment Sent",
+            "body": "Payment for trade #TRD-20260626-EHT9 has been sent.",
+            "data": {
+                "title": "Payment Sent",
+                "body": "Payment for trade #TRD-20260626-EHT9 has been sent.",
+                "trade_id": 6,
+                "trade_number": "TRD-20260626-EHT9",
+                "status": "approved",
+                "amount": "200.00",
+                "asset_name": "iTunes",
+                "icon": "payments",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T17:36:15.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "22197f91-0609-438f-970d-7cb977dbd0e9",
+            "type": "general",
+            "title": "Trade Approved",
+            "body": "Your trade #TRD-20260626-EHT9 has been approved.",
+            "data": {
+                "title": "Trade Approved",
+                "body": "Your trade #TRD-20260626-EHT9 has been approved.",
+                "trade_id": 6,
+                "trade_number": "TRD-20260626-EHT9",
+                "status": "approved",
+                "amount": "200.00",
+                "asset_name": "iTunes",
+                "icon": "check_circle",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T12:55:43.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "c9d7e088-3389-434e-9796-eb1d6d15a8c2",
+            "type": "general",
+            "title": "Payment Sent",
+            "body": "Payment for trade #TRD-20260626-PYBN has been sent.",
+            "data": {
+                "title": "Payment Sent",
+                "body": "Payment for trade #TRD-20260626-PYBN has been sent.",
+                "trade_id": 7,
+                "trade_number": "TRD-20260626-PYBN",
+                "status": "approved",
+                "amount": "500.00",
+                "asset_name": "Google Play",
+                "icon": "payments",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T12:49:08.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "978d94ac-222f-4801-8aab-450d5e1d178f",
+            "type": "general",
+            "title": "Payment Sent",
+            "body": "Payment for trade #TRD-20260626-RL2X has been sent.",
+            "data": {
+                "title": "Payment Sent",
+                "body": "Payment for trade #TRD-20260626-RL2X has been sent.",
+                "trade_id": 4,
+                "trade_number": "TRD-20260626-RL2X",
+                "status": "approved",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "icon": "payments",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T12:43:03.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "a3b42472-95d8-4195-96a6-2500dc4a8fb2",
+            "type": "general",
+            "title": "Payment Sent",
+            "body": "Payment for trade #TRD-20260626-MGJH has been sent.",
+            "data": {
+                "title": "Payment Sent",
+                "body": "Payment for trade #TRD-20260626-MGJH has been sent.",
+                "trade_id": 5,
+                "trade_number": "TRD-20260626-MGJH",
+                "status": "approved",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "icon": "payments",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T11:26:21.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "6544b702-f1ca-4920-948d-614981e7df1f",
+            "type": "general",
+            "title": "Trade Approved",
+            "body": "Your trade #TRD-20260626-MGJH has been approved.",
+            "data": {
+                "title": "Trade Approved",
+                "body": "Your trade #TRD-20260626-MGJH has been approved.",
+                "trade_id": 5,
+                "trade_number": "TRD-20260626-MGJH",
+                "status": "approved",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "icon": "check_circle",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T11:26:10.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "7c8bcdc0-af80-48d5-ac6e-92e106cba5de",
+            "type": "general",
+            "title": "Trade Approved",
+            "body": "Your trade #TRD-20260626-PYBN has been approved.",
+            "data": {
+                "title": "Trade Approved",
+                "body": "Your trade #TRD-20260626-PYBN has been approved.",
+                "trade_id": 7,
+                "trade_number": "TRD-20260626-PYBN",
+                "status": "approved",
+                "amount": "500.00",
+                "asset_name": "Google Play",
+                "icon": "check_circle",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T10:42:34.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "32a3366b-a4f8-4934-b2cc-9f01d72dbf85",
+            "type": "general",
+            "title": "Trade Created",
+            "body": "Your trade #TRD-20260626-PYBN for 500.00 has been submitted.",
+            "data": {
+                "title": "Trade Created",
+                "body": "Your trade #TRD-20260626-PYBN for 500.00 has been submitted.",
+                "trade_id": 7,
+                "trade_number": "TRD-20260626-PYBN",
+                "amount": "500.00",
+                "asset_name": "Google Play",
+                "status": "pending",
+                "icon": "receipt_long",
+                "color": "info"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T10:40:49.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "cc509cb3-28e1-4fee-95f1-c405297325f3",
+            "type": "general",
+            "title": "Trade Approved",
+            "body": "Your trade #TRD-20260626-RL2X has been approved.",
+            "data": {
+                "title": "Trade Approved",
+                "body": "Your trade #TRD-20260626-RL2X has been approved.",
+                "trade_id": 4,
+                "trade_number": "TRD-20260626-RL2X",
+                "status": "approved",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "icon": "check_circle",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T10:39:52.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "409b9890-bb54-4bb6-a4ca-a4613874ea22",
+            "type": "general",
+            "title": "Trade Created",
+            "body": "Your trade #TRD-20260626-EHT9 for 200.00 has been submitted.",
+            "data": {
+                "title": "Trade Created",
+                "body": "Your trade #TRD-20260626-EHT9 for 200.00 has been submitted.",
+                "trade_id": 6,
+                "trade_number": "TRD-20260626-EHT9",
+                "amount": "200.00",
+                "asset_name": "iTunes",
+                "status": "pending",
+                "icon": "receipt_long",
+                "color": "info"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T10:20:31.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "f9d66aa7-7343-4e48-af30-f3e236db9aca",
+            "type": "general",
+            "title": "Trade Created",
+            "body": "Your trade #TRD-20260626-MGJH for 50.00 has been submitted.",
+            "data": {
+                "title": "Trade Created",
+                "body": "Your trade #TRD-20260626-MGJH for 50.00 has been submitted.",
+                "trade_id": 5,
+                "trade_number": "TRD-20260626-MGJH",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "status": "pending",
+                "icon": "receipt_long",
+                "color": "info"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T10:13:23.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "7c0bcfab-b05c-4199-b999-cb45a8a18817",
+            "type": "general",
+            "title": "Trade Created",
+            "body": "Your trade #TRD-20260626-RL2X for 50.00 has been submitted.",
+            "data": {
+                "title": "Trade Created",
+                "body": "Your trade #TRD-20260626-RL2X for 50.00 has been submitted.",
+                "trade_id": 4,
+                "trade_number": "TRD-20260626-RL2X",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "status": "pending",
+                "icon": "receipt_long",
+                "color": "info"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-06-26T01:11:52.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "ff8996ee-623e-488f-a8cb-73db3319ffbf",
+            "type": "general",
+            "title": "Trade Created",
+            "body": "Your trade #TRD-20260520-0YLR for 100.00 has been submitted.",
+            "data": {
+                "title": "Trade Created",
+                "body": "Your trade #TRD-20260520-0YLR for 100.00 has been submitted.",
+                "trade_id": 3,
+                "trade_number": "TRD-20260520-0YLR",
+                "amount": "100.00",
+                "asset_name": "iTunes",
+                "status": "pending",
+                "icon": "receipt_long",
+                "color": "info"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-05-20T23:46:38.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "1f624dff-f732-4d43-8679-5a9fbb41be2b",
+            "type": "general",
+            "title": "Payment Sent",
+            "body": "Payment for trade #TRD-20260520-UKSH has been sent.",
+            "data": {
+                "title": "Payment Sent",
+                "body": "Payment for trade #TRD-20260520-UKSH has been sent.",
+                "trade_id": 2,
+                "trade_number": "TRD-20260520-UKSH",
+                "status": "approved",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "icon": "payments",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-05-20T22:51:26.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "cf79692e-4453-4dd0-8422-9c64e08ed0d1",
+            "type": "general",
+            "title": "Trade Approved",
+            "body": "Your trade #TRD-20260520-UKSH has been approved.",
+            "data": {
+                "title": "Trade Approved",
+                "body": "Your trade #TRD-20260520-UKSH has been approved.",
+                "trade_id": 2,
+                "trade_number": "TRD-20260520-UKSH",
+                "status": "approved",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "icon": "check_circle",
+                "color": "success"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-05-20T22:51:23.000000Z",
+            "is_read": true
+        },
+        {
+            "id": "630de51a-1aae-4c9c-a2ae-d5c1524f35e9",
+            "type": "general",
+            "title": "Trade Created",
+            "body": "Your trade #TRD-20260520-UKSH for 50.00 has been submitted.",
+            "data": {
+                "title": "Trade Created",
+                "body": "Your trade #TRD-20260520-UKSH for 50.00 has been submitted.",
+                "trade_id": 2,
+                "trade_number": "TRD-20260520-UKSH",
+                "amount": "50.00",
+                "asset_name": "iTunes",
+                "status": "pending",
+                "icon": "receipt_long",
+                "color": "info"
+            },
+            "read_at": "2026-06-26T18:48:11.000000Z",
+            "created_at": "2026-05-20T22:51:06.000000Z",
+            "is_read": true
+        }
+    ],
+    "links": {
+        "first": "http:\/\/localhost:3000\/api\/v1\/notifications?page=1",
+        "last": "http:\/\/localhost:3000\/api\/v1\/notifications?page=3",
+        "prev": null,
+        "next": "http:\/\/localhost:3000\/api\/v1\/notifications?page=2"
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 3,
+        "links": [
+            {
+                "url": null,
+                "label": "&laquo; Previous",
+                "page": null,
+                "active": false
+            },
+            {
+                "url": "http:\/\/localhost:3000\/api\/v1\/notifications?page=1",
+                "label": "1",
+                "page": 1,
+                "active": true
+            },
+            {
+                "url": "http:\/\/localhost:3000\/api\/v1\/notifications?page=2",
+                "label": "2",
+                "page": 2,
+                "active": false
+            },
+            {
+                "url": "http:\/\/localhost:3000\/api\/v1\/notifications?page=3",
+                "label": "3",
+                "page": 3,
+                "active": false
+            },
+            {
+                "url": "http:\/\/localhost:3000\/api\/v1\/notifications?page=2",
+                "label": "Next &raquo;",
+                "page": 2,
+                "active": false
+            }
+        ],
+        "path": "http:\/\/localhost:3000\/api\/v1\/notifications",
+        "per_page": 20,
+        "to": 20,
+        "total": 44
+    }
+}
