@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { 
   WalletIcon, 
   ArrowUpRightIcon, 
@@ -58,14 +58,7 @@ export default function WalletPage() {
     perPage: 10
   });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      loadWalletData(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm, txType, txStatus]);
-
-  const loadWalletData = async (page = 1) => {
+  const loadWalletData = useCallback(async (page = 1) => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('access_token');
@@ -103,7 +96,14 @@ export default function WalletPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [searchTerm, txType, txStatus, pagination.perPage]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadWalletData(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [loadWalletData]);
 
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -332,7 +332,7 @@ export default function WalletPage() {
               <BanknotesIcon className="w-10 h-10 mb-4 opacity-50" />
               <h3 className="text-xl font-bold mb-2">Instant Payouts</h3>
               <p className="text-white/80 text-sm leading-relaxed">
-                Choose "Direct Payout" during your sell trades to receive funds directly in your bank or momo account as soon as the trade is approved.
+                Choose &quot;Direct Payout&quot; during your sell trades to receive funds directly in your bank or momo account as soon as the trade is approved.
               </p>
            </div>
         </div>
@@ -575,7 +575,7 @@ export default function WalletPage() {
                                 <div>
                                     <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Admin Notes</h4>
                                     <div className="p-4 bg-yellow-50 dark:bg-yellow-900/10 text-yellow-800 dark:text-yellow-200 text-sm rounded-2xl border border-yellow-200 dark:border-yellow-900/30 leading-relaxed italic">
-                                        "{selectedTx.notes}"
+                                        &quot;{selectedTx.notes}&quot;
                                     </div>
                                 </div>
                             )}

@@ -25,6 +25,23 @@ import { Select, type SelectOption } from '@/components/ui/Select';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
+const MOMO_OPTIONS: SelectOption[] = [
+  { id: 'mtn', name: 'MTN Mobile Money', description: 'Scan & Pay, Transfers' },
+  { id: 'telecel', name: 'Telecel Cash', description: 'Fast & Secure' },
+  { id: 'at', name: 'AT Money', description: 'Reliable Payouts' },
+];
+
+const BANK_OPTIONS: SelectOption[] = [
+  { id: 'gcb', name: 'GCB Bank' },
+  { id: 'ecobank', name: 'Ecobank Ghana' },
+  { id: 'zenith', name: 'Zenith Bank' },
+  { id: 'gtbank', name: 'GTBank' },
+  { id: 'fidelity', name: 'Fidelity Bank' },
+  { id: 'stanbic', name: 'Stanbic Bank' },
+  { id: 'absa', name: 'ABSA Bank' },
+  { id: 'calbank', name: 'CalBank' },
+];
+
 export default function PaymentMethodsManager() {
   const [userMethods, setUserMethods] = useState<UserPaymentMethod[]>([]);
   const [companyMethods, setCompanyMethods] = useState<CompanyPaymentMethod[]>([]);
@@ -40,25 +57,8 @@ export default function PaymentMethodsManager() {
   const [bankName, setBankName] = useState('');
   const [branch, setBranch] = useState('');
 
-  const momoOptions: SelectOption[] = [
-    { id: 'mtn', name: 'MTN Mobile Money', description: 'Scan & Pay, Transfers' },
-    { id: 'telecel', name: 'Telecel Cash', description: 'Fast & Secure' },
-    { id: 'at', name: 'AT Money', description: 'Reliable Payouts' },
-  ];
-
-  const bankOptions: SelectOption[] = [
-    { id: 'gcb', name: 'GCB Bank' },
-    { id: 'ecobank', name: 'Ecobank Ghana' },
-    { id: 'zenith', name: 'Zenith Bank' },
-    { id: 'gtbank', name: 'GTBank' },
-    { id: 'fidelity', name: 'Fidelity Bank' },
-    { id: 'stanbic', name: 'Stanbic Bank' },
-    { id: 'absa', name: 'ABSA Bank' },
-    { id: 'calbank', name: 'CalBank' },
-  ];
-
   const selectedOption = useMemo(() => {
-    const options = selectedCategory === 'momo' ? momoOptions : bankOptions;
+    const options = selectedCategory === 'momo' ? MOMO_OPTIONS : BANK_OPTIONS;
     return options.find(o => o.name === bankName) || null;
   }, [selectedCategory, bankName]);
 
@@ -382,7 +382,7 @@ export default function PaymentMethodsManager() {
                     <div className="space-y-1.5">
                       <Select
                         label={selectedCategory === 'momo' ? 'Network Operator' : 'Bank Name'}
-                        options={selectedCategory === 'momo' ? momoOptions : bankOptions}
+                        options={selectedCategory === 'momo' ? MOMO_OPTIONS : BANK_OPTIONS}
                         value={selectedOption}
                         onChange={(option) => setBankName(option.name)}
                         placeholder={selectedCategory === 'momo' ? 'Select Network' : 'Select Bank'}

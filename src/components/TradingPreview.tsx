@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { audit } from "@/lib/audit";
 import { 
@@ -14,9 +15,20 @@ import {
   ComputerDesktopIcon
 } from "@heroicons/react/24/outline";
 
+// Deterministic pseudo-random hash — same seed always produces the same value.
+// Used instead of Math.random() so particle positions are stable across re-renders.
+function pseudoRandom(seed: number) {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
 export default function TradingPreview() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const particles = useMemo(
+    () => Array.from({ length: 15 }, (_, i) => ({ left: pseudoRandom(i) * 100, top: pseudoRandom(i + 100) * 100 })),
+    []
+  );
 
   const giftCards = [
     {
@@ -91,7 +103,7 @@ export default function TradingPreview() {
 
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(15)].map((_, i) => (
+        {particles.map((particle, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-red-400 rounded-full opacity-30"
@@ -107,8 +119,8 @@ export default function TradingPreview() {
               delay: i * 0.8,
             }}
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${particle.left}%`,
+              top: `${particle.top}%`,
             }}
           />
         ))}

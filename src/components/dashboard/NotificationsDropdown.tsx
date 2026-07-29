@@ -6,13 +6,14 @@ import { playNotificationSound } from '@/lib/notificationSound';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { 
+import {
   BellIcon,
   CheckCircleIcon,
   XCircleIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
   WalletIcon,
+  ChatBubbleLeftRightIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 
@@ -26,7 +27,10 @@ interface Notification {
     body?: string;
     message?: string;
     type?: string;
+    category?: string;
     reference_id?: string | number;
+    trade_id?: string | number;
+    trade_number?: string;
     status?: string;
     icon?: string;
     color?: string;
@@ -89,9 +93,18 @@ export default function NotificationsDropdown() {
     // Initial fetch
     fetchNotifications();
 
-    // Poll every 60 seconds (basic real-time simulation)
+    // Poll every 60 seconds as a fallback (e.g. notifications sent while the tab was closed)
     const interval = setInterval(fetchNotifications, 60000);
-    return () => clearInterval(interval);
+
+    // Refetch immediately when a push notification arrives in the foreground,
+    // instead of waiting for the next poll tick.
+    const handleNewNotification = () => fetchNotifications();
+    window.addEventListener('dritunes:new-notification', handleNewNotification);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('dritunes:new-notification', handleNewNotification);
+    };
   }, []);
 
   const markAsRead = async (id: string) => {
@@ -129,8 +142,8 @@ export default function NotificationsDropdown() {
       await markAsRead(notification.id);
     }
     
-    const { type, reference_id, trade_number, action_url, icon } = notification.data;
-    
+    const { type, category, reference_id, trade_id, trade_number, action_url, icon } = notification.data;
+
     if (action_url) {
       router.push(action_url);
       setIsOpen(false);
@@ -140,8 +153,15 @@ export default function NotificationsDropdown() {
     if (type === 'transaction_update' || icon === 'payments') {
       router.push(`/dashboard/wallet`);
       setIsOpen(false);
-    } else if (type === 'trade_created' || type === 'trade_update' || trade_number) {
-      router.push(`/dashboard/history/${trade_number || reference_id}`);
+    } else if (
+      type === 'trade_created' ||
+      type === 'trade_update' ||
+      type === 'trade_message' ||
+      category === 'chat' ||
+      trade_number
+    ) {
+      const idToUse = trade_number || reference_id || trade_id;
+      if (idToUse) router.push(`/dashboard/history/${idToUse}`);
       setIsOpen(false);
     }
   };
@@ -165,6 +185,7 @@ export default function NotificationsDropdown() {
     if (iconType === 'cancel' || iconType === 'error') Icon = XCircleIcon;
     if (iconType === 'warning') Icon = ExclamationTriangleIcon;
     if (iconType === 'payments') Icon = WalletIcon;
+    if (iconType === 'chat') Icon = ChatBubbleLeftRightIcon;
 
     return { Icon, ColorClass };
   };
@@ -221,7 +242,7 @@ export default function NotificationsDropdown() {
                       <BellIcon className="w-6 h-6" />
                    </div>
                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">No system notifications</p>
-                   <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">We'll let you know when something important happens.</p>
+                   <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">We&apos;ll let you know when something important happens.</p>
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -229,9 +250,11 @@ export default function NotificationsDropdown() {
                     const { Icon, ColorClass } = getIconAndColor(notification.data);
                     const title = notification.title || notification.data.title || 'Notification';
                     const body = notification.body || notification.data.body || notification.data.message || 'You have a new notification.';
-                    const hasAction = notification.data.type === 'trade_update' || 
-                                      notification.data.type === 'trade_created' || 
-                                      notification.data.type === 'transaction_update' || 
+                    const hasAction = notification.data.type === 'trade_update' ||
+                                      notification.data.type === 'trade_created' ||
+                                      notification.data.type === 'trade_message' ||
+                                      notification.data.type === 'transaction_update' ||
+                                      notification.data.category === 'chat' ||
                                       !!notification.data.trade_number ||
                                       notification.data.icon === 'payments' ||
                                       !!notification.data.action_url;

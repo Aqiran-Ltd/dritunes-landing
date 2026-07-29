@@ -31,6 +31,16 @@ function OtpContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
 
+  // Clear error/token when switching methods — adjusted during render (not an
+  // effect) by detecting the change directly, per React's guidance on resetting
+  // state in response to a prop change.
+  const [prevMethod, setPrevMethod] = useState(activeMethod);
+  if (activeMethod !== prevMethod) {
+    setPrevMethod(activeMethod);
+    setError('');
+    setToken('');
+  }
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (resendCooldown > 0) {
@@ -40,12 +50,6 @@ function OtpContent() {
     }
     return () => clearInterval(interval);
   }, [resendCooldown]);
-
-  // Clean error when switching methods
-  useEffect(() => {
-    setError('');
-    setToken('');
-  }, [activeMethod]);
 
   // Derived state for verified status
   const isPhoneVerified = !!user?.phone_verified_at;
@@ -125,7 +129,7 @@ function OtpContent() {
             // Optional: Auto-send logic if desired. Kept minimal to avoid spam as per previous thought.
          }
      }
-  }, [activeMethod, user]);
+  }, [activeMethod, user, resendCooldown]);
 
   const handleResend = async () => {
     if (resendCooldown > 0) return;

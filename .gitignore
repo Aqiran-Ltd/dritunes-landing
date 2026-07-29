@@ -44,3 +44,6 @@ fix-permissions.sh
 manual-upload.sh
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Claude Code local settings (settings.local.json can capture secrets in allowlisted commands)
+.claude/

@@ -14,17 +14,16 @@ import { api } from "@/lib/api";
 function UnsubscribeContent() {
   const searchParams = nextSearchParams();
   const router = nextRouter();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(() =>
+    searchParams.get("email") ? "loading" : "error"
+  );
+  const [message, setMessage] = useState(() =>
+    searchParams.get("email") ? "" : "Invalid unsubscribe link. Email address is missing."
+  );
 
   useEffect(() => {
     const email = searchParams.get("email");
-
-    if (!email) {
-      setStatus("error");
-      setMessage("Invalid unsubscribe link. Email address is missing.");
-      return;
-    }
+    if (!email) return;
 
     const unsubscribe = async () => {
       try {

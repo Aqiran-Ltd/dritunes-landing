@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowPathIcon,
@@ -68,21 +68,25 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
   }, [availableCards, selectedCardId]);
 
   // -- Auto-Reset Logic -- //
+  // Adjusted during render (not effects) by detecting the change directly, per
+  // React's guidance on resetting state in response to a prop/derived-value change.
 
   // 1. When Category Changes -> Reset Region, Card, Type
-  useEffect(() => {
-    if (activeRegions.length > 0) {
-      setSelectedRegion(activeRegions[0]);
-    } else {
-      setSelectedRegion("");
-    }
-  }, [activeCategory, activeRegions]);
+  // `null` initial value guarantees this runs once on mount too (mirroring the
+  // useEffect it replaces, which always fires after the first render).
+  const [prevCategorySelection, setPrevCategorySelection] = useState<{ category: typeof activeCategory; regions: typeof activeRegions } | null>(null);
+  if (!prevCategorySelection || prevCategorySelection.category !== activeCategory || prevCategorySelection.regions !== activeRegions) {
+    setPrevCategorySelection({ category: activeCategory, regions: activeRegions });
+    setSelectedRegion(activeRegions.length > 0 ? activeRegions[0] : "");
+  }
 
   // 2. When Region Changes -> Reset Card (Prefer "50")
-  useEffect(() => {
+  const [prevRegionSelection, setPrevRegionSelection] = useState<{ region: string; cards: typeof availableCards } | null>(null);
+  if (!prevRegionSelection || prevRegionSelection.region !== selectedRegion || prevRegionSelection.cards !== availableCards) {
+    setPrevRegionSelection({ region: selectedRegion, cards: availableCards });
     const preferredIndex = availableCards.findIndex(c => c.amount.includes('50') || c.amount === '50 fixed');
     setSelectedCardId(preferredIndex >= 0 ? preferredIndex : 0);
-  }, [selectedRegion, availableCards]);
+  }
 
   // -- Calculation & Validation -- //
   const { currentRate, calculatedValue, isValid, validationMessage, validationHelper } = useMemo(() => {

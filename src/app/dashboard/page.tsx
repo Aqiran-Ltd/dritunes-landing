@@ -64,7 +64,7 @@ export default function DashboardPage() {
             Hello, {user?.name.split(' ')[0]} 👋
          </h1>
          <p className="text-gray-500 dark:text-gray-400">
-            Let's make some profit today.
+            Let&apos;s make some profit today.
          </p>
       </div>
 
@@ -176,7 +176,7 @@ export default function DashboardPage() {
                  </div>
                  <h3 className="text-gray-900 dark:text-white font-medium mb-1">No activities found</h3>
                  <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto">
-                 You haven't made any transactions yet. Start your first trade to see activity here.
+                 You haven&apos;t made any transactions yet. Start your first trade to see activity here.
                  </p>
              </div>
           ) : (

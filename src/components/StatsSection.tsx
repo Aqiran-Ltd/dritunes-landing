@@ -1,24 +1,21 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { motion } from "framer-motion";
-import { 
-  UsersIcon, 
-  CurrencyDollarIcon, 
-  ShieldCheckIcon, 
-  ChartBarIcon 
+import {
+  UsersIcon,
+  CurrencyDollarIcon,
+  ShieldCheckIcon,
+  ChartBarIcon
 } from "@heroicons/react/24/outline";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useHasMounted } from "@/hooks/useHasMounted";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function StatsSection() {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHasMounted();
 
   const stats = [
     {

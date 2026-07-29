@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bars3Icon, XMarkIcon, SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useHasMounted } from "@/hooks/useHasMounted";
 import { audit } from "@/lib/audit";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
@@ -20,14 +21,10 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHasMounted();
   const { setTheme, resolvedTheme } = useTheme();
   const { user, logout } = useAuth();
   const pathname = usePathname();
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

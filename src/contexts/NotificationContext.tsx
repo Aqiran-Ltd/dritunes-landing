@@ -62,15 +62,16 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
       const unsubscribe = onMessage(messaging, (payload) => {
         console.log("Foreground message received:", payload);
         playNotificationSound();
+        // Let the notification bell (NotificationsDropdown) know to refetch immediately,
+        // instead of waiting for its next 60s poll.
+        window.dispatchEvent(new CustomEvent("dritunes:new-notification"));
 
         const data = payload.data || {};
         const type = data.type as string | undefined;
+        const category = data.category as string | undefined;
         const referenceId = data.reference_id as string | undefined;
-        const tradeNumber = data.trade_number as string | undefined;
-        // Chat messages currently only send `trade_id` (numeric PK), not `trade_number`.
-        // The trade detail route/API resolve by trade_number, so this fallback may 404 —
-        // ideally the backend adds trade_number to the chat notification payload.
         const tradeId = data.trade_id as string | undefined;
+        const tradeNumber = data.trade_number as string | undefined;
         const status = data.status as string | undefined;
         const icon = data.icon as string | undefined;
 
@@ -105,8 +106,8 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
             iconColor = "text-amber-500";
             bgColor = "bg-amber-50 dark:bg-amber-900/20";
           }
-        } else if (type === "trade_message") {
-          const idToUse = tradeNumber || tradeId;
+        } else if (type === "trade_message" || category === "chat") {
+          const idToUse = tradeNumber || referenceId || tradeId;
           targetRoute = idToUse ? `/dashboard/history/${idToUse}` : "/dashboard/history";
           Icon = ChatBubbleLeftRightIcon;
           iconColor = "text-red-500";
@@ -132,7 +133,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
                 </p>
               </div>
             </div>
-            {(type === "trade_created" || type === "trade_update" || type === "transaction_update" || type === "trade_message") && (
+            {(type === "trade_created" || type === "trade_update" || type === "transaction_update" || type === "trade_message" || category === "chat") && (
               <div className="border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50 flex divide-x divide-gray-100 dark:divide-slate-700">
                 <button
                   onClick={() => {
@@ -153,8 +154,12 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     }
   }, [router]);
 
-  // Auto request on mount
+  // Auto request on mount. requestPermission is async and only calls setFcmToken
+  // after awaiting the browser permission prompt + FCM token fetch, so this isn't
+  // the synchronous derived-state pattern the rule guards against — it's a genuine
+  // one-time external side effect (permission prompt) that has to run in an effect.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     requestPermission();
   }, []);
 

@@ -74,6 +74,15 @@ interface SearchableCard extends GiftCard {
   categoryName: string;
 }
 
+const SORT_OPTIONS: SelectOption[] = [
+  { id: "rate-high", name: "Rate: High to Low" },
+  { id: "rate-low", name: "Rate: Low to High" },
+  { id: "region-asc", name: "Region: A-Z" },
+  { id: "region-desc", name: "Region: Z-A" },
+  { id: "amount-asc", name: "Amount: Low to High" },
+  { id: "amount-desc", name: "Amount: High to Low" },
+];
+
 export default function RatesPage() {
   // State
   const { user } = useAuth();
@@ -97,17 +106,8 @@ export default function RatesPage() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
 
-  const sortOptions: SelectOption[] = [
-    { id: "rate-high", name: "Rate: High to Low" },
-    { id: "rate-low", name: "Rate: Low to High" },
-    { id: "region-asc", name: "Region: A-Z" },
-    { id: "region-desc", name: "Region: Z-A" },
-    { id: "amount-asc", name: "Amount: Low to High" },
-    { id: "amount-desc", name: "Amount: High to Low" },
-  ];
-
-  const activeSortOption = useMemo(() => 
-    sortOptions.find(o => o.id === sortBy) || sortOptions[0],
+  const activeSortOption = useMemo(() =>
+    SORT_OPTIONS.find(o => o.id === sortBy) || SORT_OPTIONS[0],
     [sortBy]
   );
 
@@ -415,7 +415,7 @@ export default function RatesPage() {
               {/* Sort Dropdown */}
               <div className="min-w-[180px]">
                 <Select 
-                  options={sortOptions} 
+                  options={SORT_OPTIONS} 
                   value={activeSortOption} 
                   onChange={(opt) => setSortBy(opt.id as SortOption)} 
                   className="!space-y-0 [&>button]:!py-2 [&>button]:!rounded-full [&>button]:!bg-transparent [&>button]:!border-none" 

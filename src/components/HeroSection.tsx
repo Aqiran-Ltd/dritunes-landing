@@ -1,20 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { motion } from "framer-motion";
 import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useHasMounted } from "@/hooks/useHasMounted";
 import Image from "next/image";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 
 export default function HeroSection() {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHasMounted();
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-red-50 to-red-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">

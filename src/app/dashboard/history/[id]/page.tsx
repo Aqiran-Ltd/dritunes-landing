@@ -453,7 +453,7 @@ export default function TradeDetailPage() {
                       <div className="max-w-[85%]">
                          <p className="text-[10px] text-gray-500 font-bold uppercase ml-4 mb-2">Your Note</p>
                          <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-[2rem] rounded-tl-none border border-gray-100 dark:border-gray-800">
-                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">"{trade.user_notes}"</p>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">&quot;{trade.user_notes}&quot;</p>
                          </div>
                       </div>
                     )}

@@ -9,19 +9,17 @@ import { api } from "@/lib/api";
 function VerifyContent() {
   const searchParams = nextSearchParams();
   const router = nextRouter();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [message, setMessage] = useState("");
+  const hasValidParams = !!searchParams.get("token") && !!searchParams.get("email");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(() => (hasValidParams ? "loading" : "error"));
+  const [message, setMessage] = useState(() =>
+    hasValidParams ? "" : "Invalid verification link. Please check your email."
+  );
   const [countdown, setCountdown] = useState(10);
 
   useEffect(() => {
     const token = searchParams.get("token");
     const email = searchParams.get("email");
-
-    if (!token || !email) {
-      setStatus("error");
-      setMessage("Invalid verification link. Please check your email.");
-      return;
-    }
+    if (!token || !email) return;
 
     const verifyEmail = async () => {
       try {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { 
@@ -51,7 +51,7 @@ export default function HistoryPage() {
 
   const router = useRouter();
 
-  const loadTrades = async (page = 1) => {
+  const loadTrades = useCallback(async (page = 1) => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('access_token');
@@ -85,7 +85,7 @@ export default function HistoryPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [searchTerm, assetType, tradeStatus, paymentStatus, pagination.perPage]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -93,7 +93,7 @@ export default function HistoryPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchTerm, assetType, tradeStatus, paymentStatus]);
+  }, [loadTrades]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
