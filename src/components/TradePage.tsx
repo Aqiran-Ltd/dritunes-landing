@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import SectionHeading from "@/components/ui/SectionHeading";
 import TradeSteps from "@/components/TradeSteps";
+import DashboardTradeActions from "@/components/DashboardTradeActions";
 
 const people = [
   { label: "WhatsApp", value: "+233 54 843 4599", href: "https://wa.me/233548434599", external: true },
@@ -34,18 +35,7 @@ export default function TradePage() {
                 Upload your card, follow its status live, chat with the team about it, and choose a payout to mobile money, bank or your Aqiran wallet.
               </p>
               <div className="mt-auto pt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/auth/register"
-                  className="inline-flex items-center h-14 px-8 rounded-full bg-gold text-ink font-semibold transition-colors hover:bg-gold-400 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-                >
-                  Create an account
-                </Link>
-                <Link
-                  href="/auth/login"
-                  className="inline-flex items-center h-14 px-2 font-semibold underline decoration-white/30 underline-offset-8 hover:decoration-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold rounded"
-                >
-                  Log in
-                </Link>
+                <DashboardTradeActions />
               </div>
             </div>
 

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { track } from "@vercel/analytics";
 import RateBoard from "@/components/RateBoard";
+import StartTradeLink from "@/components/StartTradeLink";
 import type { BoardRow } from "@/lib/rateBoard";
 
 interface HeroSectionProps {
@@ -35,13 +35,12 @@ export default function HeroSection({ boardRows, updatedAt }: HeroSectionProps) 
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Link
-              href="/trade"
-              onClick={() => track("CTA Click", { label: "Start a trade", location: "Hero" })}
+            <StartTradeLink
+              location="Hero"
               className="inline-flex items-center justify-center h-14 px-8 rounded-full bg-gold text-ink font-semibold text-lg shadow-[0_10px_30px_-10px_rgba(245,180,0,0.8)] transition-[background-color,transform] duration-150 hover:bg-gold-400 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink dark:focus-visible:outline-gold"
             >
               Start a trade
-            </Link>
+            </StartTradeLink>
             <Link
               href="/rates"
               className="inline-flex items-center h-14 px-2 font-semibold text-lg text-ink dark:text-white underline decoration-gray-300 dark:decoration-gray-600 underline-offset-8 hover:decoration-ink dark:hover:decoration-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold rounded"

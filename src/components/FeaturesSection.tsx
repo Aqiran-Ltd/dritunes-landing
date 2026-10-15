@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SectionHeading from "@/components/ui/SectionHeading";
+import StartTradeLink from "@/components/StartTradeLink";
 import TradeSteps from "@/components/TradeSteps";
 
 const promises = [
@@ -27,12 +28,12 @@ export default function FeaturesSection() {
               title="From card to cash in four steps"
               intro="Every trade is tracked in your dashboard, so you always know where your card and your money are."
             />
-            <Link
-              href="/trade"
+            <StartTradeLink
+              location="How it works"
               className="mt-8 inline-flex items-center h-12 px-6 rounded-full bg-ink text-white font-semibold transition-colors hover:bg-gray-800 dark:bg-gold dark:text-ink dark:hover:bg-gold-400 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
             >
               Start a trade
-            </Link>
+            </StartTradeLink>
           </div>
 
           <TradeSteps />
