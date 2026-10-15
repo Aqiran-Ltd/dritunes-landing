@@ -2,18 +2,29 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Dr iTunes Consult',
-    short_name: 'Dr iTunes',
+    name: 'Aqiran Xchange',
+    short_name: 'Aqiran Xchange',
     description: "Ghana's Premier Gift Card Trading Service",
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
-    theme_color: '#dc2626',
+    theme_color: '#F5B400',
     icons: [
       {
-        src: '/logo/red-black.png',
-        sizes: 'any',
+        src: '/icon-192.png',
+        sizes: '192x192',
         type: 'image/png',
+      },
+      {
+        src: '/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+      {
+        src: '/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
   };
