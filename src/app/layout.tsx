@@ -23,10 +23,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dritunesconsult.com"),
+  metadataBase: new URL("https://aqiranxchange.com"),
   title: {
-    default: "Dr iTunes Consult - Ghana's Premier Gift Card Trading Service",
-    template: "%s | Dr iTunes Consult"
+    default: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
+    template: "%s | Aqiran Xchange"
   },
   description: "Ghana's most trusted gift card trading service. Trade online via WhatsApp/Telegram or visit our physical store in Tamale. Best rates, 24/7 support, secure transactions for Gift Cards.",
   keywords: [
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     "best rates gift cards",
     "secure gift card trading"
   ],
-  authors: [{ name: "Dr iTunes Consult" }],
-  creator: "Dr iTunes Consult",
-  publisher: "Dr iTunes Consult",
+  authors: [{ name: "Aqiran Xchange" }],
+  creator: "Aqiran Xchange",
+  publisher: "Aqiran Xchange",
   formatDetection: {
     email: false,
     address: true,
@@ -59,26 +59,26 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: "Dr iTunes Consult - Ghana's Premier Gift Card Trading Service",
+    title: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
     description: "Ghana's most trusted gift card trading service. Trade online or visit our Tamale store for the best rates on Gift Cards.",
-    url: "https://dritunesconsult.com",
-    siteName: "Dr iTunes Consult",
+    url: "https://aqiranxchange.com",
+    siteName: "Aqiran Xchange",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: '/logo/red-black.png',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Dr iTunes Consult Logo',
+        alt: 'Aqiran Xchange',
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dr iTunes Consult - Ghana's Premier Gift Card Trading Service",
+    title: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
     description: "Trade Gift Cards securely in Ghana. Best rates, 24/7 support, and physical store in Tamale.",
-    images: ['/logo/red-black.png'],
+    images: ['/og-image.png'],
     creator: "@dritunes",
   },
   robots: {
@@ -102,9 +102,10 @@ export default function RootLayout({
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Dr iTunes Consult",
-    "url": "https://dritunesconsult.com",
-    "logo": "https://dritunesconsult.com/logo/red-black.png",
+    "name": "Aqiran Xchange",
+    "alternateName": "Dr iTunes Consult",
+    "url": "https://aqiranxchange.com",
+    "logo": "https://aqiranxchange.com/icon-512.png",
     "sameAs": [
       "https://facebook.com/profile.php?id=61577944273619",
       "https://instagram.com/dr.itunesconsult/",
@@ -124,10 +125,11 @@ export default function RootLayout({
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "FinancialService",
-    "name": "Dr iTunes Consult",
-    "image": "https://dritunesconsult.com/logo/red-black.png",
-    "@id": "https://dritunesconsult.com",
-    "url": "https://dritunesconsult.com",
+    "name": "Aqiran Xchange",
+    "alternateName": "Dr iTunes Consult",
+    "image": "https://aqiranxchange.com/og-image.png",
+    "@id": "https://aqiranxchange.com",
+    "url": "https://aqiranxchange.com",
     "telephone": "+233548434599",
     "address": {
       "@type": "PostalAddress",

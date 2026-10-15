@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         '/newsletter/unsubscribe',
       ],
     },
-    sitemap: 'https://dritunesconsult.com/sitemap.xml',
+    sitemap: 'https://aqiranxchange.com/sitemap.xml',
   };
 }

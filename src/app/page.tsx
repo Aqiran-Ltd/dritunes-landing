@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import { fetchRates } from "@/lib/ratesService";
 
 export const metadata: Metadata = {
-  title: "Home | Dr iTunes Consult - Ghana's Trusted Gift Card Service",
+  title: "Home | Aqiran Xchange - Ghana's Trusted Gift Card Service",
   description: "Securely trade Gift Cards at the best rates in Ghana. Visit our Tamale store or trade online 24/7.",
 };
 
