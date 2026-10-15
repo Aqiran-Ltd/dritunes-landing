@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import StatsSection from "@/components/StatsSection";
+import CardsWeBuy from "@/components/CardsWeBuy";
 import PriceUpdateSection from "@/components/PriceUpdateSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import NewsletterSection from "@/components/NewsletterSection";
@@ -32,6 +33,7 @@ export default async function Home() {
       <Navigation />
       <HeroSection boardRows={topRates(categories)} updatedAt={updatedAt} />
       <StatsSection />
+      <CardsWeBuy />
       <FeaturesSection />
       <PriceUpdateSection initialCategories={categories} />
       <NewsletterSection />
