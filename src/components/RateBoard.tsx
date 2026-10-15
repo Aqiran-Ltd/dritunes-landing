@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import RollingNumber from "@/components/RollingNumber";
-import { artForBrand, isPlaceholderLogo } from "@/lib/cardCatalogue";
+import { artForBrand, isPlaceholderLogo, ratesHref } from "@/lib/cardCatalogue";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import type { BoardRow } from "@/lib/rateBoard";
 
@@ -150,7 +150,7 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
           {slots.map((rowIndex, slot) => {
             const row = rows[rowIndex];
             return (
-              <li key={slot} className="relative flex items-center justify-between gap-4 py-3.5 overflow-hidden">
+              <li key={slot} className="relative">
                 {/* Brief gold wash on the row that just changed */}
                 <AnimatePresence>
                   {changed === slot && (
@@ -165,6 +165,11 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                   )}
                 </AnimatePresence>
 
+                <Link
+                  href={ratesHref(row.category, row.region)}
+                  aria-label={`${row.category}, ${row.region} card: ₵${formatRate(row.rate)} for every $1. See all ${row.category} rates`}
+                  className="relative flex items-center justify-between gap-4 py-3.5 -mx-3 px-3 rounded-xl overflow-hidden transition-colors hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-gold"
+                >
                 <div className="relative min-w-0 h-12 flex-1 overflow-hidden">
                   <AnimatePresence initial={false} mode="popLayout">
                     <motion.div
@@ -191,6 +196,7 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                   <span className="text-base text-gold/70 mr-0.5">₵</span>
                   <RollingNumber value={formatRate(row.rate)} />
                 </p>
+                </Link>
               </li>
             );
           })}

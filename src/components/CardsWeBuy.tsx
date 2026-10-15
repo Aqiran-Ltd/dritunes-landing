@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { CATALOGUE } from "@/lib/cardCatalogue";
+import { CATALOGUE, ratesHref } from "@/lib/cardCatalogue";
 
 export default function CardsWeBuy() {
   return (
@@ -23,12 +23,20 @@ export default function CardsWeBuy() {
         <ul className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-5 gap-y-8">
           {CATALOGUE.map((card) => (
             <li key={card.name}>
-              <figure>
-                <div className="relative aspect-[3/2] rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-[0_12px_30px_-18px_rgba(26,26,29,0.5)]">
-                  <Image src={card.image} alt={`${card.name} gift card`} fill sizes="(min-width: 1024px) 230px, (min-width: 640px) 30vw, 45vw" className="object-cover" />
+              <Link
+                href={ratesHref(card.query)}
+                className="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
+              >
+                <div className="relative aspect-[3/2] rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 shadow-[0_12px_30px_-18px_rgba(26,26,29,0.5)] transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_20px_40px_-18px_rgba(26,26,29,0.55)] motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
+                  <Image src={card.image} alt="" fill sizes="(min-width: 1024px) 230px, (min-width: 640px) 30vw, 45vw" className="object-cover" />
                 </div>
-                <figcaption className="mt-3 font-medium text-ink dark:text-white">{card.name}</figcaption>
-              </figure>
+                <p className="mt-3 font-medium text-ink dark:text-white">
+                  {card.name}
+                  <span className="block text-sm font-normal text-gray-600 dark:text-gray-400 group-hover:text-ink dark:group-hover:text-white underline-offset-4 group-hover:underline">
+                    See rates
+                  </span>
+                </p>
+              </Link>
             </li>
           ))}
           <li>

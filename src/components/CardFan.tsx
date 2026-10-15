@@ -31,7 +31,7 @@ export default function CardFan({ className = "" }: { className?: string }) {
             style={{ left: `${card.left}%`, top: `${card.top}%`, width: `${CARD_WIDTH}%` }}
             className="absolute aspect-[3/2] rounded-[14px] overflow-hidden shadow-[0_18px_40px_-18px_rgba(26,26,29,0.6)] ring-1 ring-black/5"
           >
-            <Image src={art.image} alt="" fill sizes="(min-width: 1024px) 200px, 38vw" className="object-cover" priority />
+            <Image src={art.image} alt="" fill sizes="(min-width: 1024px) 200px, 38vw" className="object-cover" loading="eager" />
           </motion.div>
         );
       })}
