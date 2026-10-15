@@ -1,10 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { CheckCircleIcon, PhoneIcon, ChatBubbleLeftRightIcon, EnvelopeIcon, MapPinIcon, ArrowRightIcon, ClockIcon, ShieldCheckIcon, StarIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
 import { useState } from "react";
 import { api } from "@/lib/api";
+import SectionHeading from "@/components/ui/SectionHeading";
 import { toast } from "react-hot-toast";
 import { fetchSocials, Socials } from "@/lib/socialService";
 import { useEffect } from "react";
@@ -23,6 +21,15 @@ function extractPhone(url: string | null | undefined, fallback: string): string 
   }
   return url;
 }
+
+const SOCIAL_ICONS: Record<string, (className: string) => React.ReactNode> = {
+  FB: (className) => (<svg className={className} aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>),
+  IG: (className) => (<svg className={className} aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>),
+  TG: (className) => (<svg className={className} aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>),
+  TK: (className) => (<svg className={className} aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>),
+  X: (className) => (<svg className={className} aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>),
+  YT: (className) => (<svg className={className} aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>),
+};
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,419 +64,151 @@ export default function ContactPage() {
       });
       
       track('Contact Form Submitted', { subject: formData.subject });
-      toast.success("Message sent successfully! We'll get back to you soon.");
+      toast.success("Message sent. We will reply by email.");
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (error: any) {
       console.error("Contact form error:", error);
-      toast.error(error.message || "Failed to send message. Please try again later.");
+      toast.error(error.message || "Your message did not send. Check your connection and try again, or message us on WhatsApp.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const whatsappNumber = extractPhone(socials?.whatsapp, "+233548434599");
+  const whatsappHref = socials?.whatsapp ? `https://wa.me/${socials.whatsapp.replace(/\D/g, '')}` : "https://wa.me/233548434599";
+
+  const channels = [
+    { name: "Facebook", icon: "FB", href: socials?.facebook },
+    { name: "Instagram", icon: "IG", href: socials?.instagram },
+    { name: "Telegram", icon: "TG", href: socials?.telegram },
+    { name: "TikTok", icon: "TK", href: socials?.tiktok },
+    { name: "X", icon: "X", href: socials?.x_twitter },
+    { name: "YouTube", icon: "YT", href: socials?.youtube },
+  ].filter((c) => !!c.href);
+
+  const methods = [
+    { label: "WhatsApp and Telegram", value: whatsappNumber, note: "Fastest. We reply day and night.", href: whatsappHref, external: true },
+    { label: "Phone", value: whatsappNumber, note: "Call any time.", href: `tel:${whatsappNumber.replace(/\s/g, "")}` },
+    { label: "Email", value: "info@aqiranxchange.com", note: "For business and anything you want in writing.", href: "mailto:info@aqiranxchange.com" },
+    { label: "Store", value: "Tamale, Northern Region", note: "Walk in to trade in person. We serve customers across Ghana." },
+  ];
+
   return (
-    <section className="py-24 px-4 bg-gradient-to-br from-gray-900 via-gold-900 to-gray-900 relative overflow-hidden min-h-screen flex items-center">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-pattern opacity-10" />
-      
-      {/* Animated Background Shapes */}
-      <motion.div
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.1, 0.3, 0.1]
-        }}
-        transition={{ 
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-20 left-20 w-64 h-64 bg-gold-500 rounded-full blur-3xl"
-      />
-      <motion.div
-        animate={{ 
-          scale: [1.2, 1, 1.2],
-          opacity: [0.1, 0.2, 0.1]
-        }}
-        transition={{ 
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute bottom-20 right-20 w-96 h-96 bg-gold-500 rounded-full blur-3xl"
-      />
-      
-      <div className="max-w-7xl mx-auto relative z-10 w-full">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          {/* Logo Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-sm font-medium mb-8 shadow-lg"
-          >
-            <div className="relative w-6 h-6 mr-3">
-              <Image
-                src="/logo/aqiran-xchange-logo-white.svg"
-                alt="Aqiran Xchange logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <CheckCircleIcon className="w-4 h-4 mr-2 text-gold-400" />
-            Get In Touch
-          </motion.div>
-          
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            Ready to <span className="text-gradient on-dark">Start Trading</span>?
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-            Join thousands of satisfied customers who trust Aqiran Xchange for their gift card trading needs.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-2 relative"
-          >
-            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20 hover:shadow-3xl transition-all duration-300">
-              <div className="flex items-center mb-8">
-                <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-500 rounded-xl flex items-center justify-center mr-4">
-                  <EnvelopeIcon className="w-6 h-6 text-ink" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white">Send us a Message</h3>
-                  <p className="text-gray-300">We&apos;ll get back to you within 24 hours</p>
-                </div>
-              </div>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Full Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Enter your full name"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Email Address</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="Enter your email address"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Phone Number</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="Enter your phone number"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Subject</label>
-                    <input
-                      type="text"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      placeholder="What is this regarding?"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-semibold text-white mb-2">Message</label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell us about your trading needs..."
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm resize-none cursor-text"
-                    required
-                  />
-                </div>
-                
-                <motion.button
-                  whileHover={!isSubmitting ? { scale: 1.02, y: -3 } : {}}
-                  whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`group w-full px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed`}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-ink" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending...
-                    </div>
-                  ) : (
-                    <>
-                      Send Message
-                      <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-                    </>
-                  )}
-                </motion.button>
-              </form>
-            </div>
-          </motion.div>
-
-          {/* Contact Information & Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-6"
-          >
-            {/* Contact Cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-500 rounded-xl flex items-center justify-center text-ink shadow-lg">
-                  <PhoneIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Phone Support</h3>
-                  <p className="text-gray-300 font-medium">{extractPhone(socials?.whatsapp, "+233548434599")}</p>
-                  <p className="text-sm text-white/60">Available 24/7</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                  <ChatBubbleLeftRightIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">WhatsApp & Telegram</h3>
-                  <p className="text-gray-300 font-medium">{extractPhone(socials?.whatsapp, "+233548434599")}</p>
-                  <p className="text-sm text-white/60">Instant messaging</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                  <EnvelopeIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Email</h3>
-                  <p className="text-gray-300 font-medium">info@aqiranxchange.com</p>
-                  <p className="text-sm text-white/60">Business inquiries</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              whileHover={{ scale: 1.02, y: -2 }}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                  <MapPinIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Location</h3>
-                  <p className="text-gray-300 font-medium">Tamale, Northern Region, Ghana</p>
-                  <p className="text-sm text-white/60">Serving all of Ghana</p>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Quick Action Buttons */}
-            <motion.a
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              href={socials?.whatsapp ? `https://wa.me/${socials.whatsapp.replace(/\D/g, '')}` : "https://wa.me/233548434599"}
+    <section className="bg-white dark:bg-gray-950 text-ink dark:text-white pt-36 pb-24 lg:pt-44 lg:pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-14 lg:gap-20 items-start">
+          <div>
+            <SectionHeading
+              as="h1"
+              title="Talk to a person"
+              intro="WhatsApp is the quickest way to reach us. Use the form when you want a reply by email."
+            />
+            <a
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block w-full px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg text-center flex items-center justify-center cursor-pointer"
+              onClick={() => track("Contact Click", { channel: "WhatsApp", location: "Contact Page" })}
+              className="mt-8 inline-flex items-center gap-3 h-14 px-7 rounded-full bg-green-600 hover:bg-green-700 text-white font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-600"
             >
-              Chat on WhatsApp Now
-              <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-            </motion.a>
+              Chat on WhatsApp
+            </a>
 
-            {/* Trust Indicators */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20"
-            >
-              <h4 className="text-lg font-bold text-white mb-4 flex items-center">
-                <ShieldCheckIcon className="w-5 h-5 mr-2 text-gold-400" />
-                Why Trust Us?
-              </h4>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <StarIcon className="w-4 h-4 text-yellow-400" />
-                  <span className="text-gray-300 text-sm">5+ Years of Experience</span>
+            <dl className="mt-12 border-t border-gray-200 dark:border-gray-800">
+              {methods.map((m) => (
+                <div key={m.label} className="py-5 border-b border-gray-200 dark:border-gray-800 grid sm:grid-cols-[11rem_1fr] gap-1 sm:gap-6">
+                  <dt className="text-gray-600 dark:text-gray-400">{m.label}</dt>
+                  <dd>
+                    {m.href ? (
+                      <a
+                        href={m.href}
+                        {...(m.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className="font-semibold underline decoration-gray-300 dark:decoration-gray-600 underline-offset-4 hover:decoration-ink dark:hover:decoration-white transition-colors"
+                      >
+                        {m.value}
+                      </a>
+                    ) : (
+                      <span className="font-semibold">{m.value}</span>
+                    )}
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{m.note}</p>
+                  </dd>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <StarIcon className="w-4 h-4 text-yellow-400" />
-                  <span className="text-gray-300 text-sm">1,000+ Happy Customers</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <StarIcon className="w-4 h-4 text-yellow-400" />
-                  <span className="text-gray-300 text-sm">24/7 Customer Support</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <StarIcon className="w-4 h-4 text-yellow-400" />
-                  <span className="text-gray-300 text-sm">Secure Transactions</span>
-                </div>
-              </div>
-            </motion.div>
+              ))}
+            </dl>
 
-            {/* Response Time */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-gradient-to-r from-gold-500 to-gold-600 rounded-2xl p-6 shadow-xl"
-            >
-              <div className="flex items-center space-x-3">
-                <ClockIcon className="w-8 h-8 text-ink" />
-                <div>
-                  <h4 className="text-lg font-bold text-ink">Fast Response</h4>
-                  <p className="text-ink/70 text-sm">We reply within 5 minutes</p>
-                </div>
+            <div role="note" className="mt-10 flex gap-4 rounded-2xl bg-gray-50 dark:bg-gray-900 p-5">
+              <span aria-hidden="true" className="mt-1.5 w-2.5 h-2.5 shrink-0 rounded-full bg-crimson" />
+              <p className="leading-relaxed text-gray-700 dark:text-gray-300">
+                <strong className="font-semibold text-ink dark:text-white">We will never ask for your gift card codes</strong> outside our website, our app or our official WhatsApp. If someone does, it is not us.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 sm:p-10">
+            <h2 className="text-2xl font-semibold tracking-tight">Send a message</h2>
+            <p className="mt-1 text-gray-600 dark:text-gray-400">We reply by email, usually within a day.</p>
+            <form onSubmit={handleSubmit} className="mt-8 grid sm:grid-cols-2 gap-5">
+              <div>
+                <label htmlFor="c-name" className="block text-sm font-medium mb-1.5">Your name</label>
+                <input id="c-name" type="text" name="name" autoComplete="name" value={formData.name} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-ink dark:focus:border-gold focus:ring-2 focus:ring-gold/40 transition-colors" required />
               </div>
-            </motion.div>
-          </motion.div>
+              <div>
+                <label htmlFor="c-email" className="block text-sm font-medium mb-1.5">Email address</label>
+                <input id="c-email" type="email" name="email" autoComplete="email" value={formData.email} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-ink dark:focus:border-gold focus:ring-2 focus:ring-gold/40 transition-colors" required />
+              </div>
+              <div>
+                <label htmlFor="c-phone" className="block text-sm font-medium mb-1.5">Phone number</label>
+                <input id="c-phone" type="tel" name="phone" autoComplete="tel" value={formData.phone} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-ink dark:focus:border-gold focus:ring-2 focus:ring-gold/40 transition-colors" required />
+              </div>
+              <div>
+                <label htmlFor="c-subject" className="block text-sm font-medium mb-1.5">Subject</label>
+                <input id="c-subject" type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="A trade, a payout, training" className="w-full h-12 px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-ink dark:focus:border-gold focus:ring-2 focus:ring-gold/40 transition-colors" required />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="c-message" className="block text-sm font-medium mb-1.5">Message</label>
+                <textarea id="c-message" name="message" rows={6} value={formData.message} onChange={handleChange} placeholder="If it is about a trade, include the trade number." className="w-full px-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-ink dark:focus:border-gold focus:ring-2 focus:ring-gold/40 transition-colors py-3 resize-y" required />
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="sm:col-span-2 h-14 rounded-full bg-gold hover:bg-gold-400 text-ink font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink dark:focus-visible:outline-gold"
+              >
+                {isSubmitting && (
+                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                )}
+                {isSubmitting ? "Sending" : "Send message"}
+              </button>
+            </form>
+          </div>
         </div>
 
-        {/* Social Media Grid Section */}
-        <motion.div
-           initial={{ opacity: 0, y: 50 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ duration: 0.8, delay: 0.4 }}
-           className="mt-24 pt-16 border-t border-white/10"
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connect on <span className="text-gradient on-dark">Social Media</span></h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Follow us for real-time rate updates, digital finance news, and exclusive trading offers across all our official channels.</p>
+        {channels.length > 0 && (
+          <div className="mt-24 pt-12 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight">Our official channels</h2>
+              <p className="mt-1 text-gray-600 dark:text-gray-400">Rate updates, tips and news. Only trust the accounts listed here.</p>
+            </div>
+            <ul className="flex flex-wrap gap-3">
+              {channels.map((c) => (
+                <li key={c.name}>
+                  <a
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Aqiran Xchange on ${c.name}`}
+                    onClick={() => track("Social Link Click", { platform: c.name, location: "Contact Page" })}
+                    className="grid place-items-center w-12 h-12 rounded-full border border-gray-200 dark:border-gray-800 text-ink dark:text-white hover:bg-ink hover:text-white hover:border-ink dark:hover:bg-white dark:hover:text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                  >
+                    {SOCIAL_ICONS[c.icon]("w-5 h-5")}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {[
-              { name: "Facebook", icon: "FB", href: socials?.facebook || "#", color: "from-blue-600 to-blue-700", label: "Join our Community" },
-              { name: "Instagram", icon: "IG", href: socials?.instagram || "#", color: "from-pink-500 to-purple-600", label: "Lifestyle & Updates" },
-              { name: "Telegram", icon: "TG", href: socials?.telegram || "#", color: "from-blue-400 to-blue-500", label: "Instant Trading" },
-              { name: "TikTok", icon: "TK", href: socials?.tiktok || "#", color: "from-gray-800 to-black", label: "Trading Tips" },
-              { name: "X (Twitter)", icon: "X", href: socials?.x_twitter || "#", color: "from-gray-900 to-gray-700", label: "Market News" },
-              { name: "YouTube", icon: "YT", href: socials?.youtube || "#", color: "from-gold-500 to-gold-600", label: "Video Tutorials" }
-            ].map((social, idx) => (
-              <motion.a
-                key={social.name}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                whileHover={{ y: -10 }}
-                onClick={() => track('Social Link Click', { platform: social.name, location: 'Contact Page' })}
-                className="group relative flex flex-col items-center p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-[2rem] transition-all duration-300 hover:bg-white/10 hover:border-white/20"
-              >
-                <div className={`w-16 h-16 bg-gradient-to-br ${social.color} rounded-2xl flex items-center justify-center text-white text-2xl font-black mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  {social.icon === "FB" && (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                  )}
-                  {social.icon === "IG" && (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                  )}
-                  {social.icon === "TG" && (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                  )}
-                  {social.icon === "TK" && (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-                  )}
-                  {social.icon === "X" && (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                  )}
-                  {social.icon === "YT" && (
-                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                  )}
-                </div>
-                <span className="text-white font-bold group-hover:text-gold-400 transition-colors uppercase tracking-widest text-[10px]">{social.name}</span>
-                <span className="text-gray-500 group-hover:text-gray-300 transition-colors text-[9px] font-medium text-center leading-tight mt-1">{social.label}</span>
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
+        )}
       </div>
     </section>
   );
-} 
+}
