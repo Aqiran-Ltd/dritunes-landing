@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/api";
+import Link from "next/link";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { toast } from "react-hot-toast";
 import { fetchSocials, Socials } from "@/lib/socialService";
@@ -21,6 +22,34 @@ function extractPhone(url: string | null | undefined, fallback: string): string 
   }
   return url;
 }
+
+const WHATSAPP_GREETING =
+  "Hi Aqiran Xchange, I would like to sell a gift card.\nBrand: \nCountry: \nAmount: \nPhysical card or e-code: ";
+
+// Answers come from our Terms of Service, so they stay in line with policy.
+const FAQ = [
+  {
+    q: "How fast do I get paid?",
+    a: "As soon as your card is verified, we send the payout to your saved mobile money or bank account. Occasionally a network or bank outage slows it down, which is outside our control.",
+  },
+  {
+    q: "Do I need to verify my identity?",
+    a: "Yes. Every active trader verifies once with a government-issued ID and a selfie. We use it only to protect you and the platform from fraud.",
+  },
+  {
+    q: "How long is a quote good for?",
+    a: "Quotes follow the live market, so they are valid for a limited time, usually 15 to 30 minutes. Send the card within that window to keep the rate.",
+  },
+  {
+    q: "Which cards do you buy?",
+    a: "iTunes, Amazon, Steam, Razer Gold, Google Play, Xbox, Sephora and many more, as physical cards and e-codes. The rates page lists every brand, country and amount we buy today.",
+    link: { href: "/rates", label: "See today's rates" },
+  },
+  {
+    q: "What cards will you refuse?",
+    a: "We never accept stolen cards, payouts to someone else's account, or false identification. Accounts that try are suspended and may be reported to the authorities.",
+  },
+];
 
 const SOCIAL_ICONS: Record<string, (className: string) => React.ReactNode> = {
   FB: (className) => (<svg className={className} aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>),
@@ -75,7 +104,9 @@ export default function ContactPage() {
   };
 
   const whatsappNumber = extractPhone(socials?.whatsapp, "+233548434599");
-  const whatsappHref = socials?.whatsapp ? `https://wa.me/${socials.whatsapp.replace(/\D/g, '')}` : "https://wa.me/233548434599";
+  const whatsappBase = socials?.whatsapp ? `https://wa.me/${socials.whatsapp.replace(/\D/g, '')}` : "https://wa.me/233548434599";
+  // Starts the chat with the details the team asks for first.
+  const whatsappHref = `${whatsappBase}?text=${encodeURIComponent(WHATSAPP_GREETING)}`;
 
   const channels = [
     { name: "Facebook", icon: "FB", href: socials?.facebook },
@@ -87,8 +118,14 @@ export default function ContactPage() {
   ].filter((c) => !!c.href);
 
   const methods = [
-    { label: "WhatsApp and Telegram", value: whatsappNumber, note: "Fastest. We reply day and night.", href: whatsappHref, external: true },
-    { label: "Phone", value: whatsappNumber, note: "Call any time.", href: `tel:${whatsappNumber.replace(/\s/g, "")}` },
+    {
+      label: "WhatsApp, Telegram and calls",
+      value: whatsappNumber,
+      note: "The fastest way to reach us, day and night.",
+      href: whatsappHref,
+      external: true,
+      extra: { label: "Call instead", href: `tel:${whatsappNumber.replace(/\s/g, "")}` },
+    },
     { label: "Email", value: "info@aqiranxchange.com", note: "For business and anything you want in writing.", href: "mailto:info@aqiranxchange.com" },
     { label: "Store", value: "Tamale, Northern Region", note: "Walk in to trade in person. We serve customers across Ghana." },
   ];
@@ -129,7 +166,17 @@ export default function ContactPage() {
                     ) : (
                       <span className="font-semibold">{m.value}</span>
                     )}
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{m.note}</p>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                      {m.note}
+                      {"extra" in m && m.extra && (
+                        <>
+                          {" "}
+                          <a href={m.extra.href} className="font-semibold text-ink dark:text-white underline underline-offset-4 decoration-gray-300 dark:decoration-gray-600 hover:decoration-ink dark:hover:decoration-white">
+                            {m.extra.label}
+                          </a>
+                        </>
+                      )}
+                    </p>
                   </dd>
                 </div>
               ))}
@@ -181,6 +228,31 @@ export default function ContactPage() {
                 {isSubmitting ? "Sending" : "Send message"}
               </button>
             </form>
+          </div>
+        </div>
+
+        <div className="mt-24 pt-12 border-t border-gray-200 dark:border-gray-800 grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-20">
+          <SectionHeading title="Before you message" intro="Quick answers to what people ask us most." />
+          <div className="border-t border-gray-200 dark:border-gray-800">
+            {FAQ.map((item) => (
+              <details key={item.q} className="group border-b border-gray-200 dark:border-gray-800">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-semibold [&::-webkit-details-marker]:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold rounded">
+                  {item.q}
+                  <span aria-hidden="true" className="relative w-4 h-4 shrink-0">
+                    <span className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded bg-current" />
+                    <span className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 rounded bg-current transition-transform duration-200 group-open:rotate-90 group-open:opacity-0 motion-reduce:transition-none" />
+                  </span>
+                </summary>
+                <div className="pb-6 -mt-1 max-w-prose leading-relaxed text-gray-600 dark:text-gray-400">
+                  <p>{item.a}</p>
+                  {item.link && (
+                    <Link href={item.link.href} className="mt-3 inline-block font-semibold text-ink dark:text-white underline underline-offset-4 decoration-gray-300 dark:decoration-gray-600 hover:decoration-ink dark:hover:decoration-white">
+                      {item.link.label}
+                    </Link>
+                  )}
+                </div>
+              </details>
+            ))}
           </div>
         </div>
 
