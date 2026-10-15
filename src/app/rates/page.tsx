@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function Page() {
-  return <RatesPage />;
+// card/region deep links (e.g. /rates?card=Steam&region=US) come from the home page.
+export default async function Page({ searchParams }: { searchParams: Promise<{ card?: string; region?: string }> }) {
+  const { card, region } = await searchParams;
+  return <RatesPage deepCard={card} deepRegion={region} />;
 }

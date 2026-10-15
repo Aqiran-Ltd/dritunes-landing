@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,6 +27,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Select, type SelectOption } from "@/components/ui/Select";
 import SectionHeading from "@/components/ui/SectionHeading";
+import { matchCategory } from "@/lib/cardCatalogue";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { fetchRates, fetchGiftCardGroups, type GiftCard, type Category, type Rate, type GiftCardBrand } from "@/lib/ratesService";
@@ -84,7 +85,7 @@ const SORT_OPTIONS: SelectOption[] = [
   { id: "amount-desc", name: "Amount: High to Low" },
 ];
 
-export default function RatesPage() {
+export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string; deepRegion?: string }) {
   // State
   const { user } = useAuth();
   const { settings } = useSettings();
@@ -106,11 +107,59 @@ export default function RatesPage() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
+  // Deep links from the home page: /rates?card=Steam&region=US
+  const appliedLink = useRef<string | null>(null);
+  const [focusRegion, setFocusRegion] = useState<string | null>(null);
+  const [highlightRegion, setHighlightRegion] = useState<string | null>(null);
+  const [missingCard, setMissingCard] = useState<string | null>(null);
 
   const activeSortOption = useMemo(() =>
     SORT_OPTIONS.find(o => o.id === sortBy) || SORT_OPTIONS[0],
     [sortBy]
   );
+
+  // Apply a card/region deep link once rates have loaded (and again if the link changes).
+  useEffect(() => {
+    if (!deepCard || categories.length === 0) return;
+    const key = `${deepCard}|${deepRegion ?? ""}`;
+    if (appliedLink.current === key) return;
+    appliedLink.current = key;
+    const linked = matchCategory(categories, deepCard);
+    if (!linked) {
+      setMissingCard(deepCard);
+      return;
+    }
+    setMissingCard(null);
+    setSearchQuery("");
+    setSelectedRegions(new Set());
+    setActiveCategoryName(linked.name);
+    if (deepRegion && linked.cards.some((c) => c.region === deepRegion)) {
+      setExpandedRegions(new Set([deepRegion]));
+      setFocusRegion(deepRegion);
+    } else {
+      setExpandedRegions(new Set());
+    }
+  }, [deepCard, deepRegion, categories]);
+
+  // Bring a deep-linked region into view once it has rendered, and outline it briefly.
+  useEffect(() => {
+    if (!focusRegion) return;
+    const frame = requestAnimationFrame(() => {
+      const el = document.getElementById(`rates-${focusRegion}`);
+      if (!el) return;
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      setHighlightRegion(focusRegion);
+      setFocusRegion(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  });
+
+  useEffect(() => {
+    if (!highlightRegion) return;
+    const t = setTimeout(() => setHighlightRegion(null), 2400);
+    return () => clearTimeout(t);
+  }, [highlightRegion]);
 
   // Fetch data
   useEffect(() => {
@@ -124,8 +173,10 @@ export default function RatesPage() {
         ]);
         setCategories(ratesData.categories);
         setBrands(brandsData);
-        if (ratesData.categories.length > 0 && !activeCategoryName) {
-          setActiveCategoryName(ratesData.categories[0].name);
+
+        // Keep whatever brand is selected (by the visitor or a deep link); only default when none is.
+        if (ratesData.categories.length > 0) {
+          setActiveCategoryName((current) => current || ratesData.categories[0].name);
         }
         setLastUpdated(new Date());
       } catch (err) {
@@ -366,6 +417,16 @@ export default function RatesPage() {
               )}
             </AnimatePresence>
           </div>
+          {missingCard && (
+            <div role="status" className="mt-8 flex items-start justify-between gap-4 rounded-2xl bg-gray-50 dark:bg-gray-900 p-4 max-w-2xl">
+              <p className="text-gray-700 dark:text-gray-300">
+                We are not buying <span className="font-semibold text-ink dark:text-white">{missingCard}</span> cards right now. Here is everything we do buy today.
+              </p>
+              <button onClick={() => setMissingCard(null)} className="shrink-0 text-sm font-semibold underline underline-offset-4 text-gray-600 dark:text-gray-400 hover:text-ink dark:hover:text-white">
+                Dismiss
+              </button>
+            </div>
+          )}
           <div className="mt-8 flex items-center gap-4 text-sm">
             {isLoading && (<div className="flex items-center gap-2 text-gray-600 dark:text-gray-400"><ArrowPathIcon className="w-4 h-4 animate-spin" /> Loading rates</div>)}
             {error && (<div className="flex items-center gap-2 text-red-600"><ExclamationTriangleIcon className="w-5 h-5" /> {error} <button onClick={handleRefresh} className="underline">Retry</button></div>)}
@@ -604,7 +665,7 @@ export default function RatesPage() {
                 const isExpanded = expandedRegions.has(regionKey);
                 const sortedCards = [...cards].sort((a, b) => getAmountValue(a.amount) - getAmountValue(b.amount));
                 return (
-                  <motion.div key={regionKey} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden">
+                  <motion.div key={regionKey} id={`rates-${regionKey}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`scroll-mt-48 transition-shadow duration-500 ${highlightRegion === regionKey ? "ring-4 ring-gold" : ""} bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden`}>
                     <button onClick={() => toggleRegion(regionKey)} className={`w-full px-6 py-4 bg-gradient-to-r ${style.color} text-white font-bold text-lg flex items-center justify-between hover:opacity-90 transition-opacity cursor-pointer`}>
                       <div className="flex items-center gap-3">
                         {style.icon} 
