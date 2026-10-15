@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SectionHeading from "@/components/ui/SectionHeading";
+import StartTradeLink from "@/components/StartTradeLink";
 
 const mission = [
   "Teach young people digital literacy, digital finance and how to run a business online.",
@@ -86,7 +87,7 @@ export default function AboutPage() {
           </h1>
           <div className="mt-12 grid md:grid-cols-2 gap-8 md:gap-16 max-w-5xl">
             <p className="text-xl leading-relaxed text-gray-700 dark:text-gray-300 text-pretty">
-              Same founder, same team, same counter in Tamale. Alhassan Abdul-Hanan, known to many of you as Dr.&nbsp;iTunes, started this business to close the digital divide in Northern Ghana.
+              Same founder, same team, same counter in Tamale. Alhassan Abdul-Hanan started this business to close the digital divide in Northern Ghana.
             </p>
             <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 text-pretty">
               Gift card trading pays the bills and keeps cedis moving for thousands of customers. Alongside it, we run bootcamps and mentoring that help young people across West Africa earn from the global digital economy.
@@ -160,7 +161,7 @@ export default function AboutPage() {
             <SectionHeading title="Alhassan Abdul-Hanan, founder" />
             <div className="mt-8 space-y-6 max-w-prose text-lg leading-relaxed text-gray-700 dark:text-gray-300">
               <p>
-                Alhassan is a Ghanaian tech entrepreneur, digital educator and e-commerce specialist. Most of our customers know him as Dr.&nbsp;iTunes.
+                Alhassan is a Ghanaian tech entrepreneur, digital educator and e-commerce specialist.
               </p>
               <p>
                 He started in digital entrepreneurship in 2018 and has spent the years since mastering e-commerce and digital finance. His interest in education and digital inclusion led him to found Dr iTunes Consult, now Aqiran Xchange, to mentor the next generation of African tech builders.
@@ -216,12 +217,12 @@ export default function AboutPage() {
               Have a card to sell? See what it is worth today.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link
-                href="/trade"
+              <StartTradeLink
+                location="About"
                 className="inline-flex items-center h-14 px-8 rounded-full bg-ink text-white font-semibold transition-colors hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
               >
                 Start a trade
-              </Link>
+              </StartTradeLink>
               <Link
                 href="/rates"
                 className="inline-flex items-center h-14 px-2 font-semibold underline decoration-ink/30 underline-offset-8 hover:decoration-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink rounded"
