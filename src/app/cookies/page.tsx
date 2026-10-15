@@ -64,7 +64,7 @@ export default function CookiePolicy() {
             Cookie <span className="text-blue-600">Policy</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            How Dr iTunes Consult uses cookies to improve your digital experience.
+            How Aqiran Xchange uses cookies to improve your digital experience.
           </p>
         </motion.div>
 

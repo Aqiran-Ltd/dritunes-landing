@@ -29,7 +29,7 @@ export default function PrivacyPolicy() {
     {
       title: "4. Information Sharing",
       icon: LockClosedIcon,
-      content: "We do not share your personal information with companies, organizations, or individuals outside of Dr iTunes Consult except in very limited circumstances, such as for legal reasons or with your explicit consent.",
+      content: "We do not share your personal information with companies, organizations, or individuals outside of Aqiran Xchange except in very limited circumstances, such as for legal reasons or with your explicit consent.",
       color: "purple"
     },
     {
@@ -58,7 +58,7 @@ export default function PrivacyPolicy() {
             Privacy <span className="text-red-600">Policy</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            At Dr iTunes Consult, transparency is the foundation of our partnership with you.
+            At Aqiran Xchange (formerly Dr iTunes Consult), transparency is the foundation of our partnership with you.
           </p>
         </motion.div>
 

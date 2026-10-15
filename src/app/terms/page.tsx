@@ -17,7 +17,7 @@ export default function TermsOfService() {
     {
       title: "1. The Trade of Trust",
       icon: ScaleIcon,
-      content: "By using Dr iTunes Consult, you enter into a partnership built on mutual trust. You agree to provide accurate information and use our services only for lawful purposes. We reserve the right to refuse service to anyone who violates these terms or attempts fraudulent activity.",
+      content: "By using Aqiran Xchange (formerly Dr iTunes Consult), you enter into a partnership built on mutual trust. You agree to provide accurate information and use our services only for lawful purposes. We reserve the right to refuse service to anyone who violates these terms or attempts fraudulent activity.",
       color: "blue"
     },
     {
