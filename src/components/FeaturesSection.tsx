@@ -1,170 +1,85 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { 
-  CurrencyDollarIcon, 
-  ShieldCheckIcon, 
-  ClockIcon, 
-  UserGroupIcon,
-  GlobeAltIcon,
-  AcademicCapIcon
-} from "@heroicons/react/24/outline";
-import Image from "next/image";
 import Link from "next/link";
+import SectionHeading from "@/components/ui/SectionHeading";
+
+const steps = [
+  {
+    title: "Pick your card",
+    body: "Choose the brand, country and amount. We buy iTunes, Amazon, Steam, Razer Gold, eBay and more, as physical cards or e-codes.",
+  },
+  {
+    title: "See your payout",
+    body: "The rate is the rate. Check it on the board or the calculator below before you send anything.",
+  },
+  {
+    title: "Send the card",
+    body: "Upload it in your dashboard, message us on WhatsApp or Telegram, or bring it to our store in Tamale.",
+  },
+  {
+    title: "Get paid",
+    body: "Once the card is verified, cedis go straight to your mobile money or bank account, or into your Aqiran wallet.",
+  },
+];
+
+const promises = [
+  {
+    title: "We never ask for codes outside our app",
+    body: "Only trade on aqiranxchange.com, our app, or our official WhatsApp. Anyone asking elsewhere is not us.",
+  },
+  {
+    title: "A real counter you can walk up to",
+    body: "Our store in Tamale serves customers in person. Online or at the counter, you deal with the same team.",
+  },
+  {
+    title: "No hidden fees",
+    body: "What the calculator shows is what lands in your account. Rates are public and change in the open.",
+  },
+];
 
 export default function FeaturesSection() {
-
-  const features = [
-    {
-      icon: CurrencyDollarIcon,
-      title: "Best Exchange Rates",
-      description: "Get the most competitive rates for your gift card trades. We offer market-leading prices with no hidden fees.",
-      gradient: "from-green-500 to-green-600",
-      delay: 0.1
-    },
-    {
-      icon: ShieldCheckIcon,
-      title: "Secure Transactions",
-      description: "Your security is our priority. All transactions are encrypted and protected with industry-standard security measures.",
-      gradient: "from-blue-500 to-blue-600",
-      delay: 0.2
-    },
-    {
-      icon: ClockIcon,
-      title: "24/7 Support",
-      description: "Our dedicated support team is available round the clock to assist you with any questions or concerns.",
-      gradient: "from-purple-500 to-purple-600",
-      delay: 0.3
-    },
-    {
-      icon: UserGroupIcon,
-      title: "Expert Team",
-      description: "Our experienced team of e-commerce and digital finance experts ensures you get the best guidance and service.",
-      gradient: "from-orange-500 to-orange-600",
-      delay: 0.4
-    },
-    {
-      icon: GlobeAltIcon,
-      title: "Online & Physical Store",
-      description: "Trade online via WhatsApp/Telegram or visit our physical store in Tamale for in-person assistance.",
-      gradient: "from-gold-400 to-gold-500",
-      delay: 0.5
-    },
-    {
-      icon: AcademicCapIcon,
-      title: "Workshops & Events",
-      description: "Join our educational workshops and events to learn about digital entrepreneurship and digital finance.",
-      gradient: "from-indigo-500 to-indigo-600",
-      delay: 0.6
-    }
-  ];
-
   return (
-    <section className="py-16 px-4 bg-gradient-to-br from-white via-gray-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-pattern opacity-5" />
-      
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          {/* Logo Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 dark:text-gold-400 text-sm font-medium mb-8 shadow-lg"
-          >
-            <div className="relative w-6 h-6 mr-3">
-              <Image
-                src="/logo/aqiran-xchange-logo.svg"
-                alt="Aqiran Xchange logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <ShieldCheckIcon className="w-4 h-4 mr-2 text-gold-700 dark:text-gold-400" />
-            Why Choose Aqiran Xchange
-          </motion.div>
-          
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Why Choose <span className="text-gradient">Aqiran Xchange</span>
-          </h2>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            We provide the best gift card trading experience in Ghana with unmatched security, support, and rates.
-          </p>
-        </motion.div>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: feature.delay }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="group relative"
+    <section id="how-it-works" className="bg-gray-50 dark:bg-gray-900 py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-20">
+          <div className="lg:sticky lg:top-32 self-start">
+            <SectionHeading
+              title="From card to cash in four steps"
+              intro="Every trade is tracked in your dashboard, so you always know where your card and your money are."
+            />
+            <Link
+              href="/trade"
+              className="mt-8 inline-flex items-center h-12 px-6 rounded-full bg-ink text-white font-semibold transition-colors hover:bg-gray-800 dark:bg-gold dark:text-ink dark:hover:bg-gold-400 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
             >
-              <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full">
-                {/* Icon */}
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300`}
-                >
-                  <feature.icon className="w-8 h-8 text-white" />
-                </motion.div>
+              Start a trade
+            </Link>
+          </div>
 
-                {/* Content */}
+          <ol className="border-t border-gray-200 dark:border-gray-800">
+            {steps.map((step, i) => (
+              <li
+                key={step.title}
+                className="grid grid-cols-[3.5rem_1fr] sm:grid-cols-[5rem_1fr] gap-4 py-8 border-b border-gray-200 dark:border-gray-800"
+              >
+                <span aria-hidden="true" className="text-4xl sm:text-5xl font-bold tabular-nums tracking-[-0.05em] text-gold-700 dark:text-gold">
+                  {i + 1}
+                </span>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-gold-700 dark:group-hover:text-gold-400 transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    {feature.description}
-                  </p>
+                  <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ink dark:text-white">{step.title}</h3>
+                  <p className="mt-2 max-w-prose leading-relaxed text-gray-600 dark:text-gray-400">{step.body}</p>
                 </div>
-
-                {/* Hover Effect */}
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gold-400 to-gold-500 rounded-full"
-                />
-              </div>
-            </motion.div>
-          ))}
+              </li>
+            ))}
+          </ol>
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="text-center mt-12"
-        >
-          <Link href="/trade" passHref legacyBehavior>
-            <motion.button
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
-            >
-              Experience the Difference
-              <CurrencyDollarIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-            </motion.button>
-          </Link>
-        </motion.div>
+        <div className="mt-24 grid md:grid-cols-3 gap-10 md:gap-0 md:divide-x divide-gray-200 dark:divide-gray-800">
+          {promises.map((promise, i) => (
+            <div key={promise.title} className={i === 0 ? "md:pr-10" : i === 1 ? "md:px-10" : "md:pl-10"}>
+              <h3 className="text-lg font-semibold text-ink dark:text-white">{promise.title}</h3>
+              <p className="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">{promise.body}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
-} 
+}

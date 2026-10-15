@@ -35,6 +35,19 @@
   --color-gold-900: #4d3800;
   --color-gold-950: #2e2200;
   --color-ink: #1a1a1d;
+
+  /* Neutral greys tuned to the Xchange charcoal (zinc), replacing Tailwind's blue-tinted gray */
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f4f4f5;
+  --color-gray-200: #e4e4e7;
+  --color-gray-300: #d4d4d8;
+  --color-gray-400: #a1a1aa;
+  --color-gray-500: #71717a;
+  --color-gray-600: #52525b;
+  --color-gray-700: #3f3f46;
+  --color-gray-800: #27272a;
+  --color-gray-900: #18181b;
+  --color-gray-950: #0c0c0e;
   --color-crimson: #ed1848;
 
   --font-sans: var(--font-sora);

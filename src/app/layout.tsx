@@ -7,6 +7,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import MaintenanceGuard from "@/components/MaintenanceGuard";
 import { Toaster } from "react-hot-toast";
 import JsonLd from "@/components/JsonLd";
+import MotionProvider from "@/components/MotionProvider";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -168,6 +169,7 @@ export default function RootLayout({
       >
         <JsonLd data={organizationSchema} />
         <JsonLd data={localBusinessSchema} />
+        <MotionProvider>
         <ThemeProvider>
           <AuthProvider>
             <SettingsProvider>
@@ -181,6 +183,7 @@ export default function RootLayout({
             </SettingsProvider>
           </AuthProvider>
         </ThemeProvider>
+        </MotionProvider>
       </body>
     </html>
   );

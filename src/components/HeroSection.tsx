@@ -1,180 +1,73 @@
 "use client";
-import React from "react";
 
-import { motion } from "framer-motion";
-import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
-import { useTheme } from "@/contexts/ThemeContext";
-import { useHasMounted } from "@/hooks/useHasMounted";
-import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { track } from "@vercel/analytics";
+import RateBoard from "@/components/RateBoard";
+import type { BoardRow } from "@/lib/rateBoard";
 
-export default function HeroSection() {
-  const { resolvedTheme } = useTheme();
-  const mounted = useHasMounted();
+interface HeroSectionProps {
+  boardRows: BoardRow[];
+  updatedAt?: string;
+}
 
+const facts = ["A walk-in store in Tamale", "Paid to mobile money or bank", "Support on WhatsApp, day and night"];
+
+export default function HeroSection({ boardRows, updatedAt }: HeroSectionProps) {
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-gold-50 to-gold-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">
-      {/* Creative Background Elements */}
-      <div className="absolute inset-0 bg-pattern opacity-30" />
-      <div className="absolute inset-0 bg-grid opacity-20" />
+    <section id="home" className="relative overflow-hidden bg-white dark:bg-gray-950 pt-28 pb-20 lg:pt-36 lg:pb-28">
+      {/* A single soft gold light behind the board */}
+      <div aria-hidden="true" className="absolute -right-40 top-10 w-[640px] h-[640px] rounded-full bg-gold/15 blur-[120px] dark:bg-gold/10" />
 
-      {/* Floating Shapes */}
-      <motion.div
-        animate={{ 
-          y: [0, -30, 0],
-          rotate: [0, 5, 0]
-        }}
-        transition={{ 
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-20 left-10 w-20 h-20 bg-gold-500 rounded-full opacity-20 blur-xl"
-      />
-      <motion.div
-        animate={{ 
-          y: [0, 30, 0],
-          rotate: [0, -5, 0]
-        }}
-        transition={{ 
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute bottom-20 right-10 w-32 h-32 bg-gold-500 rounded-full opacity-15 blur-xl"
-      />
-      <motion.div
-        animate={{ 
-          x: [0, 20, 0],
-          y: [0, -20, 0]
-        }}
-        transition={{ 
-          duration: 7,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-1/2 left-1/4 w-16 h-16 bg-gold-400 rounded-full opacity-25 blur-lg"
-      />
-
-      {/* Main Content */}
-      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-        {/* Logo Section */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-14 lg:gap-20 items-center">
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.1 }}
-          className="mb-8"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <div className="relative w-32 h-32 mx-auto mb-6">
-            <Image
-              src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
-              alt="Aqiran Xchange logo"
-              fill
-              className="object-contain drop-shadow-2xl"
-              priority
-            />
+          <h1 className="text-[clamp(3rem,8vw,6.25rem)] font-bold leading-[0.95] tracking-[-0.045em] text-ink dark:text-white">
+            Gift cards in.
+            <br />
+            Cedis out.
+          </h1>
+          <p className="mt-8 max-w-xl text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-300 text-pretty">
+            Sell your iTunes, Amazon, Steam and other gift cards at rates we publish openly, and get paid in cedis as soon as your card is approved.
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <Link
+              href="/trade"
+              onClick={() => track("CTA Click", { label: "Start a trade", location: "Hero" })}
+              className="inline-flex items-center justify-center h-14 px-8 rounded-full bg-gold text-ink font-semibold text-lg shadow-[0_10px_30px_-10px_rgba(245,180,0,0.8)] transition-[background-color,transform] duration-150 hover:bg-gold-400 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink dark:focus-visible:outline-gold"
+            >
+              Start a trade
+            </Link>
+            <Link
+              href="/rates"
+              className="inline-flex items-center h-14 px-2 font-semibold text-lg text-ink dark:text-white underline decoration-gray-300 dark:decoration-gray-600 underline-offset-8 hover:decoration-ink dark:hover:decoration-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold rounded"
+            >
+              Check today&apos;s rates
+            </Link>
           </div>
-          <motion.div
-            animate={{ 
-              scale: [1, 1.05, 1],
-              rotate: [0, 1, 0]
-            }}
-            transition={{ 
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="inline-block"
-          >
-            <div className="w-24 h-1 bg-gradient-to-r from-gold-500 to-gold-400 mx-auto rounded-full"></div>
-          </motion.div>
+
+          <ul className="mt-12 flex flex-col sm:flex-row sm:flex-wrap gap-x-8 gap-y-3 text-gray-600 dark:text-gray-400">
+            {facts.map((fact) => (
+              <li key={fact} className="flex items-center gap-2.5">
+                <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-gold" />
+                {fact}
+              </li>
+            ))}
+          </ul>
         </motion.div>
 
-        {/* Badge */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="inline-flex items-center px-6 py-3 bg-gold-100 dark:bg-gold-900/30 border border-gold-200 dark:border-gold-600/50 rounded-full text-gold-700 dark:text-gold-300 text-sm font-medium mb-8 shadow-lg"
+          transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
         >
-          <CheckCircleIcon className="w-5 h-5 mr-2 text-gold-700 dark:text-gold-400" />
-          <span className="font-semibold">Trusted by 10,000+ Ghanaians</span>
-        </motion.div>
-
-        {/* Main Heading */}
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight"
-        >
-          <span className="text-gradient">Aqiran</span>
-          <br />
-          <span className="text-gray-900 dark:text-white">Xchange</span>
-        </motion.h1>
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed"
-        >
-          Ghana&apos;s Premier <span className="text-gold-700 dark:text-gold-400 font-bold">Gift Card</span> Trading Service
-          <br />
-          <span className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium">Online Trading • Physical Store • 24/7 Support</span>
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
-        >
-          <Link href="/trade">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => track('CTA Click', { label: 'Start Trading Now', location: 'Hero' })}
-              className="group px-10 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg min-w-[220px] flex items-center justify-center"
-            >
-              Start Trading Now
-              <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-            </motion.button>
-          </Link>
-          <Link href="/about">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 border-2 border-gold-500 dark:border-gold-400 text-gold-700 dark:text-gold-400 hover:bg-gold-500 hover:text-ink font-bold rounded-full transition-all duration-300 text-lg min-w-[220px] shadow-lg hover:shadow-xl"
-            >
-              Learn More
-            </motion.button>
-          </Link>
+          <RateBoard rows={boardRows} updatedAt={updatedAt} />
         </motion.div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.2 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-gold-500 dark:border-gold-400 rounded-full flex justify-center"
-        >
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-1 h-3 bg-gold-500 dark:bg-gold-400 rounded-full mt-2"
-          />
-        </motion.div>
-      </motion.div>
     </section>
   );
-} 
+}

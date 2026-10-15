@@ -1,171 +1,29 @@
-"use client";
-import React from "react";
-
-import { motion } from "framer-motion";
-import {
-  UsersIcon,
-  CurrencyDollarIcon,
-  ShieldCheckIcon,
-  ChartBarIcon
-} from "@heroicons/react/24/outline";
-import { useTheme } from "@/contexts/ThemeContext";
-import { useHasMounted } from "@/hooks/useHasMounted";
-import Image from "next/image";
-import Link from "next/link";
+const stats = [
+  { value: "10,000+", label: "customers have traded with us" },
+  { value: "₵50M+", label: "paid out to date" },
+  { value: "99.9%", label: "of trades completed" },
+  { value: "24/7", label: "support on WhatsApp and Telegram" },
+];
 
 export default function StatsSection() {
-  const { resolvedTheme } = useTheme();
-  const mounted = useHasMounted();
-
-  const stats = [
-    {
-      value: "10,000+",
-      label: "Happy Customers",
-      description: "Trusted by thousands across Ghana",
-      icon: UsersIcon,
-      gradient: "from-blue-500 to-blue-600",
-      delay: 0.1
-    },
-    {
-      value: "₵50M+",
-      label: "Trading Volume",
-      description: "Successfully processed transactions",
-      icon: CurrencyDollarIcon,
-      gradient: "from-green-500 to-green-600",
-      delay: 0.2
-    },
-    {
-      value: "99.9%",
-      label: "Success Rate",
-      description: "Secure and reliable transactions",
-      icon: ShieldCheckIcon,
-      gradient: "from-purple-500 to-purple-600",
-      delay: 0.3
-    },
-    {
-      value: "24/7",
-      label: "Support Available",
-      description: "Round-the-clock customer service",
-      icon: ChartBarIcon,
-      gradient: "from-gold-400 to-gold-500",
-      delay: 0.4
-    }
-  ];
-
   return (
-    <section className="py-16 px-4 bg-gradient-to-r from-white via-gold-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-pattern opacity-5" />
-      
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          {/* Logo Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-6 py-3 bg-gold-100 dark:bg-gold-900/30 border border-gold-200 dark:border-gold-600/50 rounded-full text-gold-700 dark:text-gold-300 text-sm font-medium mb-6 shadow-lg"
-          >
-            <div className="relative w-6 h-6 mr-3">
-              <Image
-                src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
-                alt="Aqiran Xchange logo"
-                fill
-                className="object-contain"
-              />
+    <section aria-label="Aqiran Xchange in numbers" className="bg-white dark:bg-gray-950">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <dl className="grid grid-cols-2 lg:grid-cols-4 border-y border-gray-200 dark:border-gray-800">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.value}
+              className={`py-8 lg:py-10 border-gray-200 dark:border-gray-800 ${i % 2 === 1 ? "pl-6 border-l" : "pr-4"} ${i > 0 ? "lg:pl-8 lg:border-l" : ""} ${i > 1 ? "border-t lg:border-t-0" : ""}`}
+            >
+              <dt className="sr-only">{stat.label}</dt>
+              <dd className="text-4xl md:text-5xl font-bold tracking-[-0.04em] tabular-nums text-ink dark:text-white">
+                {stat.value}
+              </dd>
+              <dd className="mt-2 text-gray-600 dark:text-gray-400">{stat.label}</dd>
             </div>
-            <span className="font-semibold">Our Success Metrics</span>
-          </motion.div>
-          
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Trusted by <span className="text-gradient">Thousands</span> Across Ghana
-          </h2>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Our commitment to excellence has made us Ghana&apos;s most trusted gift card trading service.
-          </p>
-        </motion.div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: stat.delay }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="group relative"
-            >
-              <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border border-gold-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full">
-                {/* Icon */}
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300`}
-                >
-                  <stat.icon className="w-8 h-8 text-white" />
-                </motion.div>
-
-                {/* Content */}
-                <div className="text-center">
-                  <motion.div
-                    initial={{ scale: 0.8 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: stat.delay + 0.2 }}
-                    className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2"
-                  >
-                    {stat.value}
-                  </motion.div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-gold-700 dark:group-hover:text-gold-400 transition-colors">
-                    {stat.label}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
-                    {stat.description}
-                  </p>
-                </div>
-
-                {/* Hover Effect */}
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gold-400 to-gold-500 rounded-full"
-                />
-              </div>
-            </motion.div>
           ))}
-        </div>
-
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-center mt-12"
-        >
-          <Link href="/trade" passHref legacyBehavior>
-            <motion.button
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
-            >
-              Join Our Success Story
-              <ChartBarIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-            </motion.button>
-          </Link>
-        </motion.div>
+        </dl>
       </div>
     </section>
   );
-} 
+}
