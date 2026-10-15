@@ -40,8 +40,6 @@ export function artForBrand(apiName: string): CatalogueCard | undefined {
   return match ? cardByName(match[1]) : undefined;
 }
 
-/** The rates API returns a grey placeholder when a brand has no logo uploaded. */
-export const isPlaceholderLogo = (url?: string) => !url || /placeholder/i.test(url);
 
 /** Link to a brand's rates, optionally opened at one country. */
 export const ratesHref = (card: string, region?: string) =>

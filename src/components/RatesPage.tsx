@@ -30,7 +30,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import { matchCategory } from "@/lib/cardCatalogue";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { fetchRates, fetchGiftCardGroups, type GiftCard, type Category, type Rate, type GiftCardBrand } from "@/lib/ratesService";
+import { fetchRates, fetchGiftCardGroups, withBrandImages, type GiftCard, type Category, type Rate, type GiftCardBrand } from "@/lib/ratesService";
 import { useSettings } from "@/contexts/SettingsContext";
 
 // Types
@@ -171,7 +171,7 @@ export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string;
           fetchRates(),
           fetchGiftCardGroups()
         ]);
-        setCategories(ratesData.categories);
+        setCategories(withBrandImages(ratesData.categories, brandsData));
         setBrands(brandsData);
 
         // Keep whatever brand is selected (by the visitor or a deep link); only default when none is.

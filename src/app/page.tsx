@@ -7,7 +7,7 @@ import PriceUpdateSection from "@/components/PriceUpdateSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
-import { fetchRates } from "@/lib/ratesService";
+import { fetchRates, fetchGiftCardGroups, withBrandImages, type GiftCardBrand } from "@/lib/ratesService";
 import { topRates } from "@/lib/rateBoard";
 
 export const metadata: Metadata = {
@@ -20,9 +20,11 @@ export const revalidate = 60; // Revalidate every 60 seconds
 export default async function Home() {
   let categories: any[] = []; // Explicit typing handled by component
   let updatedAt: string | undefined;
+  let brands: GiftCardBrand[] = [];
   try {
-    const ratesData = await fetchRates();
-    categories = ratesData.categories;
+    const [ratesData, brandList] = await Promise.all([fetchRates(), fetchGiftCardGroups()]);
+    brands = brandList;
+    categories = withBrandImages(ratesData.categories, brands);
     updatedAt = ratesData.lastUpdated;
   } catch (err) {
     console.error("Failed to fetch rates on server:", err);
@@ -33,7 +35,7 @@ export default async function Home() {
       <Navigation />
       <HeroSection boardRows={topRates(categories)} updatedAt={updatedAt} />
       <StatsSection />
-      <CardsWeBuy />
+      <CardsWeBuy brands={brands} />
       <FeaturesSection />
       <PriceUpdateSection initialCategories={categories} />
       <NewsletterSection />
