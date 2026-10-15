@@ -100,7 +100,8 @@ body {
 }
 
 /* Creative text effects */
-.dark .text-gradient {
+.dark .text-gradient,
+.text-gradient.on-dark {
   background-image: linear-gradient(135deg, #f5b400, #ffd54d, #f5b400);
 }
 

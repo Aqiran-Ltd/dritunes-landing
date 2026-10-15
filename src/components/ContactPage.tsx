@@ -128,7 +128,7 @@ export default function ContactPage() {
           </motion.div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            Ready to <span className="text-gradient">Start Trading</span>?
+            Ready to <span className="text-gradient on-dark">Start Trading</span>?
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
             Join thousands of satisfied customers who trust Aqiran Xchange for their gift card trading needs.
@@ -417,7 +417,7 @@ export default function ContactPage() {
            className="mt-24 pt-16 border-t border-white/10"
         >
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connect on <span className="text-gradient">Social Media</span></h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Connect on <span className="text-gradient on-dark">Social Media</span></h2>
             <p className="text-gray-400 max-w-2xl mx-auto">Follow us for real-time rate updates, digital finance news, and exclusive trading offers across all our official channels.</p>
           </div>
 

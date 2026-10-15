@@ -34,7 +34,7 @@ export default function AuthLayout({
            
            <h1 className="text-5xl font-black mb-6 leading-[1.1] tracking-tight">
              Seamless Trading, <br />
-             <span className="text-gradient">
+             <span className="text-gradient on-dark">
                Limitless Possibilities.
              </span>
            </h1>

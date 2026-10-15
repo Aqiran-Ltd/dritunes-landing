@@ -107,7 +107,7 @@ export default function ContactSection() {
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            Ready to <span className="text-gradient">Start Trading</span>?
+            Ready to <span className="text-gradient on-dark">Start Trading</span>?
           </h2>
           <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
             Join thousands of satisfied customers who trust Aqiran Xchange for their gift card trading needs.

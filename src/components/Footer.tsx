@@ -300,12 +300,12 @@ export default function Footer() {
                   <input
                     type="email"
                     placeholder="Your email"
-                    className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gold-500/50"
+                    className="flex-1 min-w-0 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gold-500/50"
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 bg-gold-500 hover:bg-gold-600 text-ink text-xs font-medium rounded-lg transition-colors duration-200"
+                    className="shrink-0 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-ink text-xs font-medium rounded-lg transition-colors duration-200"
                   >
                     Subscribe
                   </motion.button>
