@@ -5,10 +5,10 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
-  --primary: #dc2626;
-  --primary-dark: #b91c1c;
-  --primary-light: #fef2f2;
-  --accent: #991b1b;
+  --primary: #f5b400;
+  --primary-dark: #d99e00;
+  --primary-light: #fff9e6;
+  --accent: #ed1848;
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
 }
@@ -20,8 +20,25 @@
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
   --color-accent: var(--accent);
-  --font-sans: var(--font-urbanist);
-  --font-mono: var(--font-urbanist);
+
+  /* Aqiran Xchange brand */
+  --color-gold: #f5b400;
+  --color-gold-50: #fff9e6;
+  --color-gold-100: #fff0bf;
+  --color-gold-200: #ffe38a;
+  --color-gold-300: #ffd54d;
+  --color-gold-400: #ffc61f;
+  --color-gold-500: #f5b400;
+  --color-gold-600: #d99e00;
+  --color-gold-700: #8f6800;
+  --color-gold-800: #6e5000;
+  --color-gold-900: #4d3800;
+  --color-gold-950: #2e2200;
+  --color-ink: #141416;
+  --color-crimson: #ed1848;
+
+  --font-sans: var(--font-sora);
+  --font-mono: var(--font-sora);
 }
 
 .dark {
@@ -34,12 +51,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-urbanist), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sora), Arial, Helvetica, sans-serif;
   scroll-behavior: smooth;
 }
 
 * {
-  font-family: var(--font-urbanist), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sora), Arial, Helvetica, sans-serif;
 }
 
 /* Custom scrollbar */

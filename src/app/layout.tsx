@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Urbanist } from "next/font/google";
+import { Sora } from "next/font/google";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
@@ -10,14 +10,14 @@ import JsonLd from "@/components/JsonLd";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
-const urbanist = Urbanist({
-  variable: "--font-urbanist",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const viewport: Viewport = {
-  themeColor: "#dc2626",
+  themeColor: "#F5B400",
   width: "device-width",
   initialScale: 1,
 };
@@ -161,7 +161,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${urbanist.variable} antialiased`}
+        className={`${sora.variable} antialiased`}
       >
         <JsonLd data={organizationSchema} />
         <JsonLd data={localBusinessSchema} />
