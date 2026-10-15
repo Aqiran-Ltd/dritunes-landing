@@ -174,7 +174,7 @@ export default function TradeDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500"></div>
       </div>
     );
   }
@@ -183,7 +183,7 @@ export default function TradeDetailPage() {
     return (
       <div className="text-center py-20">
         <p className="text-gray-500">Trade not found.</p>
-        <button onClick={() => router.back()} className="text-red-600 mt-4 font-medium hover:underline">
+        <button onClick={() => router.back()} className="text-gold-700 mt-4 font-medium hover:underline">
             Go Back
         </button>
       </div>
@@ -205,7 +205,7 @@ export default function TradeDetailPage() {
           <div>
             <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
                Trade ID
-               <span className="text-red-600">#{trade.trade_number}</span>
+               <span className="text-gold-700">#{trade.trade_number}</span>
                {trade.rate?.country_code && (
                   <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-xl ml-2 border border-gray-200 dark:border-gray-700">
                      {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -321,10 +321,10 @@ export default function TradeDetailPage() {
                         {trade.rate?.type || 'Gift Card'}
                      </p>
                   </div>
-                  <div className="space-y-1 p-5 bg-red-50 dark:bg-red-900/10 rounded-3xl border border-red-100 dark:border-red-900/20">
-                     <p className="text-[10px] text-red-600 font-bold uppercase">Rate</p>
-                     <p className="font-black text-red-700 dark:text-red-400">
-                        {trade.rate_used} <span className="text-[9px] font-bold text-red-400">GHS</span>
+                  <div className="space-y-1 p-5 bg-gold-50 dark:bg-gold-900/10 rounded-3xl border border-gold-100 dark:border-gold-900/20">
+                     <p className="text-[10px] text-gold-700 font-bold uppercase">Rate</p>
+                     <p className="font-black text-gold-700 dark:text-gold-400">
+                        {trade.rate_used} <span className="text-[9px] font-bold text-gold-700 dark:text-gold-400">GHS</span>
                      </p>
                   </div>
                </div>
@@ -459,9 +459,9 @@ export default function TradeDetailPage() {
                     )}
                     {trade.admin_notes && (
                       <div className="max-w-[85%] ml-auto text-right">
-                         <p className="text-[10px] text-red-500 font-bold uppercase mr-4 mb-2">Internal Feedback</p>
-                         <div className="bg-red-50 dark:bg-red-900/10 p-5 rounded-[2rem] rounded-tr-none border border-red-100 dark:border-red-900/20">
-                            <p className="text-sm text-red-800 dark:text-red-300 leading-relaxed font-medium">{trade.admin_notes}</p>
+                         <p className="text-[10px] text-gold-700 font-bold uppercase mr-4 mb-2">Internal Feedback</p>
+                         <div className="bg-gold-50 dark:bg-gold-900/10 p-5 rounded-[2rem] rounded-tr-none border border-gold-100 dark:border-gold-900/20">
+                            <p className="text-sm text-gold-800 dark:text-gold-300 leading-relaxed font-medium">{trade.admin_notes}</p>
                          </div>
                       </div>
                     )}
@@ -476,17 +476,17 @@ export default function TradeDetailPage() {
          {/* RIGHT COLUMN: Payout Info */}
          <div className="space-y-8">
             {/* Payment Summary */}
-            <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-[2.5rem] p-8 text-white shadow-xl shadow-red-900/20 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-gold-500 to-gold-600 rounded-[2.5rem] p-8 text-ink shadow-xl shadow-gold-900/20 relative overflow-hidden">
                <div className="absolute top-0 right-0 p-8 opacity-10">
                   <WalletIcon className="w-24 h-24" />
                </div>
                <div className="relative z-10">
-                  <p className="text-[10px] text-red-200 font-black uppercase tracking-[0.2em] mb-4">Total Disbursement</p>
+                  <p className="text-[10px] text-ink/70 font-black uppercase tracking-[0.2em] mb-4">Total Disbursement</p>
                   <div className="flex items-baseline gap-2">
                      <span className="text-4xl font-black">₵{parseFloat(trade.total_payout).toLocaleString()}</span>
-                     <span className="text-sm font-bold text-red-200">GHC</span>
+                     <span className="text-sm font-bold text-ink/70">GHC</span>
                   </div>
-                  <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
+                  <div className="mt-8 pt-6 border-t border-ink/15 flex items-center justify-between">
                      <div className="flex items-center gap-2">
                         <div className="p-2 bg-white/10 rounded-xl">
                            {trade.withdrawal_preference === 'wallet' ? <WalletIcon className="w-4 h-4" /> : <BuildingLibraryIcon className="w-4 h-4" />}
@@ -495,7 +495,7 @@ export default function TradeDetailPage() {
                            {trade.withdrawal_preference === 'wallet' ? 'Wallet Credit' : 'Direct Payout'}
                         </span>
                      </div>
-                     <CheckBadgeIcon className="w-6 h-6 text-red-300" />
+                     <CheckBadgeIcon className="w-6 h-6 text-ink" />
                   </div>
                </div>
             </div>
@@ -513,7 +513,7 @@ export default function TradeDetailPage() {
                        
                        <div className="grid grid-cols-1 gap-4">
                           <div className="flex items-center gap-4 py-1">
-                             <div className="p-3 bg-red-50 dark:bg-red-900/10 rounded-2xl text-red-600">
+                             <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700">
                                 <BuildingLibraryIcon className="w-5 h-5" />
                              </div>
                              <div>
@@ -525,7 +525,7 @@ export default function TradeDetailPage() {
                           </div>
 
                           <div className="flex items-center gap-4 py-1">
-                             <div className="p-3 bg-red-50 dark:bg-red-900/10 rounded-2xl text-red-600">
+                             <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700">
                                 <CreditCardIcon className="w-5 h-5" />
                              </div>
                              <div>
@@ -538,7 +538,7 @@ export default function TradeDetailPage() {
                           
                           {trade.user_payment_method.payment_type && (
                              <div className="flex items-center gap-4 py-1">
-                                <div className="p-3 bg-red-50 dark:bg-red-900/10 rounded-2xl text-red-600">
+                                <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700">
                                    <HashtagIcon className="w-5 h-5" />
                                 </div>
                                 <div>

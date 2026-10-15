@@ -6,7 +6,7 @@ import { fetchTrendsDistribution, type TrendsDistribution } from '@/lib/analytic
 
 // A vibrant colour palette for the slices
 const SLICE_COLORS = [
-  '#dc2626', '#2563eb', '#16a34a', '#d97706', '#7c3aed',
+  '#F5B400', '#2563eb', '#16a34a', '#ED1848', '#7c3aed',
   '#0891b2', '#db2777', '#65a30d', '#ea580c', '#6366f1',
 ];
 
@@ -70,7 +70,7 @@ export default function AssetDistributionChart() {
 
       {loading ? (
         <div className="h-52 flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !hasData ? (
         <div className="h-52 flex flex-col items-center justify-center text-gray-400 dark:text-gray-600 text-center">

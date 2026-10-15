@@ -47,7 +47,7 @@ export default function FeaturesSection() {
       icon: GlobeAltIcon,
       title: "Online & Physical Store",
       description: "Trade online via WhatsApp/Telegram or visit our physical store in Tamale for in-person assistance.",
-      gradient: "from-red-500 to-red-600",
+      gradient: "from-gold-400 to-gold-500",
       delay: 0.5
     },
     {
@@ -79,7 +79,7 @@ export default function FeaturesSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-6 py-3 bg-red-100 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-8 shadow-lg"
+            className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
           >
             <div className="relative w-6 h-6 mr-3">
               <Image
@@ -89,7 +89,7 @@ export default function FeaturesSection() {
                 className="object-contain"
               />
             </div>
-            <ShieldCheckIcon className="w-4 h-4 mr-2 text-red-500" />
+            <ShieldCheckIcon className="w-4 h-4 mr-2 text-gold-700" />
             Why Choose Aqiran Xchange
           </motion.div>
           
@@ -125,7 +125,7 @@ export default function FeaturesSection() {
 
                 {/* Content */}
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-gold-700 dark:group-hover:text-gold-400 transition-colors">
                     {feature.title}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -138,7 +138,7 @@ export default function FeaturesSection() {
                   initial={{ width: 0 }}
                   whileHover={{ width: "100%" }}
                   transition={{ duration: 0.3 }}
-                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-full"
+                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gold-400 to-gold-500 rounded-full"
                 />
               </div>
             </motion.div>
@@ -157,7 +157,7 @@ export default function FeaturesSection() {
             <motion.button
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
+              className="group px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
             >
               Experience the Difference
               <CurrencyDollarIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />

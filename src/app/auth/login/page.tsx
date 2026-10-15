@@ -80,7 +80,7 @@ export default function LoginPage() {
               <div className="flex justify-end">
                   <Link 
                     href="/auth/forgot-password" 
-                    className="text-sm font-medium text-red-600 hover:text-red-500 transition-colors"
+                    className="text-sm font-medium text-gold-700 hover:text-gold-800 transition-colors"
                   >
                     Forgot Password?
                   </Link>
@@ -100,7 +100,7 @@ export default function LoginPage() {
 
       <div className="text-center text-sm">
         <span className="text-gray-500 dark:text-gray-400">Don&apos;t have an account? </span>
-        <Link href="/auth/register" className="font-semibold text-red-600 hover:text-red-500 transition-colors">
+        <Link href="/auth/register" className="font-semibold text-gold-700 hover:text-gold-800 transition-colors">
           Sign up for free
         </Link>
       </div>

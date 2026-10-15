@@ -83,7 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
       </div>
     );
   }
@@ -128,8 +128,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group relative overflow-hidden ${
                     isActive 
-                      ? 'bg-red-600 text-white shadow-lg shadow-red-600/30' 
-                      : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-500'
+                      ? 'bg-gold-500 text-ink shadow-lg shadow-gold-500/30' 
+                      : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gold-700 dark:hover:text-gold-400'
                   }`}
                 >
                   <item.icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
@@ -139,8 +139,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {item.name === 'History' && pendingCount > 0 && (
                       <span className={`relative z-10 flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold rounded-full ${
                           isActive 
-                           ? 'bg-white text-red-600' 
-                           : 'bg-red-600 text-white group-hover:bg-red-500'
+                           ? 'bg-white text-gold-700' 
+                           : 'bg-gold-500 text-ink group-hover:bg-gold-500'
                       }`}>
                           {pendingCount}
                       </span>
@@ -157,8 +157,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* User Profile & Logout */}
           <div className="p-4 border-t border-gray-100 dark:border-gray-800">
              <div className="flex items-center gap-3 mb-4 px-2">
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-red-100 dark:bg-red-900/20 ring-2 ring-transparent text-red-600 flex items-center justify-center font-bold">
-                   <div className="w-full h-full bg-gradient-to-tr from-red-500 to-orange-500 flex items-center justify-center text-white">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-gold-100 dark:bg-gold-900/20 ring-2 ring-transparent text-gold-700 flex items-center justify-center font-bold">
+                   <div className="w-full h-full bg-gradient-to-tr from-gold-500 to-orange-500 flex items-center justify-center text-ink">
                       {user.name.charAt(0)}
                    </div>
                 </div>
@@ -205,7 +205,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {logoutConfirmOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
               <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-100 dark:border-gray-800 animate-slide-in-up">
-                  <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4 text-red-600 mx-auto">
+                  <div className="w-12 h-12 bg-gold-100 dark:bg-gold-900/20 rounded-full flex items-center justify-center mb-4 text-gold-700 mx-auto">
                       <ArrowLeftOnRectangleIcon className="w-6 h-6" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Sign Out?</h3>

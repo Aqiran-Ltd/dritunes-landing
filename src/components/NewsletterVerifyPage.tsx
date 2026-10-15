@@ -60,7 +60,7 @@ function VerifyContent() {
             exit={{ opacity: 0 }}
             className="text-center"
           >
-            <div className="w-20 h-20 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-8" />
+            <div className="w-20 h-20 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-8" />
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Verifying your subscription...</h2>
           </motion.div>
         )}
@@ -114,16 +114,16 @@ function VerifyContent() {
             key="error"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-md w-full bg-white dark:bg-gray-800 rounded-3xl p-10 shadow-2xl border border-red-100 dark:border-red-900/30 text-center"
+            className="max-w-md w-full bg-white dark:bg-gray-800 rounded-3xl p-10 shadow-2xl border border-gold-100 dark:border-gold-900/30 text-center"
           >
-            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-gold-100 dark:bg-gold-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <XCircleIcon className="w-12 h-12 text-red-600 dark:text-red-400" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Verification Failed</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-8">{message}</p>
             <button
               onClick={() => router.push("/")}
-              className="w-full py-4 border-2 border-red-600 text-red-600 font-bold rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+              className="w-full py-4 border-2 border-gold-500 text-gold-700 font-bold rounded-xl hover:bg-gold-50 dark:hover:bg-gold-900/10 transition-colors"
             >
               Back to Home
             </button>
@@ -136,10 +136,10 @@ function VerifyContent() {
 
 export default function NewsletterVerifyPage() {
   return (
-    <div className="pt-32 pb-20 min-h-screen bg-gradient-to-br from-white via-gray-50 to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="pt-32 pb-20 min-h-screen bg-gradient-to-br from-white via-gray-50 to-gold-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Suspense fallback={
         <div className="min-h-[70vh] flex items-center justify-center">
-          <div className="w-20 h-20 border-4 border-red-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-20 h-20 border-4 border-gold-500 border-t-transparent rounded-full animate-spin" />
         </div>
       }>
         <VerifyContent />

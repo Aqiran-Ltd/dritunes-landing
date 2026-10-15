@@ -37,7 +37,7 @@ export const VerificationStatus = ({ onMethodSelect }: VerificationStatusProps) 
                     <div className={`p-2.5 rounded-xl ${
                         item.status === 'verified' 
                         ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400' 
-                        : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 group-hover:bg-red-50 group-hover:text-red-500 dark:group-hover:bg-red-900/10 dark:group-hover:text-red-400 transition-colors'
+                        : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 group-hover:bg-gold-50 group-hover:text-gold-700 dark:group-hover:bg-gold-900/10 dark:group-hover:text-gold-400 transition-colors'
                     }`}>
                         <item.icon className="w-6 h-6" />
                     </div>

@@ -223,7 +223,7 @@ export default function NotificationsDropdown() {
               {unreadCount > 0 && (
                 <button 
                   onClick={markAllAsRead}
-                  className="text-xs font-medium text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition-colors"
+                  className="text-xs font-medium text-gold-700 hover:text-gold-800 dark:text-gold-400 dark:hover:text-gold-400 transition-colors"
                 >
                   Mark all as read
                 </button>
@@ -233,7 +233,7 @@ export default function NotificationsDropdown() {
             <div className="max-h-[400px] overflow-y-auto">
               {loading && notifications.length === 0 ? (
                  <div className="p-8 text-center text-gray-500">
-                    <div className="w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    <div className="w-6 h-6 border-2 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                     <p className="text-xs">Loading...</p>
                  </div>
               ) : notifications.length === 0 ? (
@@ -293,7 +293,7 @@ export default function NotificationsDropdown() {
                           <div className="mt-1 pl-11">
                             <button
                               onClick={(e) => handleNotificationClick(notification, e)}
-                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold-700 dark:text-gold-400 hover:text-gold-700 dark:hover:text-gold-300 transition-colors"
                             >
                               View Details
                               <ArrowRightIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />

@@ -151,7 +151,7 @@ export default function RateHistoryTable() {
             placeholder="Search asset name…"
             value={assetSearch}
             onChange={e => setAssetSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+            className="w-full pl-9 pr-4 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
           />
           {assetSearch && (
             <button onClick={() => setAssetSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -165,14 +165,14 @@ export default function RateHistoryTable() {
           onClick={() => setShowFilters(p => !p)}
           className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${
             showFilters || hasActiveFilters
-              ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400'
+              ? 'bg-gold-50 dark:bg-gold-900/20 border-gold-200 dark:border-gold-700 text-gold-700 dark:text-gold-400'
               : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'
           }`}
         >
           <FunnelIcon className="w-4 h-4" />
           Filters
           {hasActiveFilters && (
-            <span className="w-4 h-4 bg-red-600 text-white text-[9px] rounded-full flex items-center justify-center font-black">!</span>
+            <span className="w-4 h-4 bg-gold-500 text-ink text-[9px] rounded-full flex items-center justify-center font-black">!</span>
           )}
         </button>
       </div>
@@ -185,7 +185,7 @@ export default function RateHistoryTable() {
             <select
               value={category}
               onChange={e => setCategory(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
             >
               <option value="">All</option>
               <option value="gift_card">Gift Card</option>
@@ -197,7 +197,7 @@ export default function RateHistoryTable() {
             <select
               value={action}
               onChange={e => setAction(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
             >
               <option value="">All</option>
               <option value="created">Created</option>
@@ -210,7 +210,7 @@ export default function RateHistoryTable() {
               type="date"
               value={from}
               onChange={e => setFrom(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
           <div>
@@ -219,14 +219,14 @@ export default function RateHistoryTable() {
               type="date"
               value={to}
               onChange={e => setTo(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
           {hasActiveFilters && (
             <div className="sm:col-span-2 md:col-span-4 flex justify-end">
               <button
                 onClick={() => { setCategory(''); setAction(''); setFrom(''); setTo(''); setAssetSearch(''); }}
-                className="text-xs text-red-600 hover:text-red-700 font-semibold underline cursor-pointer"
+                className="text-xs text-gold-700 hover:text-gold-800 font-semibold underline cursor-pointer"
               >
                 Clear all filters
               </button>
@@ -248,7 +248,7 @@ export default function RateHistoryTable() {
 
         {loading ? (
           <div className="py-16 flex justify-center">
-            <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : error ? (
           <div className="py-16 text-center space-y-3">
@@ -256,7 +256,7 @@ export default function RateHistoryTable() {
             <p className="text-xs text-gray-400 max-w-xs mx-auto">{error}</p>
             <button
               onClick={() => load(1, false)}
-              className="mt-2 px-5 py-2 bg-red-600 text-white text-sm font-bold rounded-xl hover:bg-red-700 transition-colors cursor-pointer"
+              className="mt-2 px-5 py-2 bg-gold-500 text-ink text-sm font-bold rounded-xl hover:bg-gold-600 transition-colors cursor-pointer"
             >
               Retry
             </button>

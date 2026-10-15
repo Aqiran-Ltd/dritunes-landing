@@ -192,20 +192,20 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
     <section className="py-20 px-4 bg-white dark:bg-[#0a0a0a] relative overflow-hidden text-gray-900 dark:text-white">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-[120px]" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
 
         {/* HEADER */}
         <div className="text-center mb-16">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="inline-flex items-center px-4 py-1.5 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-full text-red-600 dark:text-red-400 text-sm font-semibold mb-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="inline-flex items-center px-4 py-1.5 bg-gold-50 dark:bg-gold-900/20 border border-gold-100 dark:border-gold-900/30 rounded-full text-gold-700 dark:text-gold-400 text-sm font-semibold mb-6">
             <BoltIcon className="w-4 h-4 mr-2" />
             Live Market Updates
           </motion.div>
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-            Top Rates. <span className="text-red-600 dark:text-red-500">Instantly.</span>
+            Top Rates. <span className="text-gold-700 dark:text-gold-400">Instantly.</span>
           </motion.h2>
           <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">Real-time exchange rates updated every 5 minutes.</p>
         </div>
@@ -214,11 +214,11 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
           {/* LEFT: Quick Calculator Widget */}
-          <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-2xl shadow-xl shadow-red-900/5 relative z-20">
+          <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-2xl shadow-xl shadow-gold-900/5 relative z-20">
 
             <div className="flex items-center gap-3 mb-8">
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                <CalculatorIcon className="w-6 h-6 text-red-600 dark:text-red-400" />
+              <div className="p-3 bg-gold-50 dark:bg-gold-900/20 rounded-xl">
+                <CalculatorIcon className="w-6 h-6 text-gold-700 dark:text-gold-400" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Quick Rate Check</h3>
             </div>
@@ -287,11 +287,11 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
               </div>
 
               {/* Result Card */}
-              <div className="bg-red-600 text-white rounded-xl p-6 shadow-lg shadow-red-200 dark:shadow-none flex justify-between items-center relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 pointer-events-none" />
+              <div className="bg-gold-500 text-ink rounded-xl p-6 shadow-lg shadow-gold-200 dark:shadow-none flex justify-between items-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-gold-500 to-gold-600 pointer-events-none" />
                 <div className="relative z-10">
-                  <p className="text-red-100 text-xs font-medium uppercase tracking-wider mb-1">Estimated Payout</p>
-                  <p className="text-white/80 text-xs">
+                  <p className="text-ink/70 text-xs font-medium uppercase tracking-wider mb-1">Estimated Payout</p>
+                  <p className="text-ink/80 text-xs">
                     Rate: {currentRate > 0 ? `₵${currentRate.toFixed(2)} /$` : "N/A"}
                   </p >
                 </div>
@@ -312,7 +312,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                  <button
                    onClick={() => router.push(`/dashboard/trade?asset=${encodeURIComponent(selectedCatName)}&region=${encodeURIComponent(selectedRegion)}&card=${encodeURIComponent(activeCard?.amount || '')}&amount=${encodeURIComponent(amount)}&type=${encodeURIComponent(selectedType)}`)}
                    disabled={!isValid || calculatedValue <= 0}
-                   className="w-full py-4 bg-red-600 hover:bg-red-700 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-900/20"
+                   className="w-full py-4 bg-gold-500 hover:bg-gold-600 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed text-ink font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-gold-900/20"
                  >
                    <BoltIcon className="w-6 h-6" />
                    Trade Now
@@ -341,7 +341,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
             <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-5">
               <h3 className="text-3xl font-bold leading-tight text-gray-900 dark:text-white">
                 Don&apos;t settle for less.<br />
-                Trade at the <span className="text-red-600">peak</span> of the market.
+                Trade at the <span className="text-gold-700">peak</span> of the market.
               </h3>
               <p className="text-gray-600 dark:text-gray-400 text-lg">
                 We monitor the market 24/7 to ensure you get the absolute best rates for your assets.
@@ -359,7 +359,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                   {[...allRates, ...allRates].map((item, i) => (
                     <div key={`col1-${i}`} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-lg flex justify-between items-center shadow-sm">
                       <span className="text-gray-900 dark:text-white font-medium text-sm truncate max-w-[100px]">{item.name}</span>
-                      <span className="text-red-600 dark:text-red-400 font-mono font-bold text-sm">₵{item.rate}</span>
+                      <span className="text-gold-700 dark:text-gold-400 font-mono font-bold text-sm">₵{item.rate}</span>
                     </div>
                   ))}
                 </div>

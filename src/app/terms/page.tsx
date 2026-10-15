@@ -99,7 +99,7 @@ export default function TermsOfService() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="mt-20 p-10 bg-gradient-to-r from-orange-600 to-red-600 rounded-3xl text-white text-center shadow-xl"
+          className="mt-20 p-10 bg-gradient-to-r from-orange-600 to-gold-500 rounded-3xl text-white text-center shadow-xl"
         >
           <h3 className="text-3xl font-black mb-6">Ready to trade?</h3>
           <p className="mb-10 text-lg opacity-90 leading-relaxed max-w-2xl mx-auto">
@@ -108,7 +108,7 @@ export default function TermsOfService() {
           <div className="flex flex-col md:flex-row justify-center gap-4">
             <a
               href="/trade"
-              className="px-10 py-4 bg-white text-red-600 font-bold rounded-full hover:shadow-lg transition-all text-lg"
+              className="px-10 py-4 bg-white text-gold-700 font-bold rounded-full hover:shadow-lg transition-all text-lg"
             >
               Start Trading Now
             </a>

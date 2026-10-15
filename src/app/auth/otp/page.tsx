@@ -201,7 +201,7 @@ function OtpContent() {
           ) : (
               <>
                 <div className="text-center mb-6">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-500 mb-3">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 dark:text-gold-400 mb-3">
                             {activeMethod === 'phone' ? <ChatBubbleLeftRightIcon className="w-6 h-6" /> : <EnvelopeIcon className="w-6 h-6" />}
                     </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -243,7 +243,7 @@ function OtpContent() {
                 <button
                     onClick={handleResend}
                     disabled={resendCooldown > 0}
-                    className="mt-4 w-full text-xs font-medium text-gray-400 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
+                    className="mt-4 w-full text-xs font-medium text-gray-400 hover:text-gold-700 dark:hover:text-gold-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
                     >
                     <ArrowPathIcon className={`w-3 h-3 ${resendCooldown > 0 ? 'animate-spin' : ''}`} />
                     {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : "I didn't receive a code"}

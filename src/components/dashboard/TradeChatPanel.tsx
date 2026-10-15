@@ -302,7 +302,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
       >
         {initialLoading ? (
           <div className="flex justify-center py-10">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600" />
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gold-500" />
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-10">
@@ -316,7 +316,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
                 <button
                   onClick={handleLoadOlder}
                   disabled={loadingOlder}
-                  className="flex items-center gap-1.5 px-4 py-1.5 text-[11px] font-bold text-gray-500 hover:text-red-600 bg-gray-50 dark:bg-gray-800 rounded-full transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-4 py-1.5 text-[11px] font-bold text-gray-500 hover:text-gold-700 bg-gray-50 dark:bg-gray-800 rounded-full transition-colors disabled:opacity-50"
                 >
                   {loadingOlder ? (
                     <span className="animate-spin rounded-full h-3 w-3 border-b-2 border-current" />
@@ -344,7 +344,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
                       ) : (
                         <div
                           className={`w-full h-full flex items-center justify-center text-white font-bold text-[11px] bg-gradient-to-tr ${
-                            isOwn ? 'from-red-500 to-orange-500' : 'from-blue-500 to-indigo-600'
+                            isOwn ? 'from-gold-500 to-orange-500' : 'from-blue-500 to-indigo-600'
                           }`}
                         >
                           {m.user.name?.charAt(0) || 'U'}
@@ -357,7 +357,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
 
                   <div className={`max-w-[75%] flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
                     {showHeader && (
-                      <p className={`text-[10px] font-bold uppercase mb-1.5 ${isOwn ? 'mr-1 text-red-500' : 'ml-1 text-gray-400'}`}>
+                      <p className={`text-[10px] font-bold uppercase mb-1.5 ${isOwn ? 'mr-1 text-gold-700' : 'ml-1 text-gray-400'}`}>
                         {isOwn ? 'You' : m.user.name}
                       </p>
                     )}
@@ -377,7 +377,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
                         <div
                           className={`px-5 py-3 rounded-[1.5rem] text-sm leading-relaxed break-words ${
                             isOwn
-                              ? 'bg-red-600 text-white rounded-br-none'
+                              ? 'bg-gold-500 text-ink rounded-br-none'
                               : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-none'
                           }`}
                         >
@@ -511,7 +511,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={sending}
-          className="p-3 text-gray-400 hover:text-red-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-colors flex-shrink-0 disabled:opacity-50"
+          className="p-3 text-gray-400 hover:text-gold-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-colors flex-shrink-0 disabled:opacity-50"
           title="Attach files"
         >
           <PaperClipIcon className="w-5 h-5" />
@@ -529,13 +529,13 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
           placeholder="Type a message..."
           rows={1}
           disabled={sending}
-          className="flex-1 resize-none bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-red-200 dark:focus:border-red-900/50 focus:outline-none focus:ring-2 focus:ring-red-500/10 disabled:opacity-60 max-h-[120px]"
+          className="flex-1 resize-none bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-gold-200 dark:focus:border-gold-900/50 focus:outline-none focus:ring-2 focus:ring-gold-500/10 disabled:opacity-60 max-h-[120px]"
         />
 
         <button
           onClick={handleSend}
           disabled={sending || (!messageText.trim() && pendingFiles.length === 0)}
-          className="p-3 bg-red-600 text-white rounded-2xl hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+          className="p-3 bg-gold-500 text-ink rounded-2xl hover:bg-gold-600 hover:shadow-lg hover:shadow-gold-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
         >
           {sending ? (
             <span className="block animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
@@ -623,7 +623,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
                     href={galleryItems[galleryIndex].url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition-colors"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gold-500 hover:bg-gold-600 text-ink rounded-xl text-sm font-bold transition-colors"
                   >
                     <ArrowDownTrayIcon className="w-4 h-4" /> Download
                   </a>
@@ -641,7 +641,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
                     key={i}
                     onClick={() => setGalleryIndex(i)}
                     className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${
-                      i === galleryIndex ? 'border-red-500' : 'border-transparent opacity-50 hover:opacity-80'
+                      i === galleryIndex ? 'border-gold-500' : 'border-transparent opacity-50 hover:opacity-80'
                     }`}
                   >
                     {item.kind === 'image' ? (

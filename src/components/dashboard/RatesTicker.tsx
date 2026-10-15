@@ -80,7 +80,7 @@ function SparklineOverlay({ assetName }: { assetName: string }) {
     >
       {loading ? (
         <div className="flex-1 flex items-center justify-center">
-          <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !hasData ? (
         <div className="flex-1 flex items-center justify-center text-center">
@@ -94,7 +94,7 @@ function SparklineOverlay({ assetName }: { assetName: string }) {
               <span className={`inline-flex items-center gap-0.5 text-[9px] font-black px-1.5 py-0.5 rounded-full ${
                 change >= 0
                   ? 'bg-green-50 dark:bg-green-900/30 text-green-600'
-                  : 'bg-red-50 dark:bg-red-900/30 text-red-600'
+                  : 'bg-gold-50 dark:bg-gold-900/30 text-gold-700'
               }`}>
                 {change >= 0
                   ? <ArrowTrendingUpIcon className="w-2.5 h-2.5" />
@@ -109,19 +109,19 @@ function SparklineOverlay({ assetName }: { assetName: string }) {
               <AreaChart data={chartData} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
                 <defs>
                   <linearGradient id={`spark-${assetName}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#dc2626" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#F5B400" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#F5B400" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <Tooltip content={<SparklineTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="avg"
-                  stroke="#dc2626"
+                  stroke="#D99E00"
                   strokeWidth={1.5}
                   fill={`url(#spark-${assetName})`}
                   dot={false}
-                  activeDot={{ r: 3, fill: '#dc2626', strokeWidth: 0 }}
+                  activeDot={{ r: 3, fill: '#D99E00', strokeWidth: 0 }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -237,8 +237,8 @@ export default function RatesTicker() {
     <div className="w-full relative py-2">
        <div className="flex items-center justify-between mb-4 px-1">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-             <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <FireIcon className="w-5 h-5 text-red-600 dark:text-red-500 animate-pulse" />
+             <div className="p-2 bg-gold-50 dark:bg-gold-900/20 rounded-lg">
+                <FireIcon className="w-5 h-5 text-gold-700 dark:text-gold-400 animate-pulse" />
              </div>
              Hot Rates
           </h2>

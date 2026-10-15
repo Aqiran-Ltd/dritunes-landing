@@ -14,7 +14,7 @@ export default function HeroSection() {
   const mounted = useHasMounted();
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-red-50 to-red-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-gold-50 to-gold-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-20">
       {/* Creative Background Elements */}
       <div className="absolute inset-0 bg-pattern opacity-30" />
       <div className="absolute inset-0 bg-grid opacity-20" />
@@ -30,7 +30,7 @@ export default function HeroSection() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute top-20 left-10 w-20 h-20 bg-red-500 rounded-full opacity-20 blur-xl"
+        className="absolute top-20 left-10 w-20 h-20 bg-gold-500 rounded-full opacity-20 blur-xl"
       />
       <motion.div
         animate={{ 
@@ -42,7 +42,7 @@ export default function HeroSection() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute bottom-20 right-10 w-32 h-32 bg-red-600 rounded-full opacity-15 blur-xl"
+        className="absolute bottom-20 right-10 w-32 h-32 bg-gold-500 rounded-full opacity-15 blur-xl"
       />
       <motion.div
         animate={{ 
@@ -54,7 +54,7 @@ export default function HeroSection() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute top-1/2 left-1/4 w-16 h-16 bg-red-400 rounded-full opacity-25 blur-lg"
+        className="absolute top-1/2 left-1/4 w-16 h-16 bg-gold-400 rounded-full opacity-25 blur-lg"
       />
 
       {/* Main Content */}
@@ -87,7 +87,7 @@ export default function HeroSection() {
             }}
             className="inline-block"
           >
-            <div className="w-24 h-1 bg-gradient-to-r from-red-600 to-red-400 mx-auto rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-gold-500 to-gold-400 mx-auto rounded-full"></div>
           </motion.div>
         </motion.div>
 
@@ -96,9 +96,9 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="inline-flex items-center px-6 py-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 rounded-full text-red-700 dark:text-red-300 text-sm font-medium mb-8 shadow-lg"
+          className="inline-flex items-center px-6 py-3 bg-gold-100 dark:bg-gold-900/30 border border-gold-200 dark:border-gold-600/50 rounded-full text-gold-700 dark:text-gold-300 text-sm font-medium mb-8 shadow-lg"
         >
-          <CheckCircleIcon className="w-5 h-5 mr-2 text-red-500" />
+          <CheckCircleIcon className="w-5 h-5 mr-2 text-gold-700" />
           <span className="font-semibold">Trusted by 10,000+ Ghanaians</span>
         </motion.div>
 
@@ -121,7 +121,7 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.6 }}
           className="text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed"
         >
-          Ghana&apos;s Premier <span className="text-red-400 font-bold">Gift Card</span> Trading Service
+          Ghana&apos;s Premier <span className="text-gold-700 dark:text-gold-400 font-bold">Gift Card</span> Trading Service
           <br />
           <span className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium">Online Trading • Physical Store • 24/7 Support</span>
         </motion.p>
@@ -138,7 +138,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => track('CTA Click', { label: 'Start Trading Now', location: 'Hero' })}
-              className="group px-10 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg min-w-[220px] flex items-center justify-center"
+              className="group px-10 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg min-w-[220px] flex items-center justify-center"
             >
               Start Trading Now
               <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
@@ -148,7 +148,7 @@ export default function HeroSection() {
             <motion.button
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 border-2 border-red-600 dark:border-red-400 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white font-bold rounded-full transition-all duration-300 text-lg min-w-[220px] shadow-lg hover:shadow-xl"
+              className="px-10 py-4 border-2 border-gold-500 dark:border-gold-400 text-gold-700 dark:text-gold-400 hover:bg-gold-500 hover:text-ink font-bold rounded-full transition-all duration-300 text-lg min-w-[220px] shadow-lg hover:shadow-xl"
             >
               Learn More
             </motion.button>
@@ -166,12 +166,12 @@ export default function HeroSection() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-red-600 dark:border-red-400 rounded-full flex justify-center"
+          className="w-6 h-10 border-2 border-gold-500 dark:border-gold-400 rounded-full flex justify-center"
         >
           <motion.div
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-1 h-3 bg-red-600 dark:bg-red-400 rounded-full mt-2"
+            className="w-1 h-3 bg-gold-500 dark:bg-gold-400 rounded-full mt-2"
           />
         </motion.div>
       </motion.div>

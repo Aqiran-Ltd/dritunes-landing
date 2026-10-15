@@ -42,7 +42,7 @@ const FloatingParticles = () => {
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
-          className="absolute w-2 h-2 bg-gradient-to-r from-red-400 to-orange-400 rounded-full opacity-60"
+          className="absolute w-2 h-2 bg-gradient-to-r from-gold-400 to-orange-400 rounded-full opacity-60"
           style={{
             left: `${particle.x}%`,
             top: `${particle.y}%`,
@@ -100,7 +100,7 @@ const ServiceCard = ({ service }: { service: Service }) => {
 
         {/* Content */}
         <div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-gold-700 dark:group-hover:text-gold-400 transition-colors">
             {service.title}
           </h3>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -113,7 +113,7 @@ const ServiceCard = ({ service }: { service: Service }) => {
           initial={{ width: 0 }}
           whileHover={{ width: "100%" }}
           transition={{ duration: 0.3 }}
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-full"
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gold-400 to-gold-500 rounded-full"
         />
 
 
@@ -163,7 +163,7 @@ export default function AboutPage() {
       icon: GlobeAltIcon,
       title: "Community Innovation Hubs",
       description: "We are building physical labs across the north to provide high-speed internet, tools, and a collaborative space for tech dreamers.",
-      gradient: "from-red-500 to-red-600",
+      gradient: "from-gold-400 to-gold-500",
       delay: 0.5
     }
   ];
@@ -185,7 +185,7 @@ export default function AboutPage() {
   return (
     <div className="pt-20 pb-16 relative">
       {/* Hero Section */}
-      <section className="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-red-50 to-red-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <section className="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-gold-50 to-gold-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         {/* Creative Background Elements */}
         <div className="absolute inset-0 bg-pattern opacity-30" />
         <div className="absolute inset-0 bg-grid opacity-20" />
@@ -202,7 +202,7 @@ export default function AboutPage() {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute top-20 left-10 w-20 h-20 bg-red-500 rounded-full opacity-20 blur-xl"
+          className="absolute top-20 left-10 w-20 h-20 bg-gold-500 rounded-full opacity-20 blur-xl"
         />
         <motion.div
           animate={{ 
@@ -214,7 +214,7 @@ export default function AboutPage() {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute bottom-20 right-10 w-32 h-32 bg-red-600 rounded-full opacity-15 blur-xl"
+          className="absolute bottom-20 right-10 w-32 h-32 bg-gold-500 rounded-full opacity-15 blur-xl"
         />
         <motion.div
           animate={{ 
@@ -226,7 +226,7 @@ export default function AboutPage() {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute top-1/2 left-1/4 w-16 h-16 bg-red-400 rounded-full opacity-25 blur-lg"
+          className="absolute top-1/2 left-1/4 w-16 h-16 bg-gold-400 rounded-full opacity-25 blur-lg"
         />
         
         {/* Main Content */}
@@ -267,7 +267,7 @@ export default function AboutPage() {
                   </svg>
                 </span>
               </motion.h1>
-              <span className="text-gray-900 dark:text-white text-2xl md:text-4xl font-extrabold tracking-tight block mt-2 animate-gradient-x bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 bg-clip-text text-transparent">
+              <span className="text-gray-900 dark:text-white text-2xl md:text-4xl font-extrabold tracking-tight block mt-2 animate-gradient-x bg-gradient-to-r from-pink-500 via-gold-500 to-yellow-400 bg-clip-text text-transparent">
                 Xchange
               </span>
               <motion.p
@@ -294,7 +294,7 @@ export default function AboutPage() {
             className="max-w-4xl mx-auto mb-16"
           >
             <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-              Founded by visionary IT entrepreneur <span className="font-bold text-red-600 dark:text-red-400">Alhassan Abdul-Hanan</span>, popularly known as <span className="italic">Dr. iTunes</span>, 
+              Founded by visionary IT entrepreneur <span className="font-bold text-gold-700 dark:text-gold-400">Alhassan Abdul-Hanan</span>, popularly known as <span className="italic">Dr. iTunes</span>, 
               Aqiran Xchange (formerly Dr iTunes Consult) is more than a consultancy—it&apos;s a digital movement. 
               We are dedicated to dismantling the digital divide in Northern Ghana by turning complex technologies into accessible tools for financial freedom.
             </p>
@@ -316,12 +316,12 @@ export default function AboutPage() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-red-600 dark:border-red-400 rounded-full flex justify-center"
+            className="w-6 h-10 border-2 border-gold-500 dark:border-gold-400 rounded-full flex justify-center"
           >
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-1 h-3 bg-red-600 dark:bg-red-400 rounded-full mt-2"
+              className="w-1 h-3 bg-gold-500 dark:bg-gold-400 rounded-full mt-2"
             />
           </motion.div>
         </motion.div>
@@ -347,7 +347,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-red-100 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -357,7 +357,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <LightBulbIcon className="w-4 h-4 mr-2 text-red-500" />
+              <LightBulbIcon className="w-4 h-4 mr-2 text-gold-700" />
               Our Vision & Mission
             </motion.div>
             
@@ -379,8 +379,8 @@ export default function AboutPage() {
               className="group relative"
             >
               <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-6 shadow-lg">
-                  <LightBulbIcon className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-500 flex items-center justify-center mb-6 shadow-lg">
+                  <LightBulbIcon className="w-8 h-8 text-ink" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
                   Our Vision
@@ -393,7 +393,7 @@ export default function AboutPage() {
                   initial={{ width: 0 }}
                   whileHover={{ width: "100%" }}
                   transition={{ duration: 0.3 }}
-                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-full"
+                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gold-400 to-gold-500 rounded-full"
                 />
               </div>
             </motion.div>
@@ -464,7 +464,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-red-100 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -474,7 +474,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <CurrencyDollarIcon className="w-4 h-4 mr-2 text-red-500" />
+              <CurrencyDollarIcon className="w-4 h-4 mr-2 text-gold-700" />
               Our Core Services
             </motion.div>
             
@@ -504,7 +504,7 @@ export default function AboutPage() {
             <motion.button
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
+              className="group px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center mx-auto"
             >
               Explore Our Services
               <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
@@ -516,8 +516,8 @@ export default function AboutPage() {
       {/* How We Work Section */}
       <section className="py-24 px-4 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 relative overflow-hidden">
         {/* Decorative background for the section */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -529,7 +529,7 @@ export default function AboutPage() {
             >
               <h2 className="text-3xl md:text-5xl font-black mb-8 text-gray-900 dark:text-white leading-tight">
                 A Workflow <br />
-                <span className="text-red-600">Built on Trust</span>
+                <span className="text-gold-700">Built on Trust</span>
               </h2>
               <div className="space-y-8">
                 {[
@@ -550,9 +550,9 @@ export default function AboutPage() {
                   }
                 ].map((item, i) => (
                   <div key={i} className="flex gap-6 group">
-                    <span className="text-4xl font-black text-gray-200 dark:text-gray-800 shrink-0 group-hover:text-red-500/20 transition-colors duration-300">{item.num}</span>
+                    <span className="text-4xl font-black text-gray-200 dark:text-gray-800 shrink-0 group-hover:text-gold-700/20 transition-colors duration-300">{item.num}</span>
                     <div>
-                      <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-red-600 transition-colors duration-300">{item.title}</h4>
+                      <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-gold-700 transition-colors duration-300">{item.title}</h4>
                       <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
@@ -565,15 +565,15 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="relative aspect-square bg-gradient-to-br from-red-50 to-red-100 dark:from-gray-800/50 dark:to-gray-900/50 rounded-3xl overflow-hidden flex items-center justify-center border border-red-200 dark:border-red-900/30 shadow-2xl"
+              className="relative aspect-square bg-gradient-to-br from-gold-50 to-gold-100 dark:from-gray-800/50 dark:to-gray-900/50 rounded-3xl overflow-hidden flex items-center justify-center border border-gold-200 dark:border-gold-900/30 shadow-2xl"
             >
               <div className="absolute inset-0 bg-grid opacity-20" />
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                className="w-48 h-48 border-4 border-dashed border-red-500/20 rounded-full flex items-center justify-center"
+                className="w-48 h-48 border-4 border-dashed border-gold-500/20 rounded-full flex items-center justify-center"
               >
-                <div className="w-32 h-32 border-4 border-dashed border-red-500/40 rounded-full" />
+                <div className="w-32 h-32 border-4 border-dashed border-gold-500/40 rounded-full" />
               </motion.div>
               <div className="absolute flex flex-col items-center">
                 <div className="relative w-32 h-32 mb-4 animate-pulse-slow">
@@ -585,7 +585,7 @@ export default function AboutPage() {
                   />
                 </div>
                 <div className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-gray-100 dark:border-gray-700">
-                  <span className="text-xs font-bold text-red-600 dark:text-red-400 tracking-widest uppercase">Pioneering Progress</span>
+                  <span className="text-xs font-bold text-gold-700 dark:text-gold-400 tracking-widest uppercase">Pioneering Progress</span>
                 </div>
               </div>
             </motion.div>
@@ -613,7 +613,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-red-100 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -623,7 +623,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <UserGroupIcon className="w-4 h-4 mr-2 text-red-500" />
+              <UserGroupIcon className="w-4 h-4 mr-2 text-gold-700" />
               Meet Our Founder
             </motion.div>
             
@@ -666,8 +666,8 @@ export default function AboutPage() {
               className="group relative"
             >
               <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-6 shadow-lg">
-                  <UserGroupIcon className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-500 flex items-center justify-center mb-6 shadow-lg">
+                  <UserGroupIcon className="w-8 h-8 text-ink" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
                   Leadership Experience
@@ -685,7 +685,7 @@ export default function AboutPage() {
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <div className="w-2 h-2 bg-red-600 rounded-full mt-3 mr-4 flex-shrink-0" />
+                      <div className="w-2 h-2 bg-gold-500 rounded-full mt-3 mr-4 flex-shrink-0" />
                       <span>{item}</span>
                     </motion.li>
                   ))}
@@ -694,7 +694,7 @@ export default function AboutPage() {
                   initial={{ width: 0 }}
                   whileHover={{ width: "100%" }}
                   transition={{ duration: 0.3 }}
-                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-full"
+                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gold-400 to-gold-500 rounded-full"
                 />
               </div>
             </motion.div>
@@ -722,7 +722,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-red-100 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -732,7 +732,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <CheckCircleIcon className="w-4 h-4 mr-2 text-red-500" />
+              <CheckCircleIcon className="w-4 h-4 mr-2 text-gold-700" />
               Our Journey & Future
             </motion.div>
             

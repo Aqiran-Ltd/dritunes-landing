@@ -49,7 +49,7 @@ function ResetPasswordContent() {
     <GuestGuard>
     <div className="space-y-6 animate-slide-in-up">
       <div className="text-center space-y-2">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-500 mb-4 animate-bounce-gentle">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 dark:text-gold-400 mb-4 animate-bounce-gentle">
             <KeyIcon className="w-8 h-8" />
         </div>
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">

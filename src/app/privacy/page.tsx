@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
   ];
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-br from-white via-gray-50 to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <main className="flex flex-col min-h-screen bg-gradient-to-br from-white via-gray-50 to-gold-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Navigation />
       <div className="flex-1 pt-32 pb-20">
         <div className="max-w-4xl mx-auto px-4">
@@ -50,12 +50,12 @@ export default function PrivacyPolicy() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-sm font-medium mb-6">
+          <div className="inline-flex items-center px-4 py-2 bg-gold-100 dark:bg-gold-900/30 text-gold-700 dark:text-gold-400 rounded-full text-sm font-medium mb-6">
             <ShieldCheckIcon className="w-4 h-4 mr-2" />
             Privacy First
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">
-            Privacy <span className="text-red-600">Policy</span>
+            Privacy <span className="text-gold-700">Policy</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             At Aqiran Xchange (formerly Dr iTunes Consult), transparency is the foundation of our partnership with you.
@@ -93,7 +93,7 @@ export default function PrivacyPolicy() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="mt-20 p-8 bg-red-600 rounded-3xl text-white text-center"
+          className="mt-20 p-8 bg-gold-500 rounded-3xl text-ink text-center"
         >
           <h3 className="text-2xl font-bold mb-4">Have questions?</h3>
           <p className="mb-8 opacity-90 leading-relaxed">
@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
           </p>
           <a
             href="/contact"
-            className="inline-flex items-center px-8 py-3 bg-white text-red-600 font-bold rounded-full hover:bg-gray-100 transition-colors"
+            className="inline-flex items-center px-8 py-3 bg-white text-gold-700 font-bold rounded-full hover:bg-gray-100 transition-colors"
           >
             Contact Support
           </a>

@@ -67,7 +67,7 @@ export function Select({
                 ? 'border-red-500 focus:ring-red-200' 
                 : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:ring-4 focus:ring-red-500/10'
               }
-              focus:outline-none focus:border-red-600 focus:bg-white dark:focus:bg-black
+              focus:outline-none focus:border-gold-500 focus:bg-white dark:focus:bg-black
               sm:text-sm
               ${leadingIcon ? 'pl-11' : ''}
             `}
@@ -102,7 +102,7 @@ export function Select({
                     <div className="relative">
                         <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         <input
-                        className="w-full rounded-xl border-none bg-gray-100 dark:bg-gray-800 py-2 pl-9 pr-4 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500/50 outline-none"
+                        className="w-full rounded-xl border-none bg-gray-100 dark:bg-gray-800 py-2 pl-9 pr-4 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-gold-500/50 outline-none"
                         placeholder="Search..."
                         autoComplete="off"
                         value={query}
@@ -124,7 +124,7 @@ export function Select({
                         key={option.id}
                         className={({ active, selected }) =>
                             `relative cursor-pointer select-none py-3 pl-10 pr-4 rounded-xl transition-all duration-200 ${
-                            active ? 'bg-red-50 dark:bg-red-900/10 text-red-600' : 'text-gray-900 dark:text-gray-300'
+                            active ? 'bg-gold-50 dark:bg-gold-900/10 text-gold-700' : 'text-gray-900 dark:text-gray-300'
                             } ${selected ? 'font-semibold' : 'font-normal'}`
                         }
                         value={option}
@@ -133,14 +133,14 @@ export function Select({
                             <>
                             <div className="flex items-center gap-3">
                                 {option.icon && (
-                                <span className={`transition-colors ${active ? 'text-red-600' : 'text-gray-400'}`}>
+                                <span className={`transition-colors ${active ? 'text-gold-700' : 'text-gray-400'}`}>
                                     {option.icon}
                                 </span>
                                 )}
                                 <div className="flex flex-col">
                                 <span className="block truncate">{option.name}</span>
                                 {option.description && (
-                                    <span className={`text-[10px] truncate ${active ? 'text-red-500/70' : 'text-gray-500'}`}>
+                                    <span className={`text-[10px] truncate ${active ? 'text-gold-700/70' : 'text-gray-500'}`}>
                                     {option.description}
                                     </span>
                                 )}
@@ -150,7 +150,7 @@ export function Select({
                             {selected ? (
                                 <span
                                 className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                    active ? 'text-red-600' : 'text-red-600'
+                                    active ? 'text-gold-700' : 'text-gold-700'
                                 }`}
                                 >
                                 <CheckIcon className="h-5 w-5" aria-hidden="true" />
@@ -160,7 +160,7 @@ export function Select({
                             {active && (
                                 <motion.div 
                                 layoutId="active-bg"
-                                className="absolute inset-0 bg-red-600/5 dark:bg-red-600/10 rounded-xl -z-10"
+                                className="absolute inset-0 bg-gold-500/5 dark:bg-gold-500/10 rounded-xl -z-10"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.2 }}

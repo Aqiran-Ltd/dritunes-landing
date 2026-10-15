@@ -368,7 +368,7 @@ export default function TradePage() {
                             type="number"
                             value={amount}
                             onChange={e => setAmount(e.target.value)}
-                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 font-bold text-lg"
+                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 font-bold text-lg"
                             placeholder="100.00"
                           />
                       </div>
@@ -376,13 +376,13 @@ export default function TradePage() {
                       {selectedType === 'ecode' ? (
                           <div>
                               <label className="block text-sm font-medium text-gray-500 mb-1">
-                                  E-Code <span className="text-red-500">*</span>
+                                  E-Code <span className="text-gold-700">*</span>
                               </label>
                               <input
                                   type="text"
                                   value={code}
                                   onChange={e => setCode(e.target.value)}
-                                  className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 font-mono"
+                                  className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 font-mono"
                                   placeholder="Enter your gift card code..."
                               />
                           </div>
@@ -396,8 +396,8 @@ export default function TradePage() {
                                   onDrop={handleDrop}
                                   className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
                                       isDragging
-                                      ? 'border-red-500 bg-red-50/5 dark:bg-red-500/10'
-                                      : 'border-gray-300 dark:border-gray-700 hover:border-red-500/80 dark:hover:border-red-500 bg-gray-50 dark:bg-gray-800'
+                                      ? 'border-gold-500 bg-gold-50/5 dark:bg-gold-500/10'
+                                      : 'border-gray-300 dark:border-gray-700 hover:border-gold-500/80 dark:hover:border-gold-500 bg-gray-50 dark:bg-gray-800'
                                   }`}
                               >
                                   <div className="space-y-4 text-center w-full">
@@ -418,7 +418,7 @@ export default function TradePage() {
                                                                   e.preventDefault();
                                                                   setAttachments(prev => prev.filter((_, i) => i !== idx));
                                                               }}
-                                                              className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-md"
+                                                              className="absolute top-1 right-1 bg-gold-500/80 hover:bg-gold-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-md"
                                                               aria-label="Remove image"
                                                           >
                                                               <XCircleIcon className="w-5 h-5" />
@@ -432,7 +432,7 @@ export default function TradePage() {
                                       <div className={`flex flex-col items-center justify-center ${attachments.length > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-4' : ''}`}>
                                           <PhotoIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
                                           <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2 relative">
-                                              <span className="font-medium text-red-600 hover:text-red-500">
+                                              <span className="font-medium text-gold-700 hover:text-gold-800">
                                                   {attachments.length > 0 ? 'Click to add more' : 'Click to upload'}
                                               </span>
                                               <input
@@ -475,7 +475,7 @@ export default function TradePage() {
                               onClick={() => setWithdrawalPreference('direct_payout')}
                               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all cursor-pointer ${
                                   withdrawalPreference === 'direct_payout' 
-                                  ? 'bg-white dark:bg-gray-700 shadow-sm text-red-600' 
+                                  ? 'bg-white dark:bg-gray-700 shadow-sm text-gold-700' 
                                   : 'text-gray-400 hover:text-gray-600'
                               }`}
                           >
@@ -486,7 +486,7 @@ export default function TradePage() {
                               onClick={() => setWithdrawalPreference('wallet')}
                               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all cursor-pointer ${
                                   withdrawalPreference === 'wallet' 
-                                  ? 'bg-white dark:bg-gray-700 shadow-sm text-red-600' 
+                                  ? 'bg-white dark:bg-gray-700 shadow-sm text-gold-700' 
                                   : 'text-gray-400 hover:text-gray-600'
                               }`}
                           >
@@ -524,9 +524,9 @@ export default function TradePage() {
                                                   onClick={() => setSelectedUserMethodId(method.id)}
                                                   className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
                                                       selectedUserMethodId === method.id 
-                                                      ? 'border-red-600 bg-red-50/50 dark:bg-red-600/10' 
+                                                      ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10' 
                                                       : method.is_default
-                                                          ? 'border-red-200 dark:border-red-900/30 bg-red-50/10 dark:bg-red-900/5'
+                                                          ? 'border-gold-200 dark:border-gold-900/30 bg-gold-50/10 dark:bg-gold-900/5'
                                                           : 'border-gray-50 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700'
                                                   }`}
                                               >
@@ -534,7 +534,7 @@ export default function TradePage() {
                                                       <div className="flex items-center gap-2">
                                                           <p className="text-sm font-bold text-gray-900 dark:text-white">{method.account_name}</p>
                                                           {method.is_default && (
-                                                              <span className="text-[9px] font-black uppercase tracking-tighter bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded-md border border-red-200 dark:border-red-800">
+                                                              <span className="text-[9px] font-black uppercase tracking-tighter bg-gold-100 dark:bg-gold-900/50 text-gold-700 dark:text-gold-400 px-1.5 py-0.5 rounded-md border border-gold-200 dark:border-gold-700">
                                                                   Default
                                                               </span>
                                                           )}
@@ -543,7 +543,7 @@ export default function TradePage() {
                                                            {`${method.payment_type} • ${method.bank_name} • ${method.account_number}`}
                                                       </p>
                                                   </div>
-                                                  {selectedUserMethodId === method.id && <CheckIcon className="w-5 h-5 text-red-600" />}
+                                                  {selectedUserMethodId === method.id && <CheckIcon className="w-5 h-5 text-gold-700" />}
                                               </button>
                                           ))}
                                       </div>
@@ -555,13 +555,13 @@ export default function TradePage() {
                                   initial={{ opacity: 0, y: 10 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -10 }}
-                                  className="p-6 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-[2rem] text-center"
+                                  className="p-6 bg-gold-50 dark:bg-gold-900/10 border border-gold-100 dark:border-gold-900/20 rounded-[2rem] text-center"
                               >
-                                  <div className="p-3 bg-red-600 text-white rounded-2xl w-fit mx-auto mb-3 shadow-lg shadow-red-600/20">
+                                  <div className="p-3 bg-gold-500 text-ink rounded-2xl w-fit mx-auto mb-3 shadow-lg shadow-gold-500/20">
                                       <WalletIcon className="w-6 h-6" />
                                   </div>
-                                  <p className="text-sm font-bold text-red-900 dark:text-red-200">Funds will be credited to your wallet.</p>
-                                  <p className="text-xs text-red-600/70 dark:text-red-400/60 mt-1">You can withdraw anytime from your balance.</p>
+                                  <p className="text-sm font-bold text-gold-900 dark:text-gold-200">Funds will be credited to your wallet.</p>
+                                  <p className="text-xs text-gold-700/70 dark:text-gold-400/60 mt-1">You can withdraw anytime from your balance.</p>
                               </motion.div>
                           )}
                       </AnimatePresence>
@@ -574,7 +574,7 @@ export default function TradePage() {
                          value={userNotes} 
                          onChange={e => setUserNotes(e.target.value)}
                          placeholder="e.g. Specific instructions for this payout..."
-                         className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 min-h-[80px]"
+                         className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 min-h-[80px]"
                        />
 
                        <div className="text-center mt-4">
@@ -586,15 +586,15 @@ export default function TradePage() {
                   </div>
                </div>
 
-               <div className="p-6 rounded-2xl shadow-xl text-white bg-gradient-to-br from-red-600 to-red-800">
-                  <p className="text-white/80 text-sm font-medium mb-1">
+               <div className="p-6 rounded-2xl shadow-xl text-ink bg-gradient-to-br from-gold-500 to-gold-600">
+                  <p className="text-ink/80 text-sm font-medium mb-1">
                       You Will Receive
                   </p>
                   <div className="text-4xl font-black mb-4">
                       {isValid ? `₵${estimatedPayout.toLocaleString()}` : '---'}
                   </div>
                   
-                  <div className="flex justify-between text-sm text-white/70 border-t border-white/20 pt-4 mb-6">
+                  <div className="flex justify-between text-sm text-ink/70 border-t border-ink/15 pt-4 mb-6">
                       <span>Rate Applied</span>
                       <span className="font-mono font-bold uppercase">{currentRate}</span>
                   </div>

@@ -68,7 +68,7 @@ function UnsubscribeContent() {
           <div className="space-y-4">
             <button
               onClick={() => router.push("/")}
-              className="w-full py-4 bg-red-600 text-white font-bold rounded-xl flex items-center justify-center hover:bg-red-700 transition-colors group"
+              className="w-full py-4 bg-gold-500 text-ink font-bold rounded-xl flex items-center justify-center hover:bg-gold-600 transition-colors group"
             >
               <ArrowPathIcon className="w-5 h-5 mr-2 group-hover:rotate-180 transition-transform duration-500" />
               Resubscribe
@@ -88,10 +88,10 @@ function UnsubscribeContent() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-white dark:bg-gray-800 rounded-3xl p-10 shadow-2xl border border-red-100 dark:border-red-900/30 text-center"
+          className="max-w-md w-full bg-white dark:bg-gray-800 rounded-3xl p-10 shadow-2xl border border-gold-100 dark:border-gold-900/30 text-center"
         >
-          <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <NoSymbolIcon className="w-12 h-12 text-red-600 dark:text-red-400" />
+          <div className="w-20 h-20 bg-gold-100 dark:bg-gold-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <NoSymbolIcon className="w-12 h-12 text-gold-700 dark:text-gold-400" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Unsubscribe Failed</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-8">{message}</p>

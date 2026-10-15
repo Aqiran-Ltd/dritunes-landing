@@ -78,7 +78,7 @@ export default function Footer() {
     {
       name: "YouTube",
       href: socials?.youtube || "#",
-      bgColor: "bg-gray-600 hover:bg-red-600",
+      bgColor: "bg-gray-600 hover:bg-gold-500",
       icon: (
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -93,8 +93,8 @@ export default function Footer() {
       <div className="absolute inset-0 bg-pattern opacity-5" />
       
       {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600" />
-      <div className="absolute top-20 left-10 w-32 h-32 bg-red-600/10 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold-500 via-gold-500 to-gold-500" />
+      <div className="absolute top-20 left-10 w-32 h-32 bg-gold-500/10 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-600/10 rounded-full blur-3xl" />
       
       <div className="max-w-7xl mx-auto px-4 py-16 relative z-10">
@@ -120,7 +120,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-white dark:text-gray-100">Aqiran</h3>
-                  <p className="text-red-400 font-medium">Xchange</p>
+                  <p className="text-gold-400 font-medium">Xchange</p>
                 </div>
               </Link>
               <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed mb-6">
@@ -150,7 +150,7 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <h4 className="text-lg font-bold text-white dark:text-gray-100 mb-6 flex items-center">
-                <span className="w-8 h-0.5 bg-red-500 mr-3"></span>
+                <span className="w-8 h-0.5 bg-gold-500 mr-3"></span>
                 Quick Links
               </h4>
               <ul className="space-y-3">
@@ -173,11 +173,11 @@ export default function Footer() {
                         whileHover={{ x: 5 }}
                         className={`text-sm flex items-center group transition-colors duration-200 ${
                           isActive 
-                            ? "text-red-400 font-medium" 
-                            : "text-gray-300 dark:text-gray-400 hover:text-red-400 dark:hover:text-red-300"
+                            ? "text-gold-400 font-medium" 
+                            : "text-gray-300 dark:text-gray-400 hover:text-gold-400 dark:hover:text-gold-300"
                         }`}
                       >
-                        <span className={`w-1 h-1 bg-red-500 rounded-full mr-3 transition-opacity duration-200 ${
+                        <span className={`w-1 h-1 bg-gold-500 rounded-full mr-3 transition-opacity duration-200 ${
                           isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                         }`}></span>
                         {link.name}
@@ -198,7 +198,7 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <h4 className="text-lg font-bold text-white dark:text-gray-100 mb-6 flex items-center">
-                <span className="w-8 h-0.5 bg-red-500 mr-3"></span>
+                <span className="w-8 h-0.5 bg-gold-500 mr-3"></span>
                 Contact Info
               </h4>
               <ul className="space-y-4">
@@ -240,10 +240,10 @@ export default function Footer() {
                   <motion.a
                     href="mailto:info@aqiranxchange.com"
                     whileHover={{ x: 5 }}
-                    className="text-gray-300 dark:text-gray-400 hover:text-red-400 dark:hover:text-red-300 transition-colors duration-200 text-sm flex items-center group"
+                    className="text-gray-300 dark:text-gray-400 hover:text-gold-400 dark:hover:text-gold-300 transition-colors duration-200 text-sm flex items-center group"
                   >
-                    <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
-                      <EnvelopeIcon className="w-4 h-4 text-white" />
+                    <div className="w-8 h-8 bg-gold-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                      <EnvelopeIcon className="w-4 h-4 text-ink" />
                     </div>
                     <div>
                       <div className="font-medium">Email</div>
@@ -275,7 +275,7 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <h4 className="text-lg font-bold text-white dark:text-gray-100 mb-6 flex items-center">
-                <span className="w-8 h-0.5 bg-red-500 mr-3"></span>
+                <span className="w-8 h-0.5 bg-gold-500 mr-3"></span>
                 Follow Us
               </h4>
               
@@ -306,12 +306,12 @@ export default function Footer() {
                   <input
                     type="email"
                     placeholder="Your email"
-                    className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                    className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gold-500/50"
                   />
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors duration-200"
+                    className="px-4 py-2 bg-gold-500 hover:bg-gold-600 text-ink text-xs font-medium rounded-lg transition-colors duration-200"
                   >
                     Subscribe
                   </motion.button>
@@ -335,11 +335,11 @@ export default function Footer() {
                 © {currentYear} Aqiran Xchange (formerly Dr iTunes Consult). All rights reserved.
               </p>
               <div className="flex items-center space-x-4 text-xs">
-                <a href="/privacy" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Privacy Policy</a>
+                <a href="/privacy" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Privacy Policy</a>
                 <span className="text-gray-600">•</span>
-                <a href="/terms" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Terms of Service</a>
+                <a href="/terms" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Terms of Service</a>
                 <span className="text-gray-600">•</span>
-                <a href="/cookies" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Cookie Policy</a>
+                <a href="/cookies" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Cookie Policy</a>
                 <span className="text-gray-600">•</span>
                 <a href="/auth/delete-account" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Delete Account</a>
               </div>

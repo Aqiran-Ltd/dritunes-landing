@@ -138,7 +138,7 @@ export default function RegisterPage() {
                             ? 'border-red-500 focus:border-red-600' 
                             : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:border-red-600'
                           }
-                          focus:ring-4 focus:ring-red-500/10
+                          focus:ring-4 focus:ring-gold-500/10
                           transition-all duration-300 ease-out
                           text-gray-900 dark:text-gray-100
                           focus:outline-none focus:bg-white dark:focus:bg-black
@@ -150,7 +150,7 @@ export default function RegisterPage() {
                         <option value="Ghana">Ghana</option>
                         <option value="Nigeria">Nigeria</option>
                     </select>
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors duration-300">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gold-700 transition-colors duration-300">
                         <GlobeAltIcon className="w-5 h-5" />
                     </div>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -202,7 +202,7 @@ export default function RegisterPage() {
 
       <div className="text-center text-sm">
         <span className="text-gray-500 dark:text-gray-400">Already have an account? </span>
-        <Link href="/auth/login" className="font-semibold text-red-600 hover:text-red-500 transition-colors">
+        <Link href="/auth/login" className="font-semibold text-gold-700 hover:text-gold-800 transition-colors">
           Sign In
         </Link>
       </div>

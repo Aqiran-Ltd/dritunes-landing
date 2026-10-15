@@ -27,7 +27,7 @@ export function Button({
   };
   
   const variants = {
-    primary: "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/30 focus:ring-red-500 border border-transparent active:scale-[0.98]",
+    primary: "bg-gold-500 text-ink hover:bg-gold-600 hover:shadow-lg hover:shadow-gold-500/30 focus:ring-gold-500 border border-transparent active:scale-[0.98]",
     secondary: "bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg focus:ring-gray-900 border border-transparent active:scale-[0.98]",
     outline: "bg-transparent text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 focus:ring-gray-300 active:scale-[0.98]",
     ghost: "bg-transparent text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white focus:ring-gray-200",

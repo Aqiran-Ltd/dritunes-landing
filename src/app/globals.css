@@ -82,26 +82,30 @@ body {
   background-image:
     radial-gradient(
       circle at 25% 25%,
-      rgba(220, 38, 38, 0.1) 0%,
+      rgba(245, 180, 0, 0.1) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 75% 75%,
-      rgba(220, 38, 38, 0.1) 0%,
+      rgba(245, 180, 0, 0.1) 0%,
       transparent 50%
     );
 }
 
 .bg-grid {
   background-image:
-    linear-gradient(rgba(220, 38, 38, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(220, 38, 38, 0.1) 1px, transparent 1px);
+    linear-gradient(rgba(245, 180, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 180, 0, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 
 /* Creative text effects */
+.dark .text-gradient {
+  background-image: linear-gradient(135deg, #f5b400, #ffd54d, #f5b400);
+}
+
 .text-gradient {
-  background: linear-gradient(135deg, #dc2626, #991b1b, #dc2626);
+  background: linear-gradient(135deg, #8f6800, #b38200, #8f6800);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -138,10 +142,10 @@ body {
 @keyframes pulse-red {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    box-shadow: 0 0 0 0 rgba(245, 180, 0, 0.7);
   }
   50% {
-    box-shadow: 0 0 0 20px rgba(220, 38, 38, 0);
+    box-shadow: 0 0 0 20px rgba(245, 180, 0, 0);
   }
 }
 
@@ -153,10 +157,10 @@ body {
 @keyframes logo-glow {
   0%,
   100% {
-    filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.3));
+    filter: drop-shadow(0 0 5px rgba(245, 180, 0, 0.3));
   }
   50% {
-    filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.6));
+    filter: drop-shadow(0 0 20px rgba(245, 180, 0, 0.6));
   }
 }
 
@@ -306,7 +310,7 @@ body {
   position: absolute;
   inset: 0;
   padding: 2px;
-  background: linear-gradient(135deg, #dc2626, #991b1b);
+  background: linear-gradient(135deg, #f5b400, #d99e00);
   border-radius: inherit;
   mask:
     linear-gradient(#fff 0 0) content-box,
@@ -367,13 +371,13 @@ body {
 
 /* Focus styles for accessibility */
 .focus-ring:focus {
-  outline: 2px solid #dc2626;
+  outline: 2px solid #8f6800;
   outline-offset: 2px;
 }
 
 /* Selection styles */
 ::selection {
-  background-color: rgba(220, 38, 38, 0.2);
+  background-color: rgba(245, 180, 0, 0.35);
   color: #1f2937;
 }
 

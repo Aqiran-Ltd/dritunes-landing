@@ -110,8 +110,8 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
           const idToUse = tradeNumber || referenceId || tradeId;
           targetRoute = idToUse ? `/dashboard/history/${idToUse}` : "/dashboard/history";
           Icon = ChatBubbleLeftRightIcon;
-          iconColor = "text-red-500";
-          bgColor = "bg-red-50 dark:bg-red-900/20";
+          iconColor = "text-gold-700";
+          bgColor = "bg-gold-50 dark:bg-gold-900/20";
         }
 
         toast.custom((t) => (
@@ -140,7 +140,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
                     toast.dismiss(t.id);
                     router.push(targetRoute);
                   }}
-                  className="w-full border border-transparent rounded-none flex items-center justify-center py-3 text-sm font-medium text-red-600 hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none transition-colors"
+                  className="w-full border border-transparent rounded-none flex items-center justify-center py-3 text-sm font-medium text-gold-700 hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none transition-colors"
                 >
                   View Details <ArrowRight className="ml-2 h-4 w-4" />
                 </button>

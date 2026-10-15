@@ -47,7 +47,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-24 px-4 bg-gradient-to-br from-gray-900 via-red-900 to-gray-900 relative overflow-hidden">
+    <section id="contact" className="py-24 px-4 bg-gradient-to-br from-gray-900 via-gold-900 to-gray-900 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-pattern opacity-10" />
       
@@ -62,7 +62,7 @@ export default function ContactSection() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute top-20 left-20 w-64 h-64 bg-red-500 rounded-full blur-3xl"
+        className="absolute top-20 left-20 w-64 h-64 bg-gold-500 rounded-full blur-3xl"
       />
       <motion.div
         animate={{ 
@@ -74,7 +74,7 @@ export default function ContactSection() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute bottom-20 right-20 w-96 h-96 bg-red-600 rounded-full blur-3xl"
+        className="absolute bottom-20 right-20 w-96 h-96 bg-gold-500 rounded-full blur-3xl"
       />
       
       <div className="max-w-7xl mx-auto relative z-10">
@@ -102,7 +102,7 @@ export default function ContactSection() {
                 className="object-contain"
               />
             </div>
-            <CheckCircleIcon className="w-4 h-4 mr-2 text-red-400" />
+            <CheckCircleIcon className="w-4 h-4 mr-2 text-gold-400" />
             Get In Touch
           </motion.div>
           
@@ -125,8 +125,8 @@ export default function ContactSection() {
           >
             <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20 hover:shadow-3xl transition-all duration-300">
               <div className="flex items-center mb-8">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mr-4">
-                  <EnvelopeIcon className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-500 rounded-xl flex items-center justify-center mr-4">
+                  <EnvelopeIcon className="w-6 h-6 text-ink" />
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-white">Send us a Message</h3>
@@ -144,7 +144,7 @@ export default function ContactSection() {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Enter your full name"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
+                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
                       required
                     />
                   </div>
@@ -157,7 +157,7 @@ export default function ContactSection() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email address"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
+                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
                       required
                     />
                   </div>
@@ -172,7 +172,7 @@ export default function ContactSection() {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="Enter your phone number"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
+                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/60 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
                       required
                     />
                   </div>
@@ -185,7 +185,7 @@ export default function ContactSection() {
                       value={formData.subject}
                       onChange={handleChange}
                       placeholder="What is this regarding?"
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
+                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-gray-400 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm cursor-text"
                       required
                     />
                   </div>
@@ -199,7 +199,7 @@ export default function ContactSection() {
                     onChange={handleChange}
                     placeholder="Tell us about your trading needs..."
                     rows={4}
-                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-300 backdrop-blur-sm resize-none cursor-text"
+                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-gray-400 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition-all duration-300 backdrop-blur-sm resize-none cursor-text"
                     required
                   />
                 </div>
@@ -209,11 +209,11 @@ export default function ContactSection() {
                   whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                   type="submit"
                   disabled={isSubmitting}
-                  className={`group w-full px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed`}
+                  className={`group w-full px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-600 text-ink font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed`}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-ink" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -248,7 +248,7 @@ export default function ContactSection() {
               className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300"
             >
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-500 rounded-xl flex items-center justify-center text-ink shadow-lg">
                   <PhoneIcon className="w-6 h-6" />
                 </div>
                 <div>
@@ -345,7 +345,7 @@ export default function ContactSection() {
               className="bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/20"
             >
               <h4 className="text-lg font-bold text-white mb-4 flex items-center">
-                <ShieldCheckIcon className="w-5 h-5 mr-2 text-red-400" />
+                <ShieldCheckIcon className="w-5 h-5 mr-2 text-gold-400" />
                 Why Trust Us?
               </h4>
               <div className="space-y-3">
@@ -374,13 +374,13 @@ export default function ContactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl p-6 shadow-xl"
+              className="bg-gradient-to-r from-gold-500 to-gold-600 rounded-2xl p-6 shadow-xl"
             >
               <div className="flex items-center space-x-3">
-                <ClockIcon className="w-8 h-8 text-white" />
+                <ClockIcon className="w-8 h-8 text-ink" />
                 <div>
-                  <h4 className="text-lg font-bold text-white">Fast Response</h4>
-                  <p className="text-red-100 text-sm">We reply within 5 minutes</p>
+                  <h4 className="text-lg font-bold text-ink">Fast Response</h4>
+                  <p className="text-ink/70 text-sm">We reply within 5 minutes</p>
                 </div>
               </div>
             </motion.div>

@@ -55,7 +55,7 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
 
       <div className="flex items-center gap-4">
         {/* Search Bar - Hidden on mobile */}
-        <div className="hidden md:flex items-center px-4 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-800 focus-within:border-red-500/50 focus-within:ring-4 focus-within:ring-red-500/10 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 w-64 shadow-sm">
+        <div className="hidden md:flex items-center px-4 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-800 focus-within:border-gold-500/50 focus-within:ring-4 focus-within:ring-gold-500/10 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 w-64 shadow-sm">
           <MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />
           <input 
             type="text" 
@@ -71,8 +71,8 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
         <NotificationsDropdown />
 
         <div className="flex items-center gap-3 pl-2 border-l border-gray-200 dark:border-gray-800">
-          <div className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-red-500/20 transition-all cursor-pointer">
-             <div className="w-full h-full bg-gradient-to-tr from-red-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
+          <div className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-gold-500/20 transition-all cursor-pointer">
+             <div className="w-full h-full bg-gradient-to-tr from-gold-500 to-orange-500 flex items-center justify-center text-ink font-bold text-sm">
                 {user?.profile_picture_url ? (
                     <img src={user.profile_picture_url} alt={user.name} className="w-full h-full object-cover" />
                 ) : (

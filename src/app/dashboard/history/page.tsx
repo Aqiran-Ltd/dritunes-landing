@@ -164,7 +164,7 @@ export default function HistoryPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               icon={<MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />}
-              className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 focus:ring-red-600 rounded-2xl h-11"
+              className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 focus:ring-gold-500 rounded-2xl h-11"
            />
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function HistoryPage() {
                 setPaymentStatus('');
                 setSearchTerm('');
             }}
-            className="px-4 h-11 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-red-600 transition-colors flex items-center gap-2"
+            className="px-4 h-11 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-gold-700 transition-colors flex items-center gap-2"
           >
               <AdjustmentsHorizontalIcon className="w-4 h-4" />
               Reset
@@ -216,7 +216,7 @@ export default function HistoryPage() {
       <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden min-h-[400px]">
          {isLoading && trades.length === 0 ? (
              <div className="p-24 flex justify-center">
-                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500"></div>
              </div>
          ) : trades.length === 0 ? (
              <div className="p-24 text-center text-gray-500">
@@ -250,7 +250,7 @@ export default function HistoryPage() {
                                 <td className="px-6 py-4 text-gray-500 dark:text-gray-400 whitespace-nowrap">
                                     {formatDistanceToNow(new Date(trade.created_at), { addSuffix: true })}
                                 </td>
-                                <td className="px-6 py-4 font-mono text-gray-500 dark:text-gray-400 group-hover:text-red-500 transition-colors">
+                                <td className="px-6 py-4 font-mono text-gray-500 dark:text-gray-400 group-hover:text-gold-700 transition-colors">
                                     {trade.trade_number}
                                 </td>
                                 <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
