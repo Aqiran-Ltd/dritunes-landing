@@ -131,7 +131,7 @@ export default function ContactPage() {
             Ready to <span className="text-gradient">Start Trading</span>?
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-            Join thousands of satisfied customers who trust Dr iTunes Consult for their gift card trading needs.
+            Join thousands of satisfied customers who trust Aqiran Xchange for their gift card trading needs.
           </p>
         </motion.div>
 
@@ -314,7 +314,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Email</h3>
-                  <p className="text-gray-300 font-medium">dr.itunesconsult@gmail.com</p>
+                  <p className="text-gray-300 font-medium">info@aqiranxchange.com</p>
                   <p className="text-sm text-white/60">Business inquiries</p>
                 </div>
               </div>

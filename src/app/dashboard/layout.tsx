@@ -107,7 +107,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="relative w-8 h-8">
                    <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
                 </div>
-                <span className="text-xl font-bold dark:text-white">Dritunes</span>
+                <span className="text-xl font-bold dark:text-white">Aqiran Xchange</span>
              </Link>
              <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-500">
                <XMarkIcon className="w-6 h-6" />

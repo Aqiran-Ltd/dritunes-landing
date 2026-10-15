@@ -32,9 +32,9 @@ export default function AuthLayout({
                  </div>
                  <div className="relative">
                     <div className="absolute inset-0 bg-red-600 blur-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                    <span className="relative text-red-500">Dritunes</span>
+                    <span className="relative text-red-500">Aqiran</span>
                  </div>
-                <span className="font-light tracking-widest text-white/80">Consult</span>
+                <span className="font-light tracking-widest text-white/80">Xchange</span>
              </Link>
            </div>
            
@@ -46,7 +46,7 @@ export default function AuthLayout({
            </h1>
            
            <p className="text-lg text-gray-400 mb-8 leading-relaxed font-light">
-             Join thousands of users who trust <span className="text-white font-medium">Dritunes</span> for secure, fast, and reliable digital asset trading. Experience the future of exchange today.
+             Join thousands of users who trust <span className="text-white font-medium">Aqiran Xchange</span> for secure, fast, and reliable digital asset trading. Experience the future of exchange today.
            </p>
 
            <div className="flex gap-4">
@@ -85,8 +85,8 @@ export default function AuthLayout({
                    <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
                 </div>
                 <div className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                    <span className="text-red-600">Dritunes</span>
-                    <span className="font-light dark:text-white">Consult</span>
+                    <span className="text-red-600">Aqiran</span>
+                    <span className="font-light dark:text-white">Xchange</span>
                 </div>
              </Link>
           </div>
@@ -94,7 +94,7 @@ export default function AuthLayout({
           {children}
           
           <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
-            <p>&copy; {new Date().getFullYear()} Dritunes. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Aqiran Xchange. All rights reserved.</p>
           </div>
         </div>
       </div>

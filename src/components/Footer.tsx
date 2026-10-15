@@ -119,8 +119,8 @@ export default function Footer() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white dark:text-gray-100">Dr iTunes</h3>
-                  <p className="text-red-400 font-medium">Consult</p>
+                  <h3 className="text-2xl font-bold text-white dark:text-gray-100">Aqiran</h3>
+                  <p className="text-red-400 font-medium">Xchange</p>
                 </div>
               </Link>
               <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed mb-6">
@@ -238,7 +238,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <motion.a
-                    href="mailto:info@dritunesconsult.com"
+                    href="mailto:info@aqiranxchange.com"
                     whileHover={{ x: 5 }}
                     className="text-gray-300 dark:text-gray-400 hover:text-red-400 dark:hover:text-red-300 transition-colors duration-200 text-sm flex items-center group"
                   >
@@ -247,7 +247,7 @@ export default function Footer() {
                     </div>
                     <div>
                       <div className="font-medium">Email</div>
-                      <div className="text-xs text-gray-400">info@dritunesconsult.com</div>
+                      <div className="text-xs text-gray-400">info@aqiranxchange.com</div>
                     </div>
                   </motion.a>
                 </li>
@@ -332,7 +332,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-6">
               <p className="text-gray-400 dark:text-gray-500 text-sm">
-                © {currentYear} Dr iTunes Consult. All rights reserved.
+                © {currentYear} Aqiran Xchange (formerly Dr iTunes Consult). All rights reserved.
               </p>
               <div className="flex items-center space-x-4 text-xs">
                 <a href="/privacy" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Privacy Policy</a>

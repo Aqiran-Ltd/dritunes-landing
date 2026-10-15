@@ -83,7 +83,7 @@ export default function MaintenanceMode() {
 
         {/* Social Links / Branding */}
         <div className="pt-12 text-gray-500 text-sm font-medium tracking-widest uppercase">
-          &copy; {new Date().getFullYear()} Dr iTunes Consult. All Rights Reserved.
+          &copy; {new Date().getFullYear()} Aqiran Xchange. All Rights Reserved.
         </div>
       </div>
     </div>

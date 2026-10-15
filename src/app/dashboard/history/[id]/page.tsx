@@ -358,7 +358,7 @@ export default function TradeDetailPage() {
                      </div>
                      <div>
                         <p className="text-sm font-black text-gray-900 dark:text-white">Credited to Wallet</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Funds were added to your Dr iTunes wallet balance.</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Funds were added to your Aqiran Xchange wallet balance.</p>
                      </div>
                   </div>
                ) : trade.user_payment_method ? (

@@ -70,10 +70,10 @@ export default function Navigation() {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
-                Dr iTunes
+                Aqiran
               </h1>
               <p className="text-xs lg:text-sm text-red-600 dark:text-red-400 font-medium">
-                Consult
+                Xchange
               </p>
             </div>
           </motion.a>

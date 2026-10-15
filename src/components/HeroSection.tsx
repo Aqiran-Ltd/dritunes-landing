@@ -109,9 +109,9 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.4 }}
           className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight"
         >
-          <span className="text-gradient">Dr iTunes</span>
+          <span className="text-gradient">Aqiran</span>
           <br />
-          <span className="text-gray-900 dark:text-white">Consult</span>
+          <span className="text-gray-900 dark:text-white">Xchange</span>
         </motion.h1>
 
         {/* Subtitle */}

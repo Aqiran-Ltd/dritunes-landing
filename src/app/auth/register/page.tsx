@@ -72,7 +72,7 @@ export default function RegisterPage() {
           Create an Account
         </h2>
         <p className="text-gray-500 dark:text-gray-400">
-          Start your trading journey with Dritunes today.
+          Start your trading journey with Aqiran Xchange today.
         </p>
       </div>
 

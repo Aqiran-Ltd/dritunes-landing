@@ -90,11 +90,11 @@ export default function FeaturesSection() {
               />
             </div>
             <ShieldCheckIcon className="w-4 h-4 mr-2 text-red-500" />
-            Why Choose Dr iTunes
+            Why Choose Aqiran Xchange
           </motion.div>
           
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Why Choose <span className="text-gradient">Dr iTunes</span>
+            Why Choose <span className="text-gradient">Aqiran Xchange</span>
           </h2>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             We provide the best gift card trading experience in Ghana with unmatched security, support, and rates.

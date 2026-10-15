@@ -48,7 +48,7 @@ export default function AboutSection() {
               />
             </div>
             <CheckCircleIcon className="w-4 h-4 mr-2 text-red-500" />
-            About Dr iTunes Consult
+            About Aqiran Xchange
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
@@ -56,7 +56,7 @@ export default function AboutSection() {
           </h2>
           
           <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-4xl mx-auto">
-            Founded in the heart of Tamale, Dr iTunes Consult has grown from a local startup to Ghana&apos;s most trusted gift card trading service. We offer both online trading via WhatsApp/Telegram and a physical store – giving you the flexibility to trade however you prefer.
+            Founded in the heart of Tamale as Dr iTunes Consult, Aqiran Xchange has grown from a local startup to Ghana&apos;s most trusted gift card trading service. We offer both online trading via WhatsApp/Telegram and a physical store – giving you the flexibility to trade however you prefer.
           </p>
         </motion.div>
 
@@ -234,7 +234,7 @@ export default function AboutSection() {
                   <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                   <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-white font-mono text-sm ml-4">Dr iTunes Trading Terminal</span>
+                  <span className="text-white font-mono text-sm ml-4">Aqiran Xchange Trading Terminal</span>
                 </div>
                 <div className="text-green-400 text-sm font-mono">● LIVE</div>
               </div>

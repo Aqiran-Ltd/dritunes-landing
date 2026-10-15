@@ -182,7 +182,7 @@ export default function TradingPreview() {
                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                 <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-white/60 text-sm ml-4 font-mono">Dr iTunes Trading Terminal</span>
+                <span className="text-white/60 text-sm ml-4 font-mono">Aqiran Xchange Trading Terminal</span>
               </div>
               <div className="text-green-400 text-sm font-mono">● LIVE</div>
             </div>

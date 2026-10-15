@@ -38,7 +38,7 @@ export default function TradePage() {
         >
           <div className="inline-flex items-center px-6 py-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700/50 rounded-full text-red-700 dark:text-red-300 text-lg font-bold mb-6 shadow-lg animate-pulse-slow">
             <CurrencyDollarIcon className="w-6 h-6 mr-2 text-red-500 animate-bounce" />
-            Start Trading with Dr iTunes
+            Start Trading with Aqiran Xchange
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Trade Gift Cards Easily</h1>
           <p className="text-lg md:text-2xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-4">Follow these simple steps to get the best rates and fastest service in Ghana!</p>
@@ -98,7 +98,7 @@ export default function TradePage() {
               <ChatBubbleLeftRightIcon className="w-7 h-7 text-blue-600 mr-4 group-hover:scale-110 transition-transform" />
               <span className="font-semibold text-lg text-blue-700 dark:text-blue-300">Telegram</span>
             </a>
-            <a href="mailto:info@dritunesconsult.com" className="flex items-center px-6 py-4 bg-red-100 dark:bg-red-900/30 rounded-2xl shadow hover:shadow-lg transition-all group">
+            <a href="mailto:info@aqiranxchange.com" className="flex items-center px-6 py-4 bg-red-100 dark:bg-red-900/30 rounded-2xl shadow hover:shadow-lg transition-all group">
               <EnvelopeIcon className="w-7 h-7 text-red-600 mr-4 group-hover:scale-110 transition-transform" />
               <span className="font-semibold text-lg text-red-700 dark:text-red-400">Email</span>
             </a>

@@ -93,7 +93,7 @@ function VerifyContent() {
 
             <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4">Confirmed! 🎉</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-              Welcome to Dr iTunes Consult! You&apos;re now officially on the list for exclusive trading insights and updates.
+              Welcome to Aqiran Xchange! You&apos;re now officially on the list for exclusive trading insights and updates.
             </p>
 
             <div className="space-y-4">

@@ -170,7 +170,7 @@ export default function NewsletterSection() {
                     required
                   />
                   <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-400">
-                    I agree to receive marketing communications from Dr iTunes Consult. You can unsubscribe at any time.
+                    I agree to receive marketing communications from Aqiran Xchange. You can unsubscribe at any time.
                   </label>
                 </div>
                 

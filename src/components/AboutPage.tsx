@@ -260,7 +260,7 @@ export default function AboutPage() {
                 transition={{ duration: 1, delay: 0.4 }}
                 className="text-5xl md:text-7xl font-black leading-tight relative flex items-center"
               >
-                <span className="text-gradient animate-pulse-slow drop-shadow-lg pr-2">Dr iTunes</span>
+                <span className="text-gradient animate-pulse-slow drop-shadow-lg pr-2">Aqiran</span>
                 <span className="inline-block align-super animate-bounce text-yellow-400 ml-1">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline w-7 h-7">
                     <path d="M12 2v2m0 16v2m8-8h2M2 12H4m13.657-6.343l1.414 1.414M4.929 19.071l1.414-1.414m12.728 0l-1.414-1.414M4.929 4.929l1.414 1.414" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -268,7 +268,7 @@ export default function AboutPage() {
                 </span>
               </motion.h1>
               <span className="text-gray-900 dark:text-white text-2xl md:text-4xl font-extrabold tracking-tight block mt-2 animate-gradient-x bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 bg-clip-text text-transparent">
-                Consult
+                Xchange
               </span>
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
@@ -295,7 +295,7 @@ export default function AboutPage() {
           >
             <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
               Founded by visionary IT entrepreneur <span className="font-bold text-red-600 dark:text-red-400">Alhassan Abdul-Hanan</span>, popularly known as <span className="italic">Dr. iTunes</span>, 
-              Dr iTunes Consult (Global Limited) is more than a consultancy—it&apos;s a digital movement. 
+              Aqiran Xchange (formerly Dr iTunes Consult) is more than a consultancy—it&apos;s a digital movement. 
               We are dedicated to dismantling the digital divide in Northern Ghana by turning complex technologies into accessible tools for financial freedom.
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -631,7 +631,7 @@ export default function AboutPage() {
               <span className="text-gradient">Founder&apos;s Background</span>
             </h2>
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              The visionary behind Dr iTunes Consult and his journey in digital transformation.
+              The visionary behind Aqiran Xchange and his journey in digital transformation.
             </p>
           </motion.div>
 
@@ -651,7 +651,7 @@ export default function AboutPage() {
                 <p>
                   Dr. iTunes began his journey in digital entrepreneurship in 2018, and since then, has gained 
                   mastery in e-commerce and digital finance technologies. His passion for education, 
-                  impact, and digital inclusion led to the founding of Dr iTunes Consult to mentor the next 
+                  impact, and digital inclusion led to the founding of Dr iTunes Consult, now Aqiran Xchange, to mentor the next 
                   generation of African tech innovators.
                 </p>
               </div>
