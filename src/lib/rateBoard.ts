@@ -9,22 +9,24 @@ export interface BoardRow {
 }
 
 /**
- * Picks the best-paying card in each category and returns the top rows,
- * highest rate first, for the home page rate board.
+ * Picks the best-paying card for each brand and country and returns the
+ * top rows, highest rate first, for the home page rate board. The board
+ * shows a few at a time and rotates through the rest.
  */
-export function topRates(categories: Category[], limit = 6): BoardRow[] {
-  const rows: BoardRow[] = [];
+export function topRates(categories: Category[], limit = 18): BoardRow[] {
+  const best = new Map<string, BoardRow>();
 
   for (const category of categories) {
-    let best: BoardRow | null = null;
     for (const card of category.cards) {
       const rate = Math.max(card.rates.ghsPhysical || 0, card.rates.ghsEcode || 0);
-      if (rate > 0 && (!best || rate > best.rate)) {
-        best = { id: card.id, category: category.name, region: card.region, amount: card.amount, rate };
+      if (rate <= 0) continue;
+      const key = `${category.name}|${card.region}`;
+      const current = best.get(key);
+      if (!current || rate > current.rate) {
+        best.set(key, { id: card.id, category: category.name, region: card.region, amount: card.amount, rate });
       }
     }
-    if (best) rows.push(best);
   }
 
-  return rows.sort((a, b) => b.rate - a.rate).slice(0, limit);
+  return [...best.values()].sort((a, b) => b.rate - a.rate).slice(0, limit);
 }
