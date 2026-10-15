@@ -376,7 +376,7 @@ export default function TradePage() {
                       {selectedType === 'ecode' ? (
                           <div>
                               <label className="block text-sm font-medium text-gray-500 mb-1">
-                                  E-Code <span className="text-gold-700">*</span>
+                                  E-Code <span className="text-gold-700 dark:text-gold-400">*</span>
                               </label>
                               <input
                                   type="text"
@@ -432,7 +432,7 @@ export default function TradePage() {
                                       <div className={`flex flex-col items-center justify-center ${attachments.length > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-4' : ''}`}>
                                           <PhotoIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
                                           <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2 relative">
-                                              <span className="font-medium text-gold-700 hover:text-gold-800">
+                                              <span className="font-medium text-gold-700 dark:text-gold-400 hover:text-gold-800">
                                                   {attachments.length > 0 ? 'Click to add more' : 'Click to upload'}
                                               </span>
                                               <input
@@ -543,7 +543,7 @@ export default function TradePage() {
                                                            {`${method.payment_type} • ${method.bank_name} • ${method.account_number}`}
                                                       </p>
                                                   </div>
-                                                  {selectedUserMethodId === method.id && <CheckIcon className="w-5 h-5 text-gold-700" />}
+                                                  {selectedUserMethodId === method.id && <CheckIcon className="w-5 h-5 text-gold-700 dark:text-gold-400" />}
                                               </button>
                                           ))}
                                       </div>

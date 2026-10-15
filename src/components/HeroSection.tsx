@@ -98,7 +98,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="inline-flex items-center px-6 py-3 bg-gold-100 dark:bg-gold-900/30 border border-gold-200 dark:border-gold-600/50 rounded-full text-gold-700 dark:text-gold-300 text-sm font-medium mb-8 shadow-lg"
         >
-          <CheckCircleIcon className="w-5 h-5 mr-2 text-gold-700" />
+          <CheckCircleIcon className="w-5 h-5 mr-2 text-gold-700 dark:text-gold-400" />
           <span className="font-semibold">Trusted by 10,000+ Ghanaians</span>
         </motion.div>
 

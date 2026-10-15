@@ -37,7 +37,7 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
+            className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 dark:text-gold-400 text-sm font-medium mb-8 shadow-lg"
           >
             <div className="relative w-6 h-6 mr-3">
               <Image
@@ -47,7 +47,7 @@ export default function AboutSection() {
                 className="object-contain"
               />
             </div>
-            <CheckCircleIcon className="w-4 h-4 mr-2 text-gold-700" />
+            <CheckCircleIcon className="w-4 h-4 mr-2 text-gold-700 dark:text-gold-400" />
             About Aqiran Xchange
           </motion.div>
           
@@ -76,7 +76,7 @@ export default function AboutSection() {
             whileHover={{ scale: 1.05 }}
             className="text-center p-6 bg-white rounded-2xl shadow-lg border border-gold-100 hover:shadow-xl transition-all duration-300"
           >
-            <div className="text-3xl font-bold text-gold-700 mb-2">5+</div>
+            <div className="text-3xl font-bold text-gold-700 dark:text-gold-400 mb-2">5+</div>
             <div className="text-gray-600 text-sm font-medium">Years Experience</div>
           </motion.div>
           <motion.div
@@ -87,7 +87,7 @@ export default function AboutSection() {
             whileHover={{ scale: 1.05 }}
             className="text-center p-6 bg-white rounded-2xl shadow-lg border border-gold-100 hover:shadow-xl transition-all duration-300"
           >
-            <div className="text-3xl font-bold text-gold-700 mb-2">16</div>
+            <div className="text-3xl font-bold text-gold-700 dark:text-gold-400 mb-2">16</div>
             <div className="text-gray-600 text-sm font-medium">Regions Served</div>
           </motion.div>
           <motion.div
@@ -98,7 +98,7 @@ export default function AboutSection() {
             whileHover={{ scale: 1.05 }}
             className="text-center p-6 bg-white rounded-2xl shadow-lg border border-gold-100 hover:shadow-xl transition-all duration-300"
           >
-            <div className="text-3xl font-bold text-gold-700 mb-2">10K+</div>
+            <div className="text-3xl font-bold text-gold-700 dark:text-gold-400 mb-2">10K+</div>
             <div className="text-gray-600 text-sm font-medium">Happy Customers</div>
           </motion.div>
           <motion.div
@@ -109,7 +109,7 @@ export default function AboutSection() {
             whileHover={{ scale: 1.05 }}
             className="text-center p-6 bg-white rounded-2xl shadow-lg border border-gold-100 hover:shadow-xl transition-all duration-300"
           >
-            <div className="text-3xl font-bold text-gold-700 mb-2">24/7</div>
+            <div className="text-3xl font-bold text-gold-700 dark:text-gold-400 mb-2">24/7</div>
             <div className="text-gray-600 text-sm font-medium">Support Available</div>
           </motion.div>
         </motion.div>

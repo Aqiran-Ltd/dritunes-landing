@@ -162,7 +162,7 @@ function ProfileForm({ user }: { user: any }) {
             </div>
             
              {message && (
-                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-gold-50 text-gold-700'}`}>
+                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-gold-50 text-gold-700 dark:text-gold-400'}`}>
                     {message}
                 </div>
             )}
@@ -237,7 +237,7 @@ function SecurityForm() {
              </div>
 
              {message && (
-                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-gold-50 text-gold-700'}`}>
+                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-gold-50 text-gold-700 dark:text-gold-400'}`}>
                     {message}
                 </div>
             )}

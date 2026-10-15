@@ -341,7 +341,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
             <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-5">
               <h3 className="text-3xl font-bold leading-tight text-gray-900 dark:text-white">
                 Don&apos;t settle for less.<br />
-                Trade at the <span className="text-gold-700">peak</span> of the market.
+                Trade at the <span className="text-gold-700 dark:text-gold-400">peak</span> of the market.
               </h3>
               <p className="text-gray-600 dark:text-gray-400 text-lg">
                 We monitor the market 24/7 to ensure you get the absolute best rates for your assets.

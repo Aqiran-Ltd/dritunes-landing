@@ -183,7 +183,7 @@ export default function TradeDetailPage() {
     return (
       <div className="text-center py-20">
         <p className="text-gray-500">Trade not found.</p>
-        <button onClick={() => router.back()} className="text-gold-700 mt-4 font-medium hover:underline">
+        <button onClick={() => router.back()} className="text-gold-700 dark:text-gold-400 mt-4 font-medium hover:underline">
             Go Back
         </button>
       </div>
@@ -205,7 +205,7 @@ export default function TradeDetailPage() {
           <div>
             <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
                Trade ID
-               <span className="text-gold-700">#{trade.trade_number}</span>
+               <span className="text-gold-700 dark:text-gold-400">#{trade.trade_number}</span>
                {trade.rate?.country_code && (
                   <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-xl ml-2 border border-gray-200 dark:border-gray-700">
                      {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -322,7 +322,7 @@ export default function TradeDetailPage() {
                      </p>
                   </div>
                   <div className="space-y-1 p-5 bg-gold-50 dark:bg-gold-900/10 rounded-3xl border border-gold-100 dark:border-gold-900/20">
-                     <p className="text-[10px] text-gold-700 font-bold uppercase">Rate</p>
+                     <p className="text-[10px] text-gold-700 dark:text-gold-400 font-bold uppercase">Rate</p>
                      <p className="font-black text-gold-700 dark:text-gold-400">
                         {trade.rate_used} <span className="text-[9px] font-bold text-gold-700 dark:text-gold-400">GHS</span>
                      </p>
@@ -459,7 +459,7 @@ export default function TradeDetailPage() {
                     )}
                     {trade.admin_notes && (
                       <div className="max-w-[85%] ml-auto text-right">
-                         <p className="text-[10px] text-gold-700 font-bold uppercase mr-4 mb-2">Internal Feedback</p>
+                         <p className="text-[10px] text-gold-700 dark:text-gold-400 font-bold uppercase mr-4 mb-2">Internal Feedback</p>
                          <div className="bg-gold-50 dark:bg-gold-900/10 p-5 rounded-[2rem] rounded-tr-none border border-gold-100 dark:border-gold-900/20">
                             <p className="text-sm text-gold-800 dark:text-gold-300 leading-relaxed font-medium">{trade.admin_notes}</p>
                          </div>
@@ -513,7 +513,7 @@ export default function TradeDetailPage() {
                        
                        <div className="grid grid-cols-1 gap-4">
                           <div className="flex items-center gap-4 py-1">
-                             <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700">
+                             <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700 dark:text-gold-400">
                                 <BuildingLibraryIcon className="w-5 h-5" />
                              </div>
                              <div>
@@ -525,7 +525,7 @@ export default function TradeDetailPage() {
                           </div>
 
                           <div className="flex items-center gap-4 py-1">
-                             <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700">
+                             <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700 dark:text-gold-400">
                                 <CreditCardIcon className="w-5 h-5" />
                              </div>
                              <div>
@@ -538,7 +538,7 @@ export default function TradeDetailPage() {
                           
                           {trade.user_payment_method.payment_type && (
                              <div className="flex items-center gap-4 py-1">
-                                <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700">
+                                <div className="p-3 bg-gold-50 dark:bg-gold-900/10 rounded-2xl text-gold-700 dark:text-gold-400">
                                    <HashtagIcon className="w-5 h-5" />
                                 </div>
                                 <div>

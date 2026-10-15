@@ -32,7 +32,7 @@ export default function AuthLayout({
                  </div>
                  <div className="relative">
                     <div className="absolute inset-0 bg-gold-500 blur-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                    <span className="relative text-gold-700">Aqiran</span>
+                    <span className="relative text-gold-400">Aqiran</span>
                  </div>
                 <span className="font-light tracking-widest text-white/80">Xchange</span>
              </Link>
@@ -51,11 +51,11 @@ export default function AuthLayout({
 
            <div className="flex gap-4">
               <div className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex-1 hover:bg-white/10 hover:border-gold-500/30 transition-all duration-500 hover:-translate-y-1">
-                 <div className="text-3xl font-bold text-gold-700 mb-1 group-hover:scale-110 transition-transform origin-left">24/7</div>
+                 <div className="text-3xl font-bold text-gold-400 mb-1 group-hover:scale-110 transition-transform origin-left">24/7</div>
                  <div className="text-sm text-gray-400 group-hover:text-white transition-colors">Support Access Setup</div>
               </div>
               <div className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex-1 hover:bg-white/10 hover:border-gold-500/30 transition-all duration-500 hover:-translate-y-1">
-                 <div className="text-3xl font-bold text-gold-700 mb-1 group-hover:scale-110 transition-transform origin-left">100%</div>
+                 <div className="text-3xl font-bold text-gold-400 mb-1 group-hover:scale-110 transition-transform origin-left">100%</div>
                  <div className="text-sm text-gray-400 group-hover:text-white transition-colors">Secure Trades Guaranteed</div>
               </div>
            </div>
@@ -69,7 +69,7 @@ export default function AuthLayout({
         {/* Back to Home Link */}
         <Link 
             href="/" 
-            className="absolute top-8 left-8 flex items-center gap-2 text-sm text-gray-500 hover:text-gold-700 transition-colors"
+            className="absolute top-8 left-8 flex items-center gap-2 text-sm text-gray-500 hover:text-gold-700 dark:hover:text-gold-400 transition-colors"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -85,7 +85,7 @@ export default function AuthLayout({
                    <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
                 </div>
                 <div className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                    <span className="text-gold-700">Aqiran</span>
+                    <span className="text-gold-700 dark:text-gold-400">Aqiran</span>
                     <span className="font-light dark:text-white">Xchange</span>
                 </div>
              </Link>

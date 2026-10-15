@@ -357,7 +357,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
 
                   <div className={`max-w-[75%] flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
                     {showHeader && (
-                      <p className={`text-[10px] font-bold uppercase mb-1.5 ${isOwn ? 'mr-1 text-gold-700' : 'ml-1 text-gray-400'}`}>
+                      <p className={`text-[10px] font-bold uppercase mb-1.5 ${isOwn ? 'mr-1 text-gold-700 dark:text-gold-400' : 'ml-1 text-gray-400'}`}>
                         {isOwn ? 'You' : m.user.name}
                       </p>
                     )}

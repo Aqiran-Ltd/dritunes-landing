@@ -159,7 +159,7 @@ export default function DashboardPage() {
              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 Recent Activity
              </h2>
-             <Link href="/dashboard/history" className="flex items-center gap-1 text-sm font-semibold text-gold-700 hover:text-gold-800 transition-colors">
+             <Link href="/dashboard/history" className="flex items-center gap-1 text-sm font-semibold text-gold-700 dark:text-gold-400 hover:text-gold-800 transition-colors">
                  View All
                  <ChevronRightIcon className="w-4 h-4" />
              </Link>
@@ -205,7 +205,7 @@ export default function DashboardPage() {
                               </div>
                           </div>
                           <div className="text-right">
-                              <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-gold-700'}`}>
+                              <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-gold-700 dark:text-gold-400'}`}>
                                   {tx.type === 'credit' ? '+' : '-'}₵{parseFloat(tx.amount).toFixed(2)}
                               </p>
                               <div className="flex items-center justify-end gap-1.5 mt-1">

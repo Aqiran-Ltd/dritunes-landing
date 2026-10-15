@@ -94,7 +94,7 @@ function SparklineOverlay({ assetName }: { assetName: string }) {
               <span className={`inline-flex items-center gap-0.5 text-[9px] font-black px-1.5 py-0.5 rounded-full ${
                 change >= 0
                   ? 'bg-green-50 dark:bg-green-900/30 text-green-600'
-                  : 'bg-gold-50 dark:bg-gold-900/30 text-gold-700'
+                  : 'bg-gold-50 dark:bg-gold-900/30 text-gold-700 dark:text-gold-400'
               }`}>
                 {change >= 0
                   ? <ArrowTrendingUpIcon className="w-2.5 h-2.5" />

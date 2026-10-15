@@ -94,7 +94,7 @@ export default function NewsletterSection() {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center px-6 py-3 bg-gold-100 dark:bg-gold-900/30 border border-gold-200 dark:border-gold-600/50 rounded-full text-gold-700 dark:text-gold-300 text-sm font-medium mb-8 shadow-lg"
           >
-            <EnvelopeIcon className="w-4 h-4 mr-2 text-gold-700" />
+            <EnvelopeIcon className="w-4 h-4 mr-2 text-gold-700 dark:text-gold-400" />
             Stay Updated
           </motion.div>
           
@@ -166,7 +166,7 @@ export default function NewsletterSection() {
                   <input
                     type="checkbox"
                     id="terms"
-                    className="mt-1 w-4 h-4 text-gold-700 border-gray-300 rounded focus:ring-gold-500"
+                    className="mt-1 w-4 h-4 text-gold-700 dark:text-gold-400 border-gray-300 rounded focus:ring-gold-500"
                     required
                   />
                   <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-400">
@@ -243,7 +243,7 @@ export default function NewsletterSection() {
               className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gold-100 dark:border-gray-700 hover:shadow-2xl transition-all duration-300"
             >
               <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                <SparklesIcon className="w-6 h-6 mr-2 text-gold-700" />
+                <SparklesIcon className="w-6 h-6 mr-2 text-gold-700 dark:text-gold-400" />
                 What You&apos;ll Get
               </h4>
               <div className="space-y-3">
@@ -295,24 +295,24 @@ export default function NewsletterSection() {
               className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gold-100 dark:border-gray-700"
             >
               <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                <ShieldCheckIcon className="w-5 h-5 mr-2 text-gold-700" />
+                <ShieldCheckIcon className="w-5 h-5 mr-2 text-gold-700 dark:text-gold-400" />
                 Why Subscribe?
               </h4>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
-                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700" />
+                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700 dark:text-gold-400" />
                   <span className="text-gray-700 dark:text-gray-300 text-sm">Stay ahead of market trends</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700" />
+                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700 dark:text-gold-400" />
                   <span className="text-gray-700 dark:text-gray-300 text-sm">Get the best rates first</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700" />
+                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700 dark:text-gold-400" />
                   <span className="text-gray-700 dark:text-gray-300 text-sm">Exclusive member benefits</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700" />
+                  <ArrowTrendingUpIcon className="w-4 h-4 text-gold-700 dark:text-gold-400" />
                   <span className="text-gray-700 dark:text-gray-300 text-sm">No spam, only valuable content</span>
                 </div>
               </div>

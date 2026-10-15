@@ -446,7 +446,7 @@ export default function RatesPage() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-black text-gray-900 dark:text-white uppercase tracking-widest text-xs">Filter by Region</h3>
                   {selectedRegions.size > 0 && (
-                    <button onClick={() => setSelectedRegions(new Set())} className="text-[10px] font-bold text-gold-700 uppercase tracking-wider hover:underline">Clear All</button>
+                    <button onClick={() => setSelectedRegions(new Set())} className="text-[10px] font-bold text-gold-700 dark:text-gold-400 uppercase tracking-wider hover:underline">Clear All</button>
                   )}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -651,7 +651,7 @@ export default function RatesPage() {
                                         <td className="px-6 py-4 font-bold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors uppercaseTracking">{card.amount}</td>
                                         <td className="px-6 py-4"><div className={`text-xl font-black ${isAvailable ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>{isAvailable ? <>{getCurrencySymbol(selectedCurrency)}{rate.toFixed(2)}</> : '-'}</div></td>
                                         <td className="px-6 py-4">{isAvailable ? (<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"><span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Available</span>) : (<span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">Currently Unavailable</span>)}</td>
-                                        {selectedCurrency !== "RMB" && (<td className="px-6 py-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-gold-100 text-gold-700 dark:bg-gold-900/40" : "bg-blue-100 text-blue-600 dark:bg-blue-900/40"}`}>{type}</span></td>)}
+                                        {selectedCurrency !== "RMB" && (<td className="px-6 py-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-gold-100 text-gold-700 dark:text-gold-400 dark:bg-gold-900/40" : "bg-blue-100 text-blue-600 dark:bg-blue-900/40"}`}>{type}</span></td>)}
                                         <td className="px-6 py-4">{isAvailable && (<div className="flex items-center gap-2">
                                               <button onClick={() => { audit.log('trade_intent_platform', { asset: catName, region: regName, amount: card.amount, rate: rate, currency: selectedCurrency, type }); router.push(user ? `/dashboard/trade?asset=${encodeURIComponent(catName)}&region=${encodeURIComponent(regName)}&card=${encodeURIComponent(card.amount)}&type=${encodeURIComponent(type)}` : '/auth/login'); }} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gold-500 hover:bg-gold-600 text-ink text-xs font-bold shadow-md shadow-gold-900/10 transition-all hover:scale-105" title="Trade Now"><BoltIcon className="w-3.5 h-3.5" /> Trade Now</button>
                                               {settings?.offer_trade_via_whatsapp && (<button onClick={() => handleTrade({ ...card }, catName, regName, type)} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-bold shadow-md shadow-green-900/10 transition-all hover:scale-105" title="Chat on WhatsApp"><ChatBubbleLeftEllipsisIcon className="w-3.5 h-3.5" /> WhatsApp</button>)}
@@ -678,8 +678,8 @@ export default function RatesPage() {
                                     <div>
                                       <div className="font-bold text-gray-900 dark:text-white mb-1 uppercaseTracking">{card.amount}</div>
                                       <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                        {selectedCurrency !== "RMB" && <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-gold-100 text-gold-700" : "bg-blue-100 text-blue-600"}`}>{type}</span>}
-                                        {!isAvailable && <span className="text-gold-700">Unavailable</span>}
+                                        {selectedCurrency !== "RMB" && <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-gold-100 text-gold-700 dark:text-gold-400" : "bg-blue-100 text-blue-600"}`}>{type}</span>}
+                                        {!isAvailable && <span className="text-gold-700 dark:text-gold-400">Unavailable</span>}
                                       </div>
                                     </div>
                                     <div className="text-right flex items-center gap-3">

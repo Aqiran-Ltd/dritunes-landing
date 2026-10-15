@@ -157,7 +157,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* User Profile & Logout */}
           <div className="p-4 border-t border-gray-100 dark:border-gray-800">
              <div className="flex items-center gap-3 mb-4 px-2">
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-gold-100 dark:bg-gold-900/20 ring-2 ring-transparent text-gold-700 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-gold-100 dark:bg-gold-900/20 ring-2 ring-transparent text-gold-700 dark:text-gold-400 flex items-center justify-center font-bold">
                    <div className="w-full h-full bg-gradient-to-tr from-gold-500 to-orange-500 flex items-center justify-center text-ink">
                       {user.name.charAt(0)}
                    </div>
@@ -205,7 +205,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {logoutConfirmOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
               <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-100 dark:border-gray-800 animate-slide-in-up">
-                  <div className="w-12 h-12 bg-gold-100 dark:bg-gold-900/20 rounded-full flex items-center justify-center mb-4 text-gold-700 mx-auto">
+                  <div className="w-12 h-12 bg-gold-100 dark:bg-gold-900/20 rounded-full flex items-center justify-center mb-4 text-gold-700 dark:text-gold-400 mx-auto">
                       <ArrowLeftOnRectangleIcon className="w-6 h-6" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">Sign Out?</h3>

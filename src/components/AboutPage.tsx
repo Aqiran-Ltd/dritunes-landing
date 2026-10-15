@@ -347,7 +347,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 dark:text-gold-400 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -357,7 +357,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <LightBulbIcon className="w-4 h-4 mr-2 text-gold-700" />
+              <LightBulbIcon className="w-4 h-4 mr-2 text-gold-700 dark:text-gold-400" />
               Our Vision & Mission
             </motion.div>
             
@@ -464,7 +464,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 dark:text-gold-400 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -474,7 +474,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <CurrencyDollarIcon className="w-4 h-4 mr-2 text-gold-700" />
+              <CurrencyDollarIcon className="w-4 h-4 mr-2 text-gold-700 dark:text-gold-400" />
               Our Core Services
             </motion.div>
             
@@ -529,7 +529,7 @@ export default function AboutPage() {
             >
               <h2 className="text-3xl md:text-5xl font-black mb-8 text-gray-900 dark:text-white leading-tight">
                 A Workflow <br />
-                <span className="text-gold-700">Built on Trust</span>
+                <span className="text-gold-700 dark:text-gold-400">Built on Trust</span>
               </h2>
               <div className="space-y-8">
                 {[
@@ -613,7 +613,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 dark:text-gold-400 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -623,7 +623,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <UserGroupIcon className="w-4 h-4 mr-2 text-gold-700" />
+              <UserGroupIcon className="w-4 h-4 mr-2 text-gold-700 dark:text-gold-400" />
               Meet Our Founder
             </motion.div>
             
@@ -722,7 +722,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 text-sm font-medium mb-8 shadow-lg"
+              className="inline-flex items-center px-6 py-3 bg-gold-100 border border-gold-200 rounded-full text-gold-700 dark:text-gold-400 text-sm font-medium mb-8 shadow-lg"
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
@@ -732,7 +732,7 @@ export default function AboutPage() {
                   className="object-contain"
                 />
               </div>
-              <CheckCircleIcon className="w-4 h-4 mr-2 text-gold-700" />
+              <CheckCircleIcon className="w-4 h-4 mr-2 text-gold-700 dark:text-gold-400" />
               Our Journey & Future
             </motion.div>
             

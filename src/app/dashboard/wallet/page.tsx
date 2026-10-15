@@ -273,7 +273,7 @@ export default function WalletPage() {
                          </div>
                       </div>
                       <div className="text-right shrink-0 mt-3 sm:mt-0">
-                         <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-gold-700'}`}>
+                         <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-gold-700 dark:text-gold-400'}`}>
                            {tx.type === 'credit' ? '+' : '-'}₵{parseFloat(tx.amount).toFixed(2)}
                          </p>
                          <span className={`text-[10px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded ${
@@ -362,7 +362,7 @@ export default function WalletPage() {
                   <div className={`p-4 rounded-2xl flex items-center gap-3 text-sm font-medium ${
                     withdrawStatus.type === 'success' 
                       ? 'bg-green-50 text-green-600 border border-green-100' 
-                      : 'bg-gold-50 text-gold-700 border border-gold-100'
+                      : 'bg-gold-50 text-gold-700 dark:text-gold-400 border border-gold-100'
                   }`}>
                     {withdrawStatus.type === 'success' ? <CheckCircleIcon className="w-5 h-5" /> : <ExclamationCircleIcon className="w-5 h-5" />}
                     {withdrawStatus.message}
@@ -387,7 +387,7 @@ export default function WalletPage() {
                     <button 
                       type="button" 
                       onClick={() => setWithdrawAmount(wallet?.balance || '0')}
-                      className="text-gold-700 hover:underline"
+                      className="text-gold-700 dark:text-gold-400 hover:underline"
                     >
                       Use Max
                     </button>
@@ -419,7 +419,7 @@ export default function WalletPage() {
                               {method.payment_method?.name} • {method.account_number}
                             </p>
                           </div>
-                          {selectedMethodId === method.id && <CheckCircleIcon className="w-5 h-5 text-gold-700" />}
+                          {selectedMethodId === method.id && <CheckCircleIcon className="w-5 h-5 text-gold-700 dark:text-gold-400" />}
                         </button>
                       ))
                     )}

@@ -37,7 +37,7 @@ export default function TradePage() {
           className="text-center mb-12 relative z-10"
         >
           <div className="inline-flex items-center px-6 py-3 bg-gold-100 dark:bg-gold-900/30 border border-gold-200 dark:border-gold-600/50 rounded-full text-gold-700 dark:text-gold-300 text-lg font-bold mb-6 shadow-lg animate-pulse-slow">
-            <CurrencyDollarIcon className="w-6 h-6 mr-2 text-gold-700 animate-bounce" />
+            <CurrencyDollarIcon className="w-6 h-6 mr-2 text-gold-700 dark:text-gold-400 animate-bounce" />
             Start Trading with Aqiran Xchange
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Trade Gift Cards Easily</h1>
@@ -50,7 +50,7 @@ export default function TradePage() {
           <ol className="space-y-8">
             <li className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <CreditCardIcon className="w-10 h-10 text-gold-700 bg-gold-100 dark:bg-gold-900/30 rounded-full p-2" />
+                <CreditCardIcon className="w-10 h-10 text-gold-700 dark:text-gold-400 bg-gold-100 dark:bg-gold-900/30 rounded-full p-2" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">1. Choose Your Card</h2>
@@ -99,7 +99,7 @@ export default function TradePage() {
               <span className="font-semibold text-lg text-blue-700 dark:text-blue-300">Telegram</span>
             </a>
             <a href="mailto:info@aqiranxchange.com" className="flex items-center px-6 py-4 bg-gold-100 dark:bg-gold-900/30 rounded-2xl shadow hover:shadow-lg transition-all group">
-              <EnvelopeIcon className="w-7 h-7 text-gold-700 mr-4 group-hover:scale-110 transition-transform" />
+              <EnvelopeIcon className="w-7 h-7 text-gold-700 dark:text-gold-400 mr-4 group-hover:scale-110 transition-transform" />
               <span className="font-semibold text-lg text-gold-700 dark:text-gold-400">Email</span>
             </a>
             <div className="flex items-center px-6 py-4 bg-purple-100 dark:bg-purple-900/30 rounded-2xl shadow group">

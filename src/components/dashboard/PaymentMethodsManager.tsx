@@ -217,7 +217,7 @@ export default function PaymentMethodsManager() {
             <Button 
               variant="ghost" 
               onClick={() => setIsAdding(true)}
-              className="text-gold-700 font-bold mt-2"
+              className="text-gold-700 dark:text-gold-400 font-bold mt-2"
             >
               Add your first account
             </Button>
@@ -326,7 +326,7 @@ export default function PaymentMethodsManager() {
                       onClick={() => handleCategorySelect('momo')}
                       className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
                         selectedCategory === 'momo' 
-                          ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10 text-gold-700' 
+                          ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10 text-gold-700 dark:text-gold-400' 
                           : 'border-gray-50 dark:border-gray-800 text-gray-500 hover:border-gray-200 dark:hover:border-gray-700'
                       }`}
                     >
@@ -341,7 +341,7 @@ export default function PaymentMethodsManager() {
                       onClick={() => handleCategorySelect('bank')}
                       className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
                         selectedCategory === 'bank' 
-                          ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10 text-gold-700' 
+                          ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10 text-gold-700 dark:text-gold-400' 
                           : 'border-gray-50 dark:border-gray-800 text-gray-500 hover:border-gray-200 dark:hover:border-gray-700'
                       }`}
                     >

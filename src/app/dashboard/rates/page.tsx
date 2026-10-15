@@ -50,7 +50,7 @@ export default function DashboardRatesPage() {
   if (loading && categories.length === 0 && activeTab === 'live') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
-        <BoltIcon className="w-12 h-12 text-gold-700 animate-pulse" />
+        <BoltIcon className="w-12 h-12 text-gold-700 dark:text-gold-400 animate-pulse" />
         <p className="text-gray-500 animate-pulse">Fetching live market data...</p>
       </div>
     );
@@ -63,7 +63,7 @@ export default function DashboardRatesPage() {
         <p className="text-red-600 font-medium">{error}</p>
         <button
           onClick={loadRates}
-          className="px-4 py-2 bg-gold-100 text-gold-700 rounded-lg hover:bg-gold-200 transition-colors"
+          className="px-4 py-2 bg-gold-100 text-gold-700 dark:text-gold-400 rounded-lg hover:bg-gold-200 transition-colors"
         >
           Retry
         </button>
@@ -112,7 +112,7 @@ export default function DashboardRatesPage() {
             )}
             <button
               onClick={loadRates}
-              className={`p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${loading ? 'animate-spin text-gold-700' : 'text-gray-400'}`}
+              className={`p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${loading ? 'animate-spin text-gold-700 dark:text-gold-400' : 'text-gray-400'}`}
             >
               <ArrowPathIcon className="w-4 h-4" />
             </button>

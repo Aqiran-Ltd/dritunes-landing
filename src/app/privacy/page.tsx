@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
             Privacy First
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">
-            Privacy <span className="text-gold-700">Policy</span>
+            Privacy <span className="text-gold-700 dark:text-gold-400">Policy</span>
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             At Aqiran Xchange (formerly Dr iTunes Consult), transparency is the foundation of our partnership with you.

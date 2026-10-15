@@ -133,7 +133,7 @@ export function Select({
                             <>
                             <div className="flex items-center gap-3">
                                 {option.icon && (
-                                <span className={`transition-colors ${active ? 'text-gold-700' : 'text-gray-400'}`}>
+                                <span className={`transition-colors ${active ? 'text-gold-700 dark:text-gold-400' : 'text-gray-400'}`}>
                                     {option.icon}
                                 </span>
                                 )}
@@ -150,7 +150,7 @@ export function Select({
                             {selected ? (
                                 <span
                                 className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                    active ? 'text-gold-700' : 'text-gold-700'
+                                    active ? 'text-gold-700 dark:text-gold-400' : 'text-gold-700 dark:text-gold-400'
                                 }`}
                                 >
                                 <CheckIcon className="h-5 w-5" aria-hidden="true" />

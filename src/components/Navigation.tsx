@@ -125,7 +125,7 @@ export default function Navigation() {
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 dark:text-gold-400 flex items-center justify-center font-bold">
                     {user.name?.charAt(0) || 'U'}
                   </div>
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-200 mobile-hidden">
@@ -168,7 +168,7 @@ export default function Navigation() {
                             logout();
                             setProfileOpen(false);
                           }}
-                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gold-700 hover:bg-gold-50 dark:hover:bg-gold-900/20 rounded-lg"
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gold-700 dark:text-gold-400 hover:bg-gold-50 dark:hover:bg-gold-900/20 rounded-lg"
                         >
                           <ArrowLeftOnRectangleIcon className="w-4 h-4" />
                           Sign Out
@@ -258,7 +258,7 @@ export default function Navigation() {
                 {user ? (
                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
                       <div className="flex items-center gap-3 mb-4 px-3">
-                        <div className="w-10 h-10 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 flex items-center justify-center font-bold">
+                        <div className="w-10 h-10 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 dark:text-gold-400 flex items-center justify-center font-bold">
                            {user.name?.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -278,7 +278,7 @@ export default function Navigation() {
                            logout();
                            setIsOpen(false);
                          }}
-                         className="w-full text-left px-3 py-2 text-gold-700 hover:bg-gold-50 dark:hover:bg-gold-900/20 rounded-md"
+                         className="w-full text-left px-3 py-2 text-gold-700 dark:text-gold-400 hover:bg-gold-50 dark:hover:bg-gold-900/20 rounded-md"
                        >
                          Sign Out
                        </button>

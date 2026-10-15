@@ -226,7 +226,7 @@ export default function RateHistoryTable() {
             <div className="sm:col-span-2 md:col-span-4 flex justify-end">
               <button
                 onClick={() => { setCategory(''); setAction(''); setFrom(''); setTo(''); setAssetSearch(''); }}
-                className="text-xs text-gold-700 hover:text-gold-800 font-semibold underline cursor-pointer"
+                className="text-xs text-gold-700 dark:text-gold-400 hover:text-gold-800 font-semibold underline cursor-pointer"
               >
                 Clear all filters
               </button>
