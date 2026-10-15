@@ -7,7 +7,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { audit } from "@/lib/audit";
 import { useAuth } from "@/contexts/AuthContext";
-import Image from "next/image";
+import BrandLogo from "@/components/BrandLogo";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -57,25 +57,10 @@ export default function Navigation() {
           <motion.a
             href="/"
             whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-3"
+            className="flex items-center"
+            aria-label="Aqiran Xchange home"
           >
-            <div className="relative w-12 h-12 lg:w-14 lg:h-14">
-              <Image
-                src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
-                alt="Aqiran Xchange logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
-                Aqiran
-              </h1>
-              <p className="text-xs lg:text-sm text-gold-700 dark:text-gold-400 font-medium">
-                Xchange
-              </p>
-            </div>
+            <BrandLogo className="h-9 lg:h-11" priority />
           </motion.a>
 
           {/* Desktop Navigation */}

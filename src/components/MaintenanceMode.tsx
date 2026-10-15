@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import BrandLogo from "@/components/BrandLogo";
 import { Button } from './ui/Button';
 import { useSettings } from '@/contexts/SettingsContext';
 
@@ -22,14 +22,7 @@ export default function MaintenanceMode() {
         <div className="flex justify-center mb-12">
           <div className="relative group">
             <div className="absolute inset-0 bg-gold-500 blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full" />
-            <Image 
-              src="/logo/aqiran-xchange-logo-white.svg" 
-              alt="Aqiran Xchange logo" 
-              width={180} 
-              height={60} 
-              className="relative brightness-110"
-              priority
-            />
+            <BrandLogo variant="on-dark" className="relative h-16" priority />
           </div>
         </div>
 

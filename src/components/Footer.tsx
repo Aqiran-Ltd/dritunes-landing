@@ -8,6 +8,7 @@ import {
   MapPinIcon 
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import BrandLogo from "@/components/BrandLogo";
 import Link from "next/link";
 
 import { usePathname } from 'next/navigation';
@@ -109,20 +110,13 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               className="mb-8"
             >
-              <Link href="/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-4 mb-6">
-                <div className="relative w-16 h-16">
-                  <Image
-                    src="/logo/aqiran-xchange-logo-white.svg"
-                    alt="Aqiran Xchange logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white dark:text-gray-100">Aqiran</h3>
-                  <p className="text-gold-400 font-medium">Xchange</p>
-                </div>
+              <Link href="/" target="_blank" rel="noopener noreferrer" className="inline-block mb-4" aria-label="Aqiran Xchange home">
+                <BrandLogo variant="on-dark" className="h-14" />
               </Link>
+              <p className="flex items-center gap-2 mb-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
+                Formerly Dr iTunes Consult
+              </p>
               <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed mb-6">
                 Ghana&apos;s premier gift card trading service. Trusted by thousands for secure, fast, and reliable transactions with 24/7 support.
               </p>
@@ -332,7 +326,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-6">
               <p className="text-gray-400 dark:text-gray-500 text-sm">
-                © {currentYear} Aqiran Xchange (formerly Dr iTunes Consult). All rights reserved.
+                © {currentYear} Aqiran Xchange. All rights reserved.
               </p>
               <div className="flex items-center space-x-4 text-xs">
                 <a href="/privacy" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Privacy Policy</a>
@@ -354,6 +348,17 @@ export default function Footer() {
             </div>
           </div>
         </motion.div>
+
+        {/* Oversized wordmark, cropped by the footer edge */}
+        <div aria-hidden="true" className="mt-12 -mb-28 md:-mb-40 pointer-events-none select-none">
+          <Image
+            src="/logo/aqiran-xchange-full-logo-mono-white.svg"
+            alt=""
+            width={3017}
+            height={995}
+            className="w-full h-auto opacity-[0.04]"
+          />
+        </div>
       </div>
     </footer>
   );

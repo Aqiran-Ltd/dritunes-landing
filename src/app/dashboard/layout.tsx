@@ -16,7 +16,7 @@ import {
   ClockIcon,
   Cog6ToothIcon
 } from '@heroicons/react/24/outline';
-import Image from 'next/image';
+import BrandLogo from "@/components/BrandLogo";
 import TopBar from '@/components/dashboard/TopBar';
 import VerificationBanner from '@/components/dashboard/VerificationBanner';
 import { api } from '@/lib/api';
@@ -103,11 +103,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-gray-800 relative justify-between lg:justify-start">
-             <Link href="/" className="flex items-center gap-2">
-                <div className="relative w-8 h-8">
-                   <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
-                </div>
-                <span className="text-xl font-bold dark:text-white">Aqiran Xchange</span>
+             <Link href="/" className="flex items-center" aria-label="Aqiran Xchange home">
+                <BrandLogo className="h-9" />
              </Link>
              <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-500">
                <XMarkIcon className="w-6 h-6" />

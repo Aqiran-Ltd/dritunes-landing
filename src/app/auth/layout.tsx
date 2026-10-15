@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import BrandLogo from "@/components/BrandLogo";
 
 export default function AuthLayout({
   children,
@@ -26,15 +26,9 @@ export default function AuthLayout({
         {/* Glassmorphism Card */}
         <div className="relative z-10 p-12 text-white max-w-xl backdrop-blur-sm bg-black/10 rounded-3xl border border-white/5 shadow-2xl">
            <div className="mb-8 relative">
-             <Link href="/" className="text-3xl font-bold tracking-tight flex items-center gap-3 group">
-                 <div className="relative w-10 h-10">
-                    <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
-                 </div>
-                 <div className="relative">
-                    <div className="absolute inset-0 bg-gold-500 blur-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                    <span className="relative text-gold-400">Aqiran</span>
-                 </div>
-                <span className="font-light tracking-widest text-white/80">Xchange</span>
+             <Link href="/" className="relative inline-block group" aria-label="Aqiran Xchange home">
+                 <div className="absolute -inset-4 bg-gold-500/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                 <BrandLogo variant="on-dark" className="relative h-14" priority />
              </Link>
            </div>
            
@@ -80,14 +74,8 @@ export default function AuthLayout({
         <div className="w-full max-w-md space-y-8 relative z-10">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8 flex flex-col items-center">
-             <Link href="/" className="inline-flex items-center gap-3">
-                <div className="relative w-10 h-10">
-                   <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
-                </div>
-                <div className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                    <span className="text-gold-700 dark:text-gold-400">Aqiran</span>
-                    <span className="font-light dark:text-white">Xchange</span>
-                </div>
+             <Link href="/" className="inline-flex" aria-label="Aqiran Xchange home">
+                <BrandLogo className="h-12" priority />
              </Link>
           </div>
 
