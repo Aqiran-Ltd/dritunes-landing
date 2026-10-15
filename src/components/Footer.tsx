@@ -113,7 +113,7 @@ export default function Footer() {
               <Link href="/" target="_blank" rel="noopener noreferrer" className="inline-block mb-4" aria-label="Aqiran Xchange home">
                 <BrandLogo variant="on-dark" className="h-14" />
               </Link>
-              <p className="flex items-center gap-2 mb-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-400">
+              <p className="flex items-center gap-2 mb-6 text-sm text-gray-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
                 Formerly Dr iTunes Consult
               </p>
@@ -121,17 +121,6 @@ export default function Footer() {
                 Ghana&apos;s premier gift card trading service. Trusted by thousands for secure, fast, and reliable transactions with 24/7 support.
               </p>
               
-              {/* Trust Badges */}
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-green-400">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-xs font-medium">24/7 Support</span>
-                </div>
-                <div className="flex items-center space-x-2 text-blue-400">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                  <span className="text-xs font-medium">Secure</span>
-                </div>
-              </div>
             </motion.div>
           </div>
 
@@ -143,8 +132,7 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <h4 className="text-lg font-bold text-white dark:text-gray-100 mb-6 flex items-center">
-                <span className="w-8 h-0.5 bg-gold-500 mr-3"></span>
+              <h4 className="text-base font-semibold text-white mb-6">
                 Quick Links
               </h4>
               <ul className="space-y-3">
@@ -191,8 +179,7 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h4 className="text-lg font-bold text-white dark:text-gray-100 mb-6 flex items-center">
-                <span className="w-8 h-0.5 bg-gold-500 mr-3"></span>
+              <h4 className="text-base font-semibold text-white mb-6">
                 Contact Info
               </h4>
               <ul className="space-y-4">
@@ -268,8 +255,7 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h4 className="text-lg font-bold text-white dark:text-gray-100 mb-6 flex items-center">
-                <span className="w-8 h-0.5 bg-gold-500 mr-3"></span>
+              <h4 className="text-base font-semibold text-white mb-6">
                 Follow Us
               </h4>
               
@@ -339,13 +325,7 @@ export default function Footer() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-400 text-xs">Made with ❤️ in Ghana</span>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-green-400 text-xs font-medium">Secure & Reliable</span>
-              </div>
-            </div>
+            <p className="text-gray-400 text-xs">Made in Tamale, Ghana</p>
           </div>
         </motion.div>
 

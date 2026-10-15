@@ -75,7 +75,7 @@ export default function MaintenanceMode() {
         </div>
 
         {/* Social Links / Branding */}
-        <div className="pt-12 text-gray-500 text-sm font-medium tracking-widest uppercase">
+        <div className="pt-12 text-gray-500 text-sm font-medium">
           &copy; {new Date().getFullYear()} Aqiran Xchange. All Rights Reserved.
         </div>
       </div>

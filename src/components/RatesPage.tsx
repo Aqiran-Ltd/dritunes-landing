@@ -444,7 +444,7 @@ export default function RatesPage() {
                 className="absolute left-0 right-0 top-full mt-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-gray-100 dark:border-gray-800 z-20 overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-black text-gray-900 dark:text-white uppercase tracking-widest text-xs">Filter by Region</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Filter by Region</h3>
                   {selectedRegions.size > 0 && (
                     <button onClick={() => setSelectedRegions(new Set())} className="text-[10px] font-bold text-gold-700 dark:text-gold-400 uppercase tracking-wider hover:underline">Clear All</button>
                   )}
@@ -566,11 +566,11 @@ export default function RatesPage() {
               <div className="flex flex-col gap-4 min-w-[240px] relative z-10">
                 <div className="bg-gray-50/50 dark:bg-black/20 p-4 rounded-2xl border border-gray-100/50 dark:border-white/5">
                   <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-[10px]">Regions</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium text-xs">Regions</span>
                     <span className="font-black text-lg text-gray-900 dark:text-white">{getAllRegions.length}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-[10px]">Variations</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium text-xs">Variations</span>
                     <span className="font-black text-lg text-gray-900 dark:text-white">{activeCategory?.cards.length || 0}</span>
                   </div>
                 </div>
