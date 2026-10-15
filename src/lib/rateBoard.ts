@@ -6,6 +6,7 @@ export interface BoardRow {
   region: string;
   amount: string;
   rate: number; // GHS paid per $1 of card value
+  logoUrl?: string;
 }
 
 /**
@@ -23,7 +24,7 @@ export function topRates(categories: Category[], limit = 18): BoardRow[] {
       const key = `${category.name}|${card.region}`;
       const current = best.get(key);
       if (!current || rate > current.rate) {
-        best.set(key, { id: card.id, category: category.name, region: card.region, amount: card.amount, rate });
+        best.set(key, { id: card.id, category: category.name, region: card.region, amount: card.amount, rate, logoUrl: card.logoUrl || category.logoUrl });
       }
     }
   }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import RateBoard from "@/components/RateBoard";
+import CardFan from "@/components/CardFan";
 import StartTradeLink from "@/components/StartTradeLink";
 import type { BoardRow } from "@/lib/rateBoard";
 
@@ -15,7 +16,7 @@ const facts = ["A walk-in store in Tamale", "Paid to mobile money or bank", "Sup
 
 export default function HeroSection({ boardRows, updatedAt }: HeroSectionProps) {
   return (
-    <section id="home" className="relative overflow-hidden bg-white dark:bg-gray-950 pt-28 pb-20 lg:pt-36 lg:pb-28">
+    <section id="home" className="relative overflow-hidden bg-white dark:bg-gray-950 pt-28 pb-20 lg:pt-32 lg:pb-28">
       {/* A single soft gold light behind the board */}
       <div aria-hidden="true" className="absolute -right-40 top-10 w-[640px] h-[640px] rounded-full bg-gold/15 blur-[120px] dark:bg-gold/10" />
 
@@ -59,13 +60,17 @@ export default function HeroSection({ boardRows, updatedAt }: HeroSectionProps) 
           </ul>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-        >
-          <RateBoard rows={boardRows} updatedAt={updatedAt} />
-        </motion.div>
+        <div className="relative pt-[17%]">
+          <CardFan className="absolute inset-x-0 top-0 aspect-[4/1]" />
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            className="relative z-10"
+          >
+            <RateBoard rows={boardRows} updatedAt={updatedAt} />
+          </motion.div>
+        </div>
       </div>
     </section>
   );

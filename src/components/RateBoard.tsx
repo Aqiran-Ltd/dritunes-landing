@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import RollingNumber from "@/components/RollingNumber";
+import { artForBrand, isPlaceholderLogo } from "@/lib/cardCatalogue";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import type { BoardRow } from "@/lib/rateBoard";
 
@@ -30,6 +32,37 @@ function ExchangeArrows({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
       <path d="M4 8h14m0 0-3.5-3.5M18 8l-3.5 3.5M20 16H6m0 0 3.5-3.5M6 16l3.5 3.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  );
+}
+
+const miniCard = "relative w-14 h-[37px] shrink-0 rounded-md overflow-hidden ring-1 ring-white/10";
+
+/**
+ * A mini gift card for the row: our card artwork when we have it, else the
+ * brand logo from the rates API, else the brand's initial.
+ */
+function BrandMark({ name, logoUrl }: { name: string; logoUrl?: string }) {
+  const [failed, setFailed] = useState(false);
+  const art = artForBrand(name);
+  if (art) {
+    return (
+      <span className={miniCard}>
+        <Image src={art.image} alt="" fill sizes="56px" className="object-cover" />
+      </span>
+    );
+  }
+  if (!isPlaceholderLogo(logoUrl) && !failed) {
+    return (
+      <span className={`${miniCard} bg-white grid place-items-center`}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- remote brand logos from the rates API */}
+        <img src={logoUrl} alt="" loading="lazy" onError={() => setFailed(true)} className="max-w-[80%] max-h-[70%] object-contain" />
+      </span>
+    );
+  }
+  return (
+    <span aria-hidden="true" className={`${miniCard} bg-gradient-to-br from-gray-700 to-gray-800 grid place-items-center font-semibold text-gold`}>
+      {name.charAt(0).toUpperCase()}
+    </span>
   );
 }
 
@@ -132,7 +165,7 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                   )}
                 </AnimatePresence>
 
-                <div className="relative min-w-0 h-11 flex-1 overflow-hidden">
+                <div className="relative min-w-0 h-12 flex-1 overflow-hidden">
                   <AnimatePresence initial={false} mode="popLayout">
                     <motion.div
                       key={row.id}
@@ -141,10 +174,15 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                       exit={{ y: "-100%", opacity: 0 }}
                       transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
                     >
-                      <p className="font-medium truncate">{row.category}</p>
-                      <p className="text-sm text-gray-400 truncate">
-                        {row.region} card, ${row.amount}
-                      </p>
+                      <div className="flex items-center gap-3">
+                        <BrandMark name={row.category} logoUrl={row.logoUrl} />
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">{row.category}</p>
+                          <p className="text-sm text-gray-400 truncate">
+                            {row.region} card, ${row.amount}
+                          </p>
+                        </div>
+                      </div>
                     </motion.div>
                   </AnimatePresence>
                 </div>
