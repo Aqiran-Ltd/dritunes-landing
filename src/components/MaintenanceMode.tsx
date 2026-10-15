@@ -23,8 +23,8 @@ export default function MaintenanceMode() {
           <div className="relative group">
             <div className="absolute inset-0 bg-red-600 blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full" />
             <Image 
-              src="/logo/white.png" 
-              alt="Dr iTunes Consult" 
+              src="/logo/aqiran-xchange-logo-white.svg" 
+              alt="Aqiran Xchange logo" 
               width={180} 
               height={60} 
               className="relative brightness-110"

@@ -68,8 +68,8 @@ export default function HeroSection() {
         >
           <div className="relative w-32 h-32 mx-auto mb-6">
             <Image
-              src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-              alt="Dr iTunes Logo"
+              src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+              alt="Aqiran Xchange logo"
               fill
               className="object-contain drop-shadow-2xl"
               priority

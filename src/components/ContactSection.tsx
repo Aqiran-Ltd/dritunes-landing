@@ -96,8 +96,8 @@ export default function ContactSection() {
           >
             <div className="relative w-6 h-6 mr-3">
               <Image
-                src="/logo/white.png"
-                alt="Dr iTunes Logo"
+                src="/logo/aqiran-xchange-logo-white.svg"
+                alt="Aqiran Xchange logo"
                 fill
                 className="object-contain"
               />

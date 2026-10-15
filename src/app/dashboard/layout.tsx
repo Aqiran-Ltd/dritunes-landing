@@ -105,7 +105,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-gray-800 relative justify-between lg:justify-start">
              <Link href="/" className="flex items-center gap-2">
                 <div className="relative w-8 h-8">
-                   <Image src="/logo/red-black.png" alt="Logo" fill className="object-contain" />
+                   <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
                 </div>
                 <span className="text-xl font-bold dark:text-white">Dritunes</span>
              </Link>

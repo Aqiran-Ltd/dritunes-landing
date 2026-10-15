@@ -83,8 +83,8 @@ export default function FeaturesSection() {
           >
             <div className="relative w-6 h-6 mr-3">
               <Image
-                src="/logo/red-black.png"
-                alt="Dr iTunes Logo"
+                src="/logo/aqiran-xchange-logo.svg"
+                alt="Aqiran Xchange logo"
                 fill
                 className="object-contain"
               />

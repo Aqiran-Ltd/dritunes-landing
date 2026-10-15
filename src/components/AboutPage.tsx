@@ -245,8 +245,8 @@ export default function AboutPage() {
               className="relative w-24 h-24 md:w-32 md:h-32 flex-shrink-0 mb-4 md:mb-0 drop-shadow-xl"
             >
               <Image
-                src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                alt="Dr iTunes Logo"
+                src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                alt="Aqiran Xchange logo"
                 fill
                 className="object-contain"
                 priority
@@ -351,8 +351,8 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                  alt="Dr iTunes Logo"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                  alt="Aqiran Xchange logo"
                   fill
                   className="object-contain"
                 />
@@ -468,8 +468,8 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                  alt="Dr iTunes Logo"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                  alt="Aqiran Xchange logo"
                   fill
                   className="object-contain"
                 />
@@ -578,8 +578,8 @@ export default function AboutPage() {
               <div className="absolute flex flex-col items-center">
                 <div className="relative w-32 h-32 mb-4 animate-pulse-slow">
                   <Image
-                    src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                    alt="Dr iTunes Logo"
+                    src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                    alt="Aqiran Xchange logo"
                     fill
                     className="object-contain"
                   />
@@ -617,8 +617,8 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                  alt="Dr iTunes Logo"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                  alt="Aqiran Xchange logo"
                   fill
                   className="object-contain"
                 />
@@ -726,8 +726,8 @@ export default function AboutPage() {
             >
               <div className="relative w-6 h-6 mr-3">
                 <Image
-                  src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                  alt="Dr iTunes Logo"
+                  src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                  alt="Aqiran Xchange logo"
                   fill
                   className="object-contain"
                 />

@@ -76,8 +76,8 @@ export default function StatsSection() {
           >
             <div className="relative w-6 h-6 mr-3">
               <Image
-                src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                alt="Dr iTunes Logo"
+                src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                alt="Aqiran Xchange logo"
                 fill
                 className="object-contain"
               />

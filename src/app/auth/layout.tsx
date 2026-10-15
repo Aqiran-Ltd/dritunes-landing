@@ -28,7 +28,7 @@ export default function AuthLayout({
            <div className="mb-8 relative">
              <Link href="/" className="text-3xl font-bold tracking-tight flex items-center gap-3 group">
                  <div className="relative w-10 h-10">
-                    <Image src="/logo/red-black.png" alt="Logo" fill className="object-contain" />
+                    <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
                  </div>
                  <div className="relative">
                     <div className="absolute inset-0 bg-red-600 blur-lg opacity-50 group-hover:opacity-100 transition-opacity"></div>
@@ -82,7 +82,7 @@ export default function AuthLayout({
           <div className="lg:hidden text-center mb-8 flex flex-col items-center">
              <Link href="/" className="inline-flex items-center gap-3">
                 <div className="relative w-10 h-10">
-                   <Image src="/logo/red-black.png" alt="Logo" fill className="object-contain" />
+                   <Image src="/logo/aqiran-xchange-logo.svg" alt="Logo" fill className="object-contain" />
                 </div>
                 <div className="text-3xl font-bold tracking-tight flex items-center gap-2">
                     <span className="text-red-600">Dritunes</span>

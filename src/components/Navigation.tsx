@@ -61,8 +61,8 @@ export default function Navigation() {
           >
             <div className="relative w-12 h-12 lg:w-14 lg:h-14">
               <Image
-                src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                alt="Dr iTunes Logo"
+                src={mounted && resolvedTheme === 'dark' ? "/logo/aqiran-xchange-logo-white.svg" : "/logo/aqiran-xchange-logo.svg"}
+                alt="Aqiran Xchange logo"
                 fill
                 className="object-contain"
                 priority

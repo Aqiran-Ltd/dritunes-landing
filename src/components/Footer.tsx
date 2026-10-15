@@ -112,8 +112,8 @@ export default function Footer() {
               <Link href="/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-4 mb-6">
                 <div className="relative w-16 h-16">
                   <Image
-                    src="/logo/white.png"
-                    alt="Dr iTunes Logo"
+                    src="/logo/aqiran-xchange-logo-white.svg"
+                    alt="Aqiran Xchange logo"
                     fill
                     className="object-contain"
                   />
