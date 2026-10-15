@@ -26,6 +26,7 @@ import {
   BoltIcon
 } from "@heroicons/react/24/solid";
 import { Select, type SelectOption } from "@/components/ui/Select";
+import SectionHeading from "@/components/ui/SectionHeading";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { fetchRates, fetchGiftCardGroups, type GiftCard, type Category, type Rate, type GiftCardBrand } from "@/lib/ratesService";
@@ -205,7 +206,7 @@ export default function RatesPage() {
     if (n.includes('visa') || n.includes('vanilla')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-500 to-blue-700" };
     if (n.includes('nike')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-orange-500 to-orange-700" };
     if (n.includes('razer')) return { icon: <BoltIcon className="w-5 h-5" />, color: "from-green-500 to-green-700" };
-    return { icon: <GiftIcon className="w-5 h-5" />, color: "from-purple-600 to-purple-800" };
+    return { icon: <GiftIcon className="w-5 h-5" />, color: "from-gray-800 to-gray-950" };
   };
 
   const handleTrade = (card: GiftCard, categoryName: string, activeRegion: string, overrideType?: DeliveryType) => {
@@ -336,42 +337,41 @@ export default function RatesPage() {
   }, [categories, categorySearch]);
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-br from-[#f8fafc] via-yellow-50 to-gold-100 dark:from-[#0a0a0a] dark:via-[#171717] dark:to-[#23272f]">
+    <main className="flex flex-col min-h-screen bg-white dark:bg-gray-950">
       <Navigation />
-      <div className="flex-1 flex flex-col items-center py-12 px-4 pt-32 relative overflow-hidden">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.15 }} transition={{ duration: 1 }} className="absolute inset-0 bg-gradient-to-br from-yellow-100 via-gold-100 to-pink-100 dark:from-yellow-900 dark:via-gold-900 dark:to-pink-900 pointer-events-none z-0" />
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 relative z-10 w-full max-w-6xl">
-          <div className="inline-flex items-center px-6 py-3 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700/50 rounded-full text-yellow-700 dark:text-yellow-300 text-lg font-bold mb-6 shadow-lg">
-            <CurrencyDollarIcon className="w-6 h-6 mr-2 text-yellow-500" />
-            Live Gift Card Rates
+      <div className="flex-1 flex flex-col items-center py-12 px-4 pt-36 lg:pt-44 relative">
+        <div className="mb-10 relative z-10 w-full max-w-6xl">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <SectionHeading
+              as="h1"
+              title="Today's gift card rates"
+              intro="Cedis paid for every $1 of card value, by brand, country and amount. Physical cards and e-codes are priced separately."
+            />
+            <AnimatePresence>
+              {!user && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="lg:max-w-sm rounded-2xl bg-gray-50 dark:bg-gray-900 p-5"
+                >
+                  <p className="text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold text-ink dark:text-white">Trading regularly?</span> An account lets you trade at these rates from your dashboard and track every payout.
+                  </p>
+                  <div className="mt-4 flex items-center gap-4">
+                    <a href="/auth/register" className="inline-flex items-center h-11 px-5 rounded-full bg-ink text-white dark:bg-gold dark:text-ink font-semibold text-sm transition-colors hover:bg-gray-800 dark:hover:bg-gold-400">Create an account</a>
+                    <a href="/auth/login" className="font-semibold text-sm underline decoration-gray-300 dark:decoration-gray-600 underline-offset-4 hover:decoration-ink dark:hover:decoration-white">Log in</a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <AnimatePresence>
-            {!user && (
-              <motion.div initial={{ opacity: 0, height: 0, scale: 0.95 }} animate={{ opacity: 1, height: 'auto', scale: 1 }} exit={{ opacity: 0, height: 0, scale: 0.9 }} className="mb-8 p-1 bg-gradient-to-r from-gold-500 via-orange-500 to-gold-500 rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden text-ink relative z-20">
-                 <div className="bg-black/10 backdrop-blur-sm p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-white/20 rounded-full animate-pulse shadow-inner"><BoltIcon className="w-8 h-8 text-ink" /></div>
-                      <div className="text-left">
-                        <h3 className="font-bold text-xl leading-tight">Trading just got faster!</h3>
-                        <p className="text-ink/80 text-sm mt-1">Login to access the <span className="font-bold text-ink underline decoration-ink/40">Live Trade Dashboard</span> with instant payouts.</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                       <a href="/auth/register" className="whitespace-nowrap px-6 py-3 bg-white text-gold-700 font-black rounded-xl shadow-lg hover:bg-gray-50 hover:scale-105 transition-all text-sm uppercase tracking-wide">Get Started</a>
-                       <a href="/auth/login" className="whitespace-nowrap px-6 py-3 bg-ink/10 hover:bg-ink/20 text-ink font-bold rounded-xl border border-ink/20 transition-all text-sm uppercase tracking-wide backdrop-blur-md">Login</a>
-                    </div>
-                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Comprehensive Rates</h1>
-          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6">Real-time rates for all major gift cards.</p>
-          <div className="flex items-center justify-center gap-4 mb-4">
-            {isLoading && (<div className="flex items-center gap-2 text-yellow-600"><ArrowPathIcon className="w-5 h-5 animate-spin" /> Loading...</div>)}
+          <div className="mt-8 flex items-center gap-4 text-sm">
+            {isLoading && (<div className="flex items-center gap-2 text-gray-600 dark:text-gray-400"><ArrowPathIcon className="w-4 h-4 animate-spin" /> Loading rates</div>)}
             {error && (<div className="flex items-center gap-2 text-red-600"><ExclamationTriangleIcon className="w-5 h-5" /> {error} <button onClick={handleRefresh} className="underline">Retry</button></div>)}
-            {!isLoading && !error && lastUpdated && (<div className="flex items-center gap-2 text-green-600"><CheckCircleIcon className="w-5 h-5" /> Updated {lastUpdated.toLocaleTimeString()} <button onClick={handleRefresh}><ArrowPathIcon className="w-4 h-4 hover:rotate-180 transition-transform" /></button></div>)}
+            {!isLoading && !error && lastUpdated && (<div className="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span aria-hidden="true" className="w-2 h-2 rounded-full bg-crimson" /> Updated at {lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} <button onClick={handleRefresh} aria-label="Refresh rates" className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><ArrowPathIcon className="w-4 h-4 hover:rotate-180 transition-transform" /></button></div>)}
           </div>
-        </motion.div>
+        </div>
         {/* MASTER FILTER BAR */}
         <div className="w-full max-w-6xl mx-auto mb-10 sticky top-24 z-30">
           <motion.div 
@@ -574,9 +574,8 @@ export default function RatesPage() {
                     <span className="font-black text-lg text-gray-900 dark:text-white">{activeCategory?.cards.length || 0}</span>
                   </div>
                 </div>
-                <button onClick={() => router.push(`/dashboard/trade?asset=${encodeURIComponent(activeCategoryName)}`)} className={`w-full py-4 bg-gradient-to-r ${getCategoryStyle(activeCategoryName).color} text-white font-black rounded-2xl shadow-xl shadow-black/10 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-lg`}>
-                  <BoltIcon className="w-6 h-6 animate-pulse" />
-                  Trade Now
+                <button onClick={() => router.push(`/dashboard/trade?asset=${encodeURIComponent(activeCategoryName)}`)} className="w-full h-14 bg-gold hover:bg-gold-400 text-ink font-semibold rounded-full transition-colors flex items-center justify-center gap-3 text-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink dark:focus-visible:outline-gold">
+                  Trade this card
                 </button>
               </div>
             </div>
