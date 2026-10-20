@@ -150,7 +150,7 @@ export default function WalletPage() {
   if (isLoading && !wallet) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-500"></div>
       </div>
     );
   }
@@ -165,7 +165,7 @@ export default function WalletPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           <div className="bg-gray-900 dark:bg-black rounded-[2.5rem] p-8 text-white relative overflow-hidden border border-white/5 shadow-2xl">
-             <div className="absolute top-0 right-0 w-64 h-64 bg-red-600 rounded-full blur-[80px] opacity-20 -mr-16 -mt-16 pointer-events-none"></div>
+             <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500 rounded-full blur-[80px] opacity-20 -mr-16 -mt-16 pointer-events-none"></div>
              
              <div className="relative z-10 space-y-8">
                 <div className="flex items-start justify-between">
@@ -184,7 +184,7 @@ export default function WalletPage() {
                    <div className="flex-1">
                       <button 
                         onClick={() => setIsWithdrawing(true)}
-                        className="w-full bg-red-600 hover:bg-red-700 text-white rounded-3xl h-16 font-black text-lg shadow-2xl shadow-red-600/40 transition-all flex items-center justify-center gap-2 group"
+                        className="w-full bg-gold-500 hover:bg-gold-600 text-ink rounded-3xl h-16 font-black text-lg shadow-2xl shadow-gold-500/40 transition-all flex items-center justify-center gap-2 group"
                       >
                         <ArrowUpRightIcon className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         Withdraw
@@ -243,20 +243,20 @@ export default function WalletPage() {
              <div className="space-y-4">
                {isLoading && (!wallet || wallet.transactions.data.length === 0) ? (
                  <div className="py-12 flex justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500"></div>
                  </div>
                ) : wallet?.transactions?.data && wallet.transactions.data.length > 0 ? (
                  wallet.transactions.data.map((tx) => (
                    <button 
                       key={tx.id} 
                       onClick={() => setSelectedTx(tx)}
-                      className="w-full text-left group flex items-start sm:items-center justify-between p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800/30 border border-transparent hover:border-red-100 dark:hover:border-red-900/30 hover:bg-white dark:hover:bg-gray-800 hover:shadow-lg hover:shadow-red-600/5 transition-all text-sm"
+                      className="w-full text-left group flex items-start sm:items-center justify-between p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800/30 border border-transparent hover:border-gold-100 dark:hover:border-gold-900/30 hover:bg-white dark:hover:bg-gray-800 hover:shadow-lg hover:shadow-gold-500/5 transition-all text-sm"
                    >
                       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                          <div className={`shrink-0 p-3 rounded-xl ${
                            tx.type === 'credit' 
                             ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400 group-hover:bg-green-200 dark:group-hover:bg-green-900/40' 
-                            : 'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400 group-hover:bg-red-200 dark:group-hover:bg-red-900/40'
+                            : 'bg-gold-100 text-gold-700 dark:bg-gold-900/20 dark:text-gold-400 group-hover:bg-gold-200 dark:group-hover:bg-gold-900/40'
                          } transition-colors`}>
                             {tx.type === 'credit' ? <ArrowDownLeftIcon className="w-5 h-5" /> : <ArrowUpRightIcon className="w-5 h-5" />}
                          </div>
@@ -273,7 +273,7 @@ export default function WalletPage() {
                          </div>
                       </div>
                       <div className="text-right shrink-0 mt-3 sm:mt-0">
-                         <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                         <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-gold-700 dark:text-gold-400'}`}>
                            {tx.type === 'credit' ? '+' : '-'}₵{parseFloat(tx.amount).toFixed(2)}
                          </p>
                          <span className={`text-[10px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded ${
@@ -328,10 +328,10 @@ export default function WalletPage() {
              <PaymentMethodsManager />
            </div>
 
-           <div className="bg-gradient-to-br from-red-600 to-orange-600 rounded-[2.5rem] p-8 text-white">
+           <div className="bg-gradient-to-br from-gold-500 to-gold-600 rounded-[2.5rem] p-8 text-ink">
               <BanknotesIcon className="w-10 h-10 mb-4 opacity-50" />
               <h3 className="text-xl font-bold mb-2">Instant Payouts</h3>
-              <p className="text-white/80 text-sm leading-relaxed">
+              <p className="text-ink/80 text-sm leading-relaxed">
                 Choose &quot;Direct Payout&quot; during your sell trades to receive funds directly in your bank or momo account as soon as the trade is approved.
               </p>
            </div>
@@ -362,7 +362,7 @@ export default function WalletPage() {
                   <div className={`p-4 rounded-2xl flex items-center gap-3 text-sm font-medium ${
                     withdrawStatus.type === 'success' 
                       ? 'bg-green-50 text-green-600 border border-green-100' 
-                      : 'bg-red-50 text-red-600 border border-red-100'
+                      : 'bg-gold-50 text-gold-700 dark:text-gold-400 border border-gold-100'
                   }`}>
                     {withdrawStatus.type === 'success' ? <CheckCircleIcon className="w-5 h-5" /> : <ExclamationCircleIcon className="w-5 h-5" />}
                     {withdrawStatus.message}
@@ -387,7 +387,7 @@ export default function WalletPage() {
                     <button 
                       type="button" 
                       onClick={() => setWithdrawAmount(wallet?.balance || '0')}
-                      className="text-red-600 hover:underline"
+                      className="text-gold-700 dark:text-gold-400 hover:underline"
                     >
                       Use Max
                     </button>
@@ -409,7 +409,7 @@ export default function WalletPage() {
                           onClick={() => setSelectedMethodId(method.id)}
                           className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
                             selectedMethodId === method.id 
-                              ? 'border-red-600 bg-red-50/50 dark:bg-red-600/10' 
+                              ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10' 
                               : 'border-gray-50 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700'
                           }`}
                         >
@@ -419,7 +419,7 @@ export default function WalletPage() {
                               {method.payment_method?.name} • {method.account_number}
                             </p>
                           </div>
-                          {selectedMethodId === method.id && <CheckCircleIcon className="w-5 h-5 text-red-600" />}
+                          {selectedMethodId === method.id && <CheckCircleIcon className="w-5 h-5 text-gold-700 dark:text-gold-400" />}
                         </button>
                       ))
                     )}
@@ -430,7 +430,7 @@ export default function WalletPage() {
                   type="submit" 
                   isLoading={isSubmitting} 
                   disabled={userMethods.length === 0}
-                  className="w-full rounded-2xl h-14 bg-red-600 hover:bg-red-700 text-white font-black text-lg shadow-xl shadow-red-600/20"
+                  className="w-full rounded-2xl h-14 bg-gold-500 hover:bg-gold-600 text-ink font-black text-lg shadow-xl shadow-gold-500/20"
                 >
                   Confirm Withdrawal
                 </Button>
@@ -474,9 +474,9 @@ export default function WalletPage() {
                             <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center shadow-lg mb-4 ${
                                 selectedTx.type === 'credit' 
                                     ? 'bg-green-500 shadow-green-500/30' 
-                                    : 'bg-red-500 shadow-red-500/30'
+                                    : 'bg-gold-500 shadow-gold-500/30'
                             }`}>
-                                {selectedTx.type === 'credit' ? <ArrowDownLeftIcon className="w-8 h-8 text-white" /> : <ArrowUpRightIcon className="w-8 h-8 text-white" />}
+                                {selectedTx.type === 'credit' ? <ArrowDownLeftIcon className="w-8 h-8 text-white" /> : <ArrowUpRightIcon className="w-8 h-8 text-ink" />}
                             </div>
                             <h3 className={`text-4xl font-black tracking-tighter mb-2 ${selectedTx.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'}`}>
                                 {selectedTx.type === 'credit' ? '+' : '-'}₵{parseFloat(selectedTx.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}

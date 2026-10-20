@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Urbanist } from "next/font/google";
+import { Sora } from "next/font/google";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SettingsProvider } from "@/contexts/SettingsContext";
@@ -7,26 +7,27 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import MaintenanceGuard from "@/components/MaintenanceGuard";
 import { Toaster } from "react-hot-toast";
 import JsonLd from "@/components/JsonLd";
+import MotionProvider from "@/components/MotionProvider";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
-const urbanist = Urbanist({
-  variable: "--font-urbanist",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const viewport: Viewport = {
-  themeColor: "#dc2626",
+  themeColor: "#F5B400",
   width: "device-width",
   initialScale: 1,
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dritunesconsult.com"),
+  metadataBase: new URL("https://aqiranxchange.com"),
   title: {
-    default: "Dr iTunes Consult - Ghana's Premier Gift Card Trading Service",
-    template: "%s | Dr iTunes Consult"
+    default: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
+    template: "%s | Aqiran Xchange"
   },
   description: "Ghana's most trusted gift card trading service. Trade online via WhatsApp/Telegram or visit our physical store in Tamale. Best rates, 24/7 support, secure transactions for Gift Cards.",
   keywords: [
@@ -39,9 +40,9 @@ export const metadata: Metadata = {
     "best rates gift cards",
     "secure gift card trading"
   ],
-  authors: [{ name: "Dr iTunes Consult" }],
-  creator: "Dr iTunes Consult",
-  publisher: "Dr iTunes Consult",
+  authors: [{ name: "Aqiran Xchange" }],
+  creator: "Aqiran Xchange",
+  publisher: "Aqiran Xchange",
   formatDetection: {
     email: false,
     address: true,
@@ -49,35 +50,36 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/logo/red-black.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo/red-black.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: [
-      { url: '/logo/red-black.png', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/logo/red-black.png',
+    shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: "Dr iTunes Consult - Ghana's Premier Gift Card Trading Service",
+    title: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
     description: "Ghana's most trusted gift card trading service. Trade online or visit our Tamale store for the best rates on Gift Cards.",
-    url: "https://dritunesconsult.com",
-    siteName: "Dr iTunes Consult",
+    url: "https://aqiranxchange.com",
+    siteName: "Aqiran Xchange",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: '/logo/red-black.png',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Dr iTunes Consult Logo',
+        alt: 'Aqiran Xchange',
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dr iTunes Consult - Ghana's Premier Gift Card Trading Service",
+    title: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
     description: "Trade Gift Cards securely in Ghana. Best rates, 24/7 support, and physical store in Tamale.",
-    images: ['/logo/red-black.png'],
+    images: ['/og-image.png'],
     creator: "@dritunes",
   },
   robots: {
@@ -101,9 +103,10 @@ export default function RootLayout({
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Dr iTunes Consult",
-    "url": "https://dritunesconsult.com",
-    "logo": "https://dritunesconsult.com/logo/red-black.png",
+    "name": "Aqiran Xchange",
+    "alternateName": "Dr iTunes Consult",
+    "url": "https://aqiranxchange.com",
+    "logo": "https://aqiranxchange.com/icon-512.png",
     "sameAs": [
       "https://facebook.com/profile.php?id=61577944273619",
       "https://instagram.com/dr.itunesconsult/",
@@ -123,10 +126,11 @@ export default function RootLayout({
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "FinancialService",
-    "name": "Dr iTunes Consult",
-    "image": "https://dritunesconsult.com/logo/red-black.png",
-    "@id": "https://dritunesconsult.com",
-    "url": "https://dritunesconsult.com",
+    "name": "Aqiran Xchange",
+    "alternateName": "Dr iTunes Consult",
+    "image": "https://aqiranxchange.com/og-image.png",
+    "@id": "https://aqiranxchange.com",
+    "url": "https://aqiranxchange.com",
     "telephone": "+233548434599",
     "address": {
       "@type": "PostalAddress",
@@ -161,10 +165,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${urbanist.variable} antialiased`}
+        className={`${sora.variable} antialiased`}
       >
         <JsonLd data={organizationSchema} />
         <JsonLd data={localBusinessSchema} />
+        <MotionProvider>
         <ThemeProvider>
           <AuthProvider>
             <SettingsProvider>
@@ -178,6 +183,7 @@ export default function RootLayout({
             </SettingsProvider>
           </AuthProvider>
         </ThemeProvider>
+        </MotionProvider>
       </body>
     </html>
   );

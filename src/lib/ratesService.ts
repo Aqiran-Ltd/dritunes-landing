@@ -40,7 +40,9 @@ export interface RatesData {
 interface ApiGiftCardGroup {
   id: number;
   name: string;
-  image_url: string;
+  image?: string | null;   // uploaded file, null when none
+  image_url: string;       // absolute URL; the API falls back to a grey placeholder
+  status?: string;
   note: string | null;
   rates_count: number;
 }
@@ -54,6 +56,7 @@ interface ApiRateItem {
   type: 'physical' | 'ecode';
   rate: string;           // The payout rate
   status: string;
+  asset_image?: string | null; // per-rate image; placeholder when none uploaded
   gift_card?: {
     id: number;
     name: string;
@@ -73,6 +76,25 @@ interface ApiRatesResponse {
 export interface GiftCardBrand extends ApiGiftCardGroup {}
 
 // --- Helpers ---
+
+/**
+ * The backend returns a grey placeholder URL when no image was uploaded.
+ * Returns the URL only when it points at a real image.
+ */
+export function realImage(url?: string | null): string | undefined {
+  if (!url || /placeholder/i.test(url)) return undefined;
+  return url;
+}
+
+/** Fills in brand logos from the gift card list for categories whose rates carry none. */
+export function withBrandImages(categories: Category[], brands: GiftCardBrand[]): Category[] {
+  const byName = new Map(brands.map((b) => [b.name.trim().toLowerCase(), realImage(b.image_url)]));
+  return categories.map((c) => {
+    const brandImage = byName.get(c.name.trim().toLowerCase());
+    if (c.logoUrl || !brandImage) return c;
+    return { ...c, logoUrl: brandImage, cards: c.cards.map((card) => ({ ...card, logoUrl: card.logoUrl || brandImage })) };
+  });
+}
 
 // Helper to clean up asset names (Keep exact naming as requested)
 const formatProductName = (assetName: string): string => {
@@ -123,7 +145,7 @@ export async function fetchRates(token?: string): Promise<RatesData> {
           },
           physicalId: item.type === 'physical' ? item.id : undefined,
           ecodeId: item.type === 'ecode' ? item.id : undefined,
-          logoUrl: item.gift_card?.image_url,
+          logoUrl: realImage(item.gift_card?.image_url) || realImage(item.asset_image),
           brandNote: item.gift_card?.note || undefined,
         };
       }
@@ -152,11 +174,13 @@ export async function fetchRates(token?: string): Promise<RatesData> {
             categoriesMap[catName] = {
                 name: catName,
                 cards: [],
-                logoUrl: card.logoUrl,
+                logoUrl: undefined,
                 note: card.brandNote
             };
         }
         categoriesMap[catName].cards.push(card);
+        // A brand's logo is the first real image any of its cards carries.
+        categoriesMap[catName].logoUrl ||= card.logoUrl;
     });
 
     // Sort categories alphabetically

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,9 +26,11 @@ import {
   BoltIcon
 } from "@heroicons/react/24/solid";
 import { Select, type SelectOption } from "@/components/ui/Select";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { matchCategory } from "@/lib/cardCatalogue";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { fetchRates, fetchGiftCardGroups, type GiftCard, type Category, type Rate, type GiftCardBrand } from "@/lib/ratesService";
+import { fetchRates, fetchGiftCardGroups, withBrandImages, type GiftCard, type Category, type Rate, type GiftCardBrand } from "@/lib/ratesService";
 import { useSettings } from "@/contexts/SettingsContext";
 
 // Types
@@ -83,7 +85,7 @@ const SORT_OPTIONS: SelectOption[] = [
   { id: "amount-desc", name: "Amount: High to Low" },
 ];
 
-export default function RatesPage() {
+export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string; deepRegion?: string }) {
   // State
   const { user } = useAuth();
   const { settings } = useSettings();
@@ -105,11 +107,59 @@ export default function RatesPage() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
+  // Deep links from the home page: /rates?card=Steam&region=US
+  const appliedLink = useRef<string | null>(null);
+  const [focusRegion, setFocusRegion] = useState<string | null>(null);
+  const [highlightRegion, setHighlightRegion] = useState<string | null>(null);
+  const [missingCard, setMissingCard] = useState<string | null>(null);
 
   const activeSortOption = useMemo(() =>
     SORT_OPTIONS.find(o => o.id === sortBy) || SORT_OPTIONS[0],
     [sortBy]
   );
+
+  // Apply a card/region deep link once rates have loaded (and again if the link changes).
+  useEffect(() => {
+    if (!deepCard || categories.length === 0) return;
+    const key = `${deepCard}|${deepRegion ?? ""}`;
+    if (appliedLink.current === key) return;
+    appliedLink.current = key;
+    const linked = matchCategory(categories, deepCard);
+    if (!linked) {
+      setMissingCard(deepCard);
+      return;
+    }
+    setMissingCard(null);
+    setSearchQuery("");
+    setSelectedRegions(new Set());
+    setActiveCategoryName(linked.name);
+    if (deepRegion && linked.cards.some((c) => c.region === deepRegion)) {
+      setExpandedRegions(new Set([deepRegion]));
+      setFocusRegion(deepRegion);
+    } else {
+      setExpandedRegions(new Set());
+    }
+  }, [deepCard, deepRegion, categories]);
+
+  // Bring a deep-linked region into view once it has rendered, and outline it briefly.
+  useEffect(() => {
+    if (!focusRegion) return;
+    const frame = requestAnimationFrame(() => {
+      const el = document.getElementById(`rates-${focusRegion}`);
+      if (!el) return;
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      setHighlightRegion(focusRegion);
+      setFocusRegion(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  });
+
+  useEffect(() => {
+    if (!highlightRegion) return;
+    const t = setTimeout(() => setHighlightRegion(null), 2400);
+    return () => clearTimeout(t);
+  }, [highlightRegion]);
 
   // Fetch data
   useEffect(() => {
@@ -121,10 +171,12 @@ export default function RatesPage() {
           fetchRates(),
           fetchGiftCardGroups()
         ]);
-        setCategories(ratesData.categories);
+        setCategories(withBrandImages(ratesData.categories, brandsData));
         setBrands(brandsData);
-        if (ratesData.categories.length > 0 && !activeCategoryName) {
-          setActiveCategoryName(ratesData.categories[0].name);
+
+        // Keep whatever brand is selected (by the visitor or a deep link); only default when none is.
+        if (ratesData.categories.length > 0) {
+          setActiveCategoryName((current) => current || ratesData.categories[0].name);
         }
         setLastUpdated(new Date());
       } catch (err) {
@@ -205,7 +257,7 @@ export default function RatesPage() {
     if (n.includes('visa') || n.includes('vanilla')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-blue-500 to-blue-700" };
     if (n.includes('nike')) return { icon: <ShoppingBagIcon className="w-5 h-5" />, color: "from-orange-500 to-orange-700" };
     if (n.includes('razer')) return { icon: <BoltIcon className="w-5 h-5" />, color: "from-green-500 to-green-700" };
-    return { icon: <GiftIcon className="w-5 h-5" />, color: "from-purple-600 to-purple-800" };
+    return { icon: <GiftIcon className="w-5 h-5" />, color: "from-gray-800 to-gray-950" };
   };
 
   const handleTrade = (card: GiftCard, categoryName: string, activeRegion: string, overrideType?: DeliveryType) => {
@@ -336,42 +388,51 @@ export default function RatesPage() {
   }, [categories, categorySearch]);
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-br from-[#f8fafc] via-yellow-50 to-red-100 dark:from-[#0a0a0a] dark:via-[#171717] dark:to-[#23272f]">
+    <main className="flex flex-col min-h-screen bg-white dark:bg-gray-950">
       <Navigation />
-      <div className="flex-1 flex flex-col items-center py-12 px-4 pt-32 relative overflow-hidden">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.15 }} transition={{ duration: 1 }} className="absolute inset-0 bg-gradient-to-br from-yellow-100 via-red-100 to-pink-100 dark:from-yellow-900 dark:via-red-900 dark:to-pink-900 pointer-events-none z-0" />
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 relative z-10 w-full max-w-6xl">
-          <div className="inline-flex items-center px-6 py-3 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700/50 rounded-full text-yellow-700 dark:text-yellow-300 text-lg font-bold mb-6 shadow-lg">
-            <CurrencyDollarIcon className="w-6 h-6 mr-2 text-yellow-500" />
-            Live Gift Card Rates
+      <div className="flex-1 flex flex-col items-center py-12 px-4 pt-36 lg:pt-44 relative">
+        <div className="mb-10 relative z-10 w-full max-w-6xl">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <SectionHeading
+              as="h1"
+              title="Today's gift card rates"
+              intro="Cedis paid for every $1 of card value, by brand, country and amount. Physical cards and e-codes are priced separately."
+            />
+            <AnimatePresence>
+              {!user && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="lg:max-w-sm rounded-2xl bg-gray-50 dark:bg-gray-900 p-5"
+                >
+                  <p className="text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold text-ink dark:text-white">Trading regularly?</span> An account lets you trade at these rates from your dashboard and track every payout.
+                  </p>
+                  <div className="mt-4 flex items-center gap-4">
+                    <a href="/auth/register" className="inline-flex items-center h-11 px-5 rounded-full bg-ink text-white dark:bg-gold dark:text-ink font-semibold text-sm transition-colors hover:bg-gray-800 dark:hover:bg-gold-400">Create an account</a>
+                    <a href="/auth/login" className="font-semibold text-sm underline decoration-gray-300 dark:decoration-gray-600 underline-offset-4 hover:decoration-ink dark:hover:decoration-white">Log in</a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <AnimatePresence>
-            {!user && (
-              <motion.div initial={{ opacity: 0, height: 0, scale: 0.95 }} animate={{ opacity: 1, height: 'auto', scale: 1 }} exit={{ opacity: 0, height: 0, scale: 0.9 }} className="mb-8 p-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden text-white relative z-20">
-                 <div className="bg-black/10 backdrop-blur-sm p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-white/20 rounded-full animate-pulse shadow-inner"><BoltIcon className="w-8 h-8 text-yellow-300" /></div>
-                      <div className="text-left">
-                        <h3 className="font-bold text-xl leading-tight">Trading just got faster!</h3>
-                        <p className="text-red-100 text-sm mt-1">Login to access the <span className="font-bold text-white underline decoration-yellow-400">Live Trade Dashboard</span> with instant payouts.</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                       <a href="/auth/register" className="whitespace-nowrap px-6 py-3 bg-white text-red-600 font-black rounded-xl shadow-lg hover:bg-gray-50 hover:scale-105 transition-all text-sm uppercase tracking-wide">Get Started</a>
-                       <a href="/auth/login" className="whitespace-nowrap px-6 py-3 bg-red-800/50 hover:bg-red-800/70 text-white font-bold rounded-xl border border-white/20 transition-all text-sm uppercase tracking-wide backdrop-blur-md">Login</a>
-                    </div>
-                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <h1 className="text-4xl md:text-6xl font-black text-gradient mb-4 animate-gradient-x">Comprehensive Rates</h1>
-          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6">Real-time rates for all major gift cards.</p>
-          <div className="flex items-center justify-center gap-4 mb-4">
-            {isLoading && (<div className="flex items-center gap-2 text-yellow-600"><ArrowPathIcon className="w-5 h-5 animate-spin" /> Loading...</div>)}
+          {missingCard && (
+            <div role="status" className="mt-8 flex items-start justify-between gap-4 rounded-2xl bg-gray-50 dark:bg-gray-900 p-4 max-w-2xl">
+              <p className="text-gray-700 dark:text-gray-300">
+                We are not buying <span className="font-semibold text-ink dark:text-white">{missingCard}</span> cards right now. Here is everything we do buy today.
+              </p>
+              <button onClick={() => setMissingCard(null)} className="shrink-0 text-sm font-semibold underline underline-offset-4 text-gray-600 dark:text-gray-400 hover:text-ink dark:hover:text-white">
+                Dismiss
+              </button>
+            </div>
+          )}
+          <div className="mt-8 flex items-center gap-4 text-sm">
+            {isLoading && (<div className="flex items-center gap-2 text-gray-600 dark:text-gray-400"><ArrowPathIcon className="w-4 h-4 animate-spin" /> Loading rates</div>)}
             {error && (<div className="flex items-center gap-2 text-red-600"><ExclamationTriangleIcon className="w-5 h-5" /> {error} <button onClick={handleRefresh} className="underline">Retry</button></div>)}
-            {!isLoading && !error && lastUpdated && (<div className="flex items-center gap-2 text-green-600"><CheckCircleIcon className="w-5 h-5" /> Updated {lastUpdated.toLocaleTimeString()} <button onClick={handleRefresh}><ArrowPathIcon className="w-4 h-4 hover:rotate-180 transition-transform" /></button></div>)}
+            {!isLoading && !error && lastUpdated && (<div className="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span aria-hidden="true" className="w-2 h-2 rounded-full bg-crimson" /> Updated at {lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} <button onClick={handleRefresh} aria-label="Refresh rates" className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><ArrowPathIcon className="w-4 h-4 hover:rotate-180 transition-transform" /></button></div>)}
           </div>
-        </motion.div>
+        </div>
         {/* MASTER FILTER BAR */}
         <div className="w-full max-w-6xl mx-auto mb-10 sticky top-24 z-30">
           <motion.div 
@@ -381,16 +442,16 @@ export default function RatesPage() {
           >
             {/* Search Part */}
             <div className="relative flex-1 group">
-              <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-red-500 transition-colors" />
+              <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-gold-700 transition-colors" />
               <input 
                 type="text" 
                 value={searchQuery} 
                 onChange={e => setSearchQuery(e.target.value)} 
                 placeholder="Search assets, regions, or denominations..." 
-                className="w-full pl-14 pr-12 py-4 rounded-[2rem] bg-gray-50/50 dark:bg-black/20 border-none focus:ring-2 focus:ring-red-500/50 outline-none transition-all font-medium text-gray-900 dark:text-white" 
+                className="w-full pl-14 pr-12 py-4 rounded-[2rem] bg-gray-50/50 dark:bg-black/20 border-none focus:ring-2 focus:ring-gold-500/50 outline-none transition-all font-medium text-gray-900 dark:text-white" 
               />
               {searchQuery && (
-                <button onClick={() => setSearchQuery("")} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
+                <button onClick={() => setSearchQuery("")} className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gold-700 transition-colors">
                   <XMarkIcon className="w-5 h-5" />
                 </button>
               )}
@@ -425,11 +486,11 @@ export default function RatesPage() {
               {/* Region Trigger */}
               <button 
                 onClick={() => setShowFilters(!showFilters)} 
-                className={`flex items-center gap-2 px-5 py-2 rounded-full font-bold text-sm transition-all ${showFilters || selectedRegions.size > 0 ? "bg-red-600 text-white shadow-lg shadow-red-600/20" : "hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"}`}
+                className={`flex items-center gap-2 px-5 py-2 rounded-full font-bold text-sm transition-all ${showFilters || selectedRegions.size > 0 ? "bg-gold-500 text-ink shadow-lg shadow-gold-500/20" : "hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"}`}
               >
                 <GlobeAltIcon className="w-5 h-5" />
                 <span>Regions</span>
-                {selectedRegions.size > 0 && <span className="bg-white text-red-600 text-[10px] px-1.5 py-0.5 rounded-full font-black">{selectedRegions.size}</span>}
+                {selectedRegions.size > 0 && <span className="bg-white text-gold-700 text-[10px] px-1.5 py-0.5 rounded-full font-black">{selectedRegions.size}</span>}
               </button>
             </div>
           </motion.div>
@@ -444,9 +505,9 @@ export default function RatesPage() {
                 className="absolute left-0 right-0 top-full mt-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-gray-100 dark:border-gray-800 z-20 overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-black text-gray-900 dark:text-white uppercase tracking-widest text-xs">Filter by Region</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Filter by Region</h3>
                   {selectedRegions.size > 0 && (
-                    <button onClick={() => setSelectedRegions(new Set())} className="text-[10px] font-bold text-red-600 uppercase tracking-wider hover:underline">Clear All</button>
+                    <button onClick={() => setSelectedRegions(new Set())} className="text-[10px] font-bold text-gold-700 dark:text-gold-400 uppercase tracking-wider hover:underline">Clear All</button>
                   )}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -454,11 +515,11 @@ export default function RatesPage() {
                     <button 
                       key={r} 
                       onClick={() => toggleRegionFilter(r)} 
-                      className={`flex items-center gap-3 p-3 rounded-2xl transition-all border-2 ${selectedRegions.has(r) ? "bg-red-600 border-red-600 text-white shadow-lg shadow-red-600/20" : "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-red-500/50"}`}
+                      className={`flex items-center gap-3 p-3 rounded-2xl transition-all border-2 ${selectedRegions.has(r) ? "bg-gold-500 border-gold-500 text-ink shadow-lg shadow-gold-500/20" : "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gold-500/50"}`}
                     >
                       <span className="text-2xl">{regionMapping[r]?.flag || "🏳️"}</span>
                       <div className="flex flex-col items-start leading-tight">
-                        <span className={`text-[9px] font-black uppercase tracking-widest ${selectedRegions.has(r) ? "text-white/70" : "text-gray-400"}`}>{r}</span>
+                        <span className={`text-[9px] font-black uppercase tracking-widest ${selectedRegions.has(r) ? "text-ink/70" : "text-gray-400"}`}>{r}</span>
                         <span className="text-xs font-bold truncate max-w-[100px]">{regionMapping[r]?.name || r}</span>
                       </div>
                     </button>
@@ -471,7 +532,7 @@ export default function RatesPage() {
         {!searchQuery && categories.length > 0 && (
           <div className="w-full max-w-6xl mx-auto mb-8 relative z-10">
             <div className="flex items-center justify-between mb-4 px-4 lg:px-0">
-              <button onClick={() => setShowCategoryModal(true)} className="text-sm font-bold text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors uppercase tracking-wider">View All {categories.length} Assets</button>
+              <button onClick={() => setShowCategoryModal(true)} className="text-sm font-bold text-gold-700 hover:text-gold-800 dark:text-gold-400 dark:hover:text-gold-300 transition-colors uppercase tracking-wider">View All {categories.length} Assets</button>
             </div>
           <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar px-4 lg:px-0">
             {categories.slice(0, 10).map(cat => {
@@ -483,7 +544,7 @@ export default function RatesPage() {
                   whileHover={{ scale: 1.02 }} 
                   whileTap={{ scale: 0.98 }} 
                   onClick={() => { setActiveCategoryName(cat.name); setExpandedRegions(new Set()); setSelectedRegions(new Set()); }} 
-                  className={`whitespace-nowrap px-6 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center justify-center gap-2.5 cursor-pointer border-2 ${isActive ? `bg-gradient-to-r ${style.color} text-white border-transparent` : "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-red-200 dark:hover:border-red-900"}`}
+                  className={`whitespace-nowrap px-6 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center justify-center gap-2.5 cursor-pointer border-2 ${isActive ? `bg-gradient-to-r ${style.color} text-white border-transparent` : "bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gold-200 dark:hover:border-gold-900"}`}
                 >
                   {cat.logoUrl ? (
                     <img src={cat.logoUrl} alt={cat.name} className="w-6 h-6 object-contain rounded-md" />
@@ -492,7 +553,7 @@ export default function RatesPage() {
                 </motion.button>
               );
             })}
-            <button onClick={() => setShowCategoryModal(true)} className="whitespace-nowrap px-6 py-2.5 rounded-xl font-bold bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 hover:border-red-400 hover:text-red-500 transition-all shadow-sm">+ More Assets</button>
+            <button onClick={() => setShowCategoryModal(true)} className="whitespace-nowrap px-6 py-2.5 rounded-xl font-bold bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 hover:border-gold-400 hover:text-gold-700 transition-all shadow-sm">+ More Assets</button>
           </div>
           </div>
         )}
@@ -508,7 +569,7 @@ export default function RatesPage() {
                   </div>
                   <div className="relative">
                     <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
-                    <input type="text" value={categorySearch} onChange={(e) => setCategorySearch(e.target.value)} placeholder="Find a brand (e.g. Steam, Apple, Nike...)" className="w-full pl-14 pr-6 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-red-500 text-lg font-medium" />
+                    <input type="text" value={categorySearch} onChange={(e) => setCategorySearch(e.target.value)} placeholder="Find a brand (e.g. Steam, Apple, Nike...)" className="w-full pl-14 pr-6 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 text-lg font-medium" />
                   </div>
                 </div>
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
@@ -517,7 +578,7 @@ export default function RatesPage() {
                       const style = getCategoryStyle(cat.name);
                       const isActive = activeCategoryName === cat.name;
                       return (
-                        <button key={cat.name} onClick={() => { setActiveCategoryName(cat.name); setExpandedRegions(new Set()); setSelectedRegions(new Set()); setShowCategoryModal(false); }} className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 group ${isActive ? `bg-gray-50 dark:bg-gray-800 border-red-500 ring-4 ring-red-500/10` : "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 hover:border-red-400 hover:shadow-lg hover:y-[-2px]"}`}>
+                        <button key={cat.name} onClick={() => { setActiveCategoryName(cat.name); setExpandedRegions(new Set()); setSelectedRegions(new Set()); setShowCategoryModal(false); }} className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 group ${isActive ? `bg-gray-50 dark:bg-gray-800 border-gold-500 ring-4 ring-gold-500/10` : "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 hover:border-gold-400 hover:shadow-lg hover:y-[-2px]"}`}>
                           <div className={`p-4 rounded-2xl bg-white dark:bg-gray-800 shadow-lg shadow-black/5 group-hover:scale-110 transition-transform overflow-hidden flex items-center justify-center w-16 h-16`}>
                             {cat.logoUrl ? (
                               <img src={cat.logoUrl} alt={cat.name} className="w-full h-full object-contain" />
@@ -525,7 +586,7 @@ export default function RatesPage() {
                               <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${style.color} text-white rounded-xl [&>svg]:w-8 [&>svg]:h-8`}>{style.icon}</div>
                             )}
                           </div>
-                          <span className={`font-bold text-sm text-center ${isActive ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}>{cat.name}</span>
+                          <span className={`font-bold text-sm text-center ${isActive ? 'text-gold-700 dark:text-gold-400' : 'text-gray-700 dark:text-gray-300'}`}>{cat.name}</span>
                         </button>
                       );
                     })}
@@ -555,7 +616,7 @@ export default function RatesPage() {
               <div className="flex-1 text-center md:text-left relative z-10">
                 <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tight text-gray-900 dark:text-white">{activeCategoryName}</h2>
                 {activeCategory?.note ? (
-                  <div className="bg-red-500/10 dark:bg-red-500/5 border-l-4 border-red-500 p-5 rounded-r-2xl backdrop-blur-sm">
+                  <div className="bg-gold-500/10 dark:bg-gold-500/5 border-l-4 border-gold-500 p-5 rounded-r-2xl backdrop-blur-sm">
                     <p className="text-gray-800 dark:text-gray-200 text-lg font-medium leading-relaxed">{activeCategory.note}</p>
                   </div>
                 ) : (
@@ -566,17 +627,16 @@ export default function RatesPage() {
               <div className="flex flex-col gap-4 min-w-[240px] relative z-10">
                 <div className="bg-gray-50/50 dark:bg-black/20 p-4 rounded-2xl border border-gray-100/50 dark:border-white/5">
                   <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-[10px]">Regions</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium text-xs">Regions</span>
                     <span className="font-black text-lg text-gray-900 dark:text-white">{getAllRegions.length}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-[10px]">Variations</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium text-xs">Variations</span>
                     <span className="font-black text-lg text-gray-900 dark:text-white">{activeCategory?.cards.length || 0}</span>
                   </div>
                 </div>
-                <button onClick={() => router.push(`/dashboard/trade?asset=${encodeURIComponent(activeCategoryName)}`)} className={`w-full py-4 bg-gradient-to-r ${getCategoryStyle(activeCategoryName).color} text-white font-black rounded-2xl shadow-xl shadow-black/10 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-lg`}>
-                  <BoltIcon className="w-6 h-6 animate-pulse" />
-                  Trade Now
+                <button onClick={() => router.push(`/dashboard/trade?asset=${encodeURIComponent(activeCategoryName)}`)} className="w-full h-14 bg-gold hover:bg-gold-400 text-ink font-semibold rounded-full transition-colors flex items-center justify-center gap-3 text-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink dark:focus-visible:outline-gold">
+                  Trade this card
                 </button>
               </div>
             </div>
@@ -605,7 +665,7 @@ export default function RatesPage() {
                 const isExpanded = expandedRegions.has(regionKey);
                 const sortedCards = [...cards].sort((a, b) => getAmountValue(a.amount) - getAmountValue(b.amount));
                 return (
-                  <motion.div key={regionKey} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden">
+                  <motion.div key={regionKey} id={`rates-${regionKey}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`scroll-mt-48 transition-shadow duration-500 ${highlightRegion === regionKey ? "ring-4 ring-gold" : ""} bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden`}>
                     <button onClick={() => toggleRegion(regionKey)} className={`w-full px-6 py-4 bg-gradient-to-r ${style.color} text-white font-bold text-lg flex items-center justify-between hover:opacity-90 transition-opacity cursor-pointer`}>
                       <div className="flex items-center gap-3">
                         {style.icon} 
@@ -651,9 +711,9 @@ export default function RatesPage() {
                                         <td className="px-6 py-4 font-bold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors uppercaseTracking">{card.amount}</td>
                                         <td className="px-6 py-4"><div className={`text-xl font-black ${isAvailable ? "text-gray-900 dark:text-white" : "text-gray-400"}`}>{isAvailable ? <>{getCurrencySymbol(selectedCurrency)}{rate.toFixed(2)}</> : '-'}</div></td>
                                         <td className="px-6 py-4">{isAvailable ? (<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"><span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Available</span>) : (<span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">Currently Unavailable</span>)}</td>
-                                        {selectedCurrency !== "RMB" && (<td className="px-6 py-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-red-100 text-red-600 dark:bg-red-900/40" : "bg-blue-100 text-blue-600 dark:bg-blue-900/40"}`}>{type}</span></td>)}
+                                        {selectedCurrency !== "RMB" && (<td className="px-6 py-4"><span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-gold-100 text-gold-700 dark:text-gold-400 dark:bg-gold-900/40" : "bg-blue-100 text-blue-600 dark:bg-blue-900/40"}`}>{type}</span></td>)}
                                         <td className="px-6 py-4">{isAvailable && (<div className="flex items-center gap-2">
-                                              <button onClick={() => { audit.log('trade_intent_platform', { asset: catName, region: regName, amount: card.amount, rate: rate, currency: selectedCurrency, type }); router.push(user ? `/dashboard/trade?asset=${encodeURIComponent(catName)}&region=${encodeURIComponent(regName)}&card=${encodeURIComponent(card.amount)}&type=${encodeURIComponent(type)}` : '/auth/login'); }} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/10 transition-all hover:scale-105" title="Trade Now"><BoltIcon className="w-3.5 h-3.5" /> Trade Now</button>
+                                              <button onClick={() => { audit.log('trade_intent_platform', { asset: catName, region: regName, amount: card.amount, rate: rate, currency: selectedCurrency, type }); router.push(user ? `/dashboard/trade?asset=${encodeURIComponent(catName)}&region=${encodeURIComponent(regName)}&card=${encodeURIComponent(card.amount)}&type=${encodeURIComponent(type)}` : '/auth/login'); }} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gold-500 hover:bg-gold-600 text-ink text-xs font-bold shadow-md shadow-gold-900/10 transition-all hover:scale-105" title="Trade Now"><BoltIcon className="w-3.5 h-3.5" /> Trade Now</button>
                                               {settings?.offer_trade_via_whatsapp && (<button onClick={() => handleTrade({ ...card }, catName, regName, type)} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-bold shadow-md shadow-green-900/10 transition-all hover:scale-105" title="Chat on WhatsApp"><ChatBubbleLeftEllipsisIcon className="w-3.5 h-3.5" /> WhatsApp</button>)}
                                             </div>)}</td>
                                       </tr>
@@ -678,14 +738,14 @@ export default function RatesPage() {
                                     <div>
                                       <div className="font-bold text-gray-900 dark:text-white mb-1 uppercaseTracking">{card.amount}</div>
                                       <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                                        {selectedCurrency !== "RMB" && <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-red-100 text-red-600" : "bg-blue-100 text-blue-600"}`}>{type}</span>}
-                                        {!isAvailable && <span className="text-red-500">Unavailable</span>}
+                                        {selectedCurrency !== "RMB" && <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${type === "Physical" ? "bg-gold-100 text-gold-700 dark:text-gold-400" : "bg-blue-100 text-blue-600"}`}>{type}</span>}
+                                        {!isAvailable && <span className="text-gold-700 dark:text-gold-400">Unavailable</span>}
                                       </div>
                                     </div>
                                     <div className="text-right flex items-center gap-3">
                                       <div>{isAvailable ? (<div className="text-xl font-black text-gray-900 dark:text-white">{getCurrencySymbol(selectedCurrency)}{rate.toFixed(2)}</div>) : (<span className="text-sm font-bold text-gray-400">N/A</span>)}{isAvailable && <div className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-wide">Rate</div>}</div>
                                       {isAvailable && (<div className="flex gap-2">
-                                          <button onClick={() => { audit.log('trade_intent_platform', { asset: catName, region: regName, amount: card.amount, rate: rate, currency: selectedCurrency, type }); router.push(user ? `/dashboard/trade?asset=${encodeURIComponent(catName)}&region=${encodeURIComponent(regName)}&card=${encodeURIComponent(card.amount)}&type=${encodeURIComponent(type)}` : '/auth/login'); }} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 transition-colors text-xs font-bold whitespace-nowrap" title="Trade Now"><BoltIcon className="w-4 h-4" /> Trade Now</button>
+                                          <button onClick={() => { audit.log('trade_intent_platform', { asset: catName, region: regName, amount: card.amount, rate: rate, currency: selectedCurrency, type }); router.push(user ? `/dashboard/trade?asset=${encodeURIComponent(catName)}&region=${encodeURIComponent(regName)}&card=${encodeURIComponent(card.amount)}&type=${encodeURIComponent(type)}` : '/auth/login'); }} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gold-100 dark:bg-gold-900/30 text-gold-700 dark:text-gold-400 rounded-lg hover:bg-gold-200 transition-colors text-xs font-bold whitespace-nowrap" title="Trade Now"><BoltIcon className="w-4 h-4" /> Trade Now</button>
                                           {settings?.offer_trade_via_whatsapp && (<button onClick={() => handleTrade(card, catName, regName, type)} className="p-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-200 transition-colors" title="Chat on WhatsApp"><ChatBubbleLeftEllipsisIcon className="w-5 h-5" /></button>)}
                                         </div>)}
                                     </div>

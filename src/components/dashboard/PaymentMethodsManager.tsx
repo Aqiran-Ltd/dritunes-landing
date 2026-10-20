@@ -189,7 +189,7 @@ export default function PaymentMethodsManager() {
   if (isLoading && userMethods.length === 0) {
     return (
       <div className="flex justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500"></div>
       </div>
     );
   }
@@ -217,7 +217,7 @@ export default function PaymentMethodsManager() {
             <Button 
               variant="ghost" 
               onClick={() => setIsAdding(true)}
-              className="text-red-600 font-bold mt-2"
+              className="text-gold-700 dark:text-gold-400 font-bold mt-2"
             >
               Add your first account
             </Button>
@@ -229,7 +229,7 @@ export default function PaymentMethodsManager() {
               key={method.id}
               className={`relative bg-gray-50 dark:bg-[#15171e] border-2 rounded-3xl p-6 transition-all w-full ${
                 method.is_default 
-                  ? 'border-red-600 shadow-lg shadow-red-600/5' 
+                  ? 'border-gold-500 shadow-lg shadow-gold-500/5' 
                   : 'border-transparent hover:border-gray-200 dark:hover:border-gray-800'
               }`}
             >
@@ -238,7 +238,7 @@ export default function PaymentMethodsManager() {
                   <div className="flex items-center gap-4">
                     <div className={`p-4 rounded-2xl  ${
                       method.is_default 
-                        ? 'bg-red-600 text-white' 
+                        ? 'bg-gold-500 text-ink' 
                         : 'bg-white dark:bg-gray-800 text-gray-400'
                     }`}>
                       {getMethodIcon(method.payment_method)}
@@ -247,7 +247,7 @@ export default function PaymentMethodsManager() {
                       <div className="flex items-center gap-2 mb-1">
                         <p className="font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{method.account_name}</p>
                         {method.is_default && (
-                          <span className="text-[9px] font-black uppercase tracking-widest bg-red-600 text-white px-2 py-0.5 rounded-full">Default</span>
+                          <span className="text-[9px] font-black uppercase tracking-widest bg-gold-500 text-ink px-2 py-0.5 rounded-full">Default</span>
                         )}
                       </div>
                       <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">
@@ -277,7 +277,7 @@ export default function PaymentMethodsManager() {
                 {!method.is_default && (
                   <button 
                     onClick={() => handleSetDefault(method.id)}
-                    className="w-full py-2.5 rounded-xl bg-white dark:bg-gray-800/50 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-red-600 transition-all border border-gray-100 dark:border-gray-800"
+                    className="w-full py-2.5 rounded-xl bg-white dark:bg-gray-800/50 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-gold-700 transition-all border border-gray-100 dark:border-gray-800"
                   >
                     Set as Default
                   </button>
@@ -326,11 +326,11 @@ export default function PaymentMethodsManager() {
                       onClick={() => handleCategorySelect('momo')}
                       className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
                         selectedCategory === 'momo' 
-                          ? 'border-red-600 bg-red-50/50 dark:bg-red-600/10 text-red-600' 
+                          ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10 text-gold-700 dark:text-gold-400' 
                           : 'border-gray-50 dark:border-gray-800 text-gray-500 hover:border-gray-200 dark:hover:border-gray-700'
                       }`}
                     >
-                      <div className={`p-2 rounded-xl ${selectedCategory === 'momo' ? 'bg-red-600 text-white' : 'bg-gray-100 dark:bg-gray-800'}`}>
+                      <div className={`p-2 rounded-xl ${selectedCategory === 'momo' ? 'bg-gold-500 text-ink' : 'bg-gray-100 dark:bg-gray-800'}`}>
                         <DevicePhoneMobileIcon className="w-5 h-5" />
                       </div>
                       <span className="text-xs font-bold uppercase tracking-wider">Mobile Money</span>
@@ -341,11 +341,11 @@ export default function PaymentMethodsManager() {
                       onClick={() => handleCategorySelect('bank')}
                       className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all ${
                         selectedCategory === 'bank' 
-                          ? 'border-red-600 bg-red-50/50 dark:bg-red-600/10 text-red-600' 
+                          ? 'border-gold-500 bg-gold-50/50 dark:bg-gold-500/10 text-gold-700 dark:text-gold-400' 
                           : 'border-gray-50 dark:border-gray-800 text-gray-500 hover:border-gray-200 dark:hover:border-gray-700'
                       }`}
                     >
-                      <div className={`p-2 rounded-xl ${selectedCategory === 'bank' ? 'bg-red-600 text-white' : 'bg-gray-100 dark:bg-gray-800'}`}>
+                      <div className={`p-2 rounded-xl ${selectedCategory === 'bank' ? 'bg-gold-500 text-ink' : 'bg-gray-100 dark:bg-gray-800'}`}>
                         <BuildingLibraryIcon className="w-5 h-5" />
                       </div>
                       <span className="text-xs font-bold uppercase tracking-wider">Bank Account</span>
@@ -417,7 +417,7 @@ export default function PaymentMethodsManager() {
                     type="submit" 
                     isLoading={isSubmitting} 
                     disabled={!selectedCategory}
-                    className="flex-1 rounded-2xl h-12 bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20"
+                    className="flex-1 rounded-2xl h-12 bg-gold-500 hover:bg-gold-600 text-ink shadow-lg shadow-gold-500/20"
                   >
                     Save Account
                   </Button>

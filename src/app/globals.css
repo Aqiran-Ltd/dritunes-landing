@@ -5,12 +5,17 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
-  --primary: #dc2626;
-  --primary-dark: #b91c1c;
-  --primary-light: #fef2f2;
-  --accent: #991b1b;
+  --primary: #f5b400;
+  --primary-dark: #d99e00;
+  --primary-light: #fff9e6;
+  --accent: #ed1848;
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
+}
+
+@keyframes strike {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 @theme inline {
@@ -20,8 +25,41 @@
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
   --color-accent: var(--accent);
-  --font-sans: var(--font-urbanist);
-  --font-mono: var(--font-urbanist);
+
+  /* Aqiran Xchange brand */
+  --color-gold: #f5b400;
+  --color-gold-50: #fff9e6;
+  --color-gold-100: #fff0bf;
+  --color-gold-200: #ffe38a;
+  --color-gold-300: #ffd54d;
+  --color-gold-400: #ffc61f;
+  --color-gold-500: #f5b400;
+  --color-gold-600: #d99e00;
+  --color-gold-700: #8f6800;
+  --color-gold-800: #6e5000;
+  --color-gold-900: #4d3800;
+  --color-gold-950: #2e2200;
+  --color-ink: #1a1a1d;
+
+  /* Neutral greys tuned to the Xchange charcoal (zinc), replacing Tailwind's blue-tinted gray */
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f4f4f5;
+  --color-gray-200: #e4e4e7;
+  --color-gray-300: #d4d4d8;
+  --color-gray-400: #a1a1aa;
+  --color-gray-500: #71717a;
+  --color-gray-600: #52525b;
+  --color-gray-700: #3f3f46;
+  --color-gray-800: #27272a;
+  --color-gray-900: #18181b;
+  --color-gray-950: #0c0c0e;
+
+  --animate-strike: strike 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.35s both;
+  --ease-roll: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --color-crimson: #ed1848;
+
+  --font-sans: var(--font-sora);
+  --font-mono: var(--font-sora);
 }
 
 .dark {
@@ -34,12 +72,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-urbanist), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sora), Arial, Helvetica, sans-serif;
   scroll-behavior: smooth;
 }
 
 * {
-  font-family: var(--font-urbanist), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sora), Arial, Helvetica, sans-serif;
 }
 
 /* Custom scrollbar */
@@ -65,26 +103,31 @@ body {
   background-image:
     radial-gradient(
       circle at 25% 25%,
-      rgba(220, 38, 38, 0.1) 0%,
+      rgba(245, 180, 0, 0.1) 0%,
       transparent 50%
     ),
     radial-gradient(
       circle at 75% 75%,
-      rgba(220, 38, 38, 0.1) 0%,
+      rgba(245, 180, 0, 0.1) 0%,
       transparent 50%
     );
 }
 
 .bg-grid {
   background-image:
-    linear-gradient(rgba(220, 38, 38, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(220, 38, 38, 0.1) 1px, transparent 1px);
+    linear-gradient(rgba(245, 180, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 180, 0, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 
 /* Creative text effects */
+.dark .text-gradient,
+.text-gradient.on-dark {
+  background-image: linear-gradient(135deg, #f5b400, #ffd54d, #f5b400);
+}
+
 .text-gradient {
-  background: linear-gradient(135deg, #dc2626, #991b1b, #dc2626);
+  background: linear-gradient(135deg, #8f6800, #b38200, #8f6800);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -121,10 +164,10 @@ body {
 @keyframes pulse-red {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    box-shadow: 0 0 0 0 rgba(245, 180, 0, 0.7);
   }
   50% {
-    box-shadow: 0 0 0 20px rgba(220, 38, 38, 0);
+    box-shadow: 0 0 0 20px rgba(245, 180, 0, 0);
   }
 }
 
@@ -136,10 +179,10 @@ body {
 @keyframes logo-glow {
   0%,
   100% {
-    filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.3));
+    filter: drop-shadow(0 0 5px rgba(245, 180, 0, 0.3));
   }
   50% {
-    filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.6));
+    filter: drop-shadow(0 0 20px rgba(245, 180, 0, 0.6));
   }
 }
 
@@ -289,7 +332,7 @@ body {
   position: absolute;
   inset: 0;
   padding: 2px;
-  background: linear-gradient(135deg, #dc2626, #991b1b);
+  background: linear-gradient(135deg, #f5b400, #d99e00);
   border-radius: inherit;
   mask:
     linear-gradient(#fff 0 0) content-box,
@@ -350,13 +393,13 @@ body {
 
 /* Focus styles for accessibility */
 .focus-ring:focus {
-  outline: 2px solid #dc2626;
+  outline: 2px solid #8f6800;
   outline-offset: 2px;
 }
 
 /* Selection styles */
 ::selection {
-  background-color: rgba(220, 38, 38, 0.2);
+  background-color: rgba(245, 180, 0, 0.35);
   color: #1f2937;
 }
 

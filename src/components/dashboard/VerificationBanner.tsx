@@ -16,10 +16,10 @@ export default function VerificationBanner() {
     <div className="flex flex-col gap-4 mb-6">
       {/* Phone Verification Banner */}
       {!user.phone_verified_at && (
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500/10 via-red-500/10 to-purple-500/10 border border-orange-500/20 shadow-lg backdrop-blur-sm">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500/10 via-gold-500/10 to-purple-500/10 border border-orange-500/20 shadow-lg backdrop-blur-sm">
           {/* Decorative blobs */}
           <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 rounded-full bg-orange-500/10 blur-xl"></div>
-          <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 rounded-full bg-red-500/10 blur-xl"></div>
+          <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 rounded-full bg-gold-500/10 blur-xl"></div>
 
           <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
             <div className="flex items-start gap-4">
@@ -42,7 +42,7 @@ export default function VerificationBanner() {
                   resendOtp('phone').catch(console.error);
                   router.push('/auth/otp?type=phone');
               }}
-              className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-sm font-semibold rounded-xl shadow-md transition-all duration-300 hover:shadow-orange-500/25 w-full sm:w-auto justify-center"
+              className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-gold-500 hover:from-orange-600 hover:to-gold-600 text-white text-sm font-semibold rounded-xl shadow-md transition-all duration-300 hover:shadow-orange-500/25 w-full sm:w-auto justify-center"
             >
               Verify Phone
               <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />

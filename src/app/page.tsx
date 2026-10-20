@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import StatsSection from "@/components/StatsSection";
+import CardsWeBuy from "@/components/CardsWeBuy";
 import PriceUpdateSection from "@/components/PriceUpdateSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
-import { fetchRates } from "@/lib/ratesService";
+import { fetchRates, fetchGiftCardGroups, withBrandImages, type GiftCardBrand } from "@/lib/ratesService";
+import { topRates } from "@/lib/rateBoard";
 
 export const metadata: Metadata = {
-  title: "Home | Dr iTunes Consult - Ghana's Trusted Gift Card Service",
+  title: "Home | Aqiran Xchange - Ghana's Trusted Gift Card Service",
   description: "Securely trade Gift Cards at the best rates in Ghana. Visit our Tamale store or trade online 24/7.",
 };
 
@@ -17,20 +19,25 @@ export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
   let categories: any[] = []; // Explicit typing handled by component
+  let updatedAt: string | undefined;
+  let brands: GiftCardBrand[] = [];
   try {
-    const ratesData = await fetchRates();
-    categories = ratesData.categories;
+    const [ratesData, brandList] = await Promise.all([fetchRates(), fetchGiftCardGroups()]);
+    brands = brandList;
+    categories = withBrandImages(ratesData.categories, brands);
+    updatedAt = ratesData.lastUpdated;
   } catch (err) {
     console.error("Failed to fetch rates on server:", err);
   }
 
   return (
-    <main className="flex flex-col min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#e0e7ff] to-[#f0fdfa] dark:from-[#0a0a0a] dark:via-[#171717] dark:to-[#23272f] transition-colors duration-300">
+    <main className="flex flex-col min-h-screen bg-white dark:bg-gray-950">
       <Navigation />
-      <HeroSection />
+      <HeroSection boardRows={topRates(categories)} updatedAt={updatedAt} />
       <StatsSection />
-      <PriceUpdateSection initialCategories={categories} />
+      <CardsWeBuy brands={brands} />
       <FeaturesSection />
+      <PriceUpdateSection initialCategories={categories} />
       <NewsletterSection />
       <Footer />
     </main>

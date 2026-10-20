@@ -7,7 +7,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { audit } from "@/lib/audit";
 import { useAuth } from "@/contexts/AuthContext";
-import Image from "next/image";
+import BrandLogo from "@/components/BrandLogo";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -47,7 +47,7 @@ export default function Navigation() {
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-red-100 dark:border-gray-700"
+          ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gold-100 dark:border-gray-700"
           : "bg-transparent"
       }`}
     >
@@ -57,25 +57,10 @@ export default function Navigation() {
           <motion.a
             href="/"
             whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-3"
+            className="flex items-center"
+            aria-label="Aqiran Xchange home"
           >
-            <div className="relative w-12 h-12 lg:w-14 lg:h-14">
-              <Image
-                src={mounted && resolvedTheme === 'dark' ? "/logo/white.png" : "/logo/red-black.png"}
-                alt="Dr iTunes Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
-                Dr iTunes
-              </h1>
-              <p className="text-xs lg:text-sm text-red-600 dark:text-red-400 font-medium">
-                Consult
-              </p>
-            </div>
+            <BrandLogo className="h-9 lg:h-11" priority />
           </motion.a>
 
           {/* Desktop Navigation */}
@@ -94,12 +79,12 @@ export default function Navigation() {
                   whileHover={{ y: -2 }}
                   className={`font-medium transition-colors duration-200 relative group ${
                     isActive 
-                      ? "text-red-600 dark:text-red-400" 
-                      : "text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
+                      ? "text-gold-700 dark:text-gold-400" 
+                      : "text-gray-700 dark:text-gray-300 hover:text-gold-700 dark:hover:text-gold-400"
                   }`}
                 >
                   {item.name}
-                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-600 dark:bg-red-400 transition-all duration-300 ${
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-gold-500 dark:bg-gold-400 transition-all duration-300 ${
                     isActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}></span>
                 </motion.a>
@@ -125,7 +110,7 @@ export default function Navigation() {
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 dark:text-gold-400 flex items-center justify-center font-bold">
                     {user.name?.charAt(0) || 'U'}
                   </div>
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-200 mobile-hidden">
@@ -168,7 +153,7 @@ export default function Navigation() {
                             logout();
                             setProfileOpen(false);
                           }}
-                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gold-700 dark:text-gold-400 hover:bg-gold-50 dark:hover:bg-gold-900/20 rounded-lg"
                         >
                           <ArrowLeftOnRectangleIcon className="w-4 h-4" />
                           Sign Out
@@ -182,13 +167,13 @@ export default function Navigation() {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/auth/login"
-                  className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors"
+                  className="text-gray-700 dark:text-gray-300 hover:text-gold-700 dark:hover:text-gold-400 font-medium transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+                  className="px-6 py-2 bg-gold-500 text-ink font-semibold rounded-full hover:bg-gold-600 transition-colors duration-200 shadow-lg hover:shadow-xl"
                 >
                   Register
                 </Link>
@@ -214,7 +199,7 @@ export default function Navigation() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
+              className="text-gray-700 dark:text-gray-300 hover:text-gold-700 dark:hover:text-gold-400 transition-colors duration-200"
             >
               {isOpen ? (
                 <XMarkIcon className="h-6 w-6" />
@@ -232,7 +217,7 @@ export default function Navigation() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-red-100 dark:border-gray-700"
+              className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gold-100 dark:border-gray-700"
             >
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navItems.map((item) => {
@@ -247,8 +232,8 @@ export default function Navigation() {
                       whileHover={{ x: 10 }}
                       className={`block px-3 py-2 rounded-md font-medium transition-colors duration-200 ${
                         isActive
-                          ? "text-red-600 dark:text-red-400 bg-red-50 dark:bg-gray-800"
-                          : "text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800"
+                          ? "text-gold-700 dark:text-gold-400 bg-gold-50 dark:bg-gray-800"
+                          : "text-gray-700 dark:text-gray-300 hover:text-gold-700 dark:hover:text-gold-400 hover:bg-gold-50 dark:hover:bg-gray-800"
                       }`}
                     >
                       {item.name}
@@ -258,7 +243,7 @@ export default function Navigation() {
                 {user ? (
                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
                       <div className="flex items-center gap-3 mb-4 px-3">
-                        <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 flex items-center justify-center font-bold">
+                        <div className="w-10 h-10 rounded-full bg-gold-100 dark:bg-gold-900/20 text-gold-700 dark:text-gold-400 flex items-center justify-center font-bold">
                            {user.name?.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -278,7 +263,7 @@ export default function Navigation() {
                            logout();
                            setIsOpen(false);
                          }}
-                         className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
+                         className="w-full text-left px-3 py-2 text-gold-700 dark:text-gold-400 hover:bg-gold-50 dark:hover:bg-gold-900/20 rounded-md"
                        >
                          Sign Out
                        </button>
@@ -293,7 +278,7 @@ export default function Navigation() {
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="px-6 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 text-center"
+                      className="px-6 py-2 bg-gold-500 text-ink font-semibold rounded-full hover:bg-gold-600 text-center"
                     >
                       Register
                     </Link>

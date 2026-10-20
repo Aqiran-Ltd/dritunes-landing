@@ -14,21 +14,21 @@ export default function QuickActions() {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
        <Link 
           href="/dashboard/trade?type=sell_gift_card"
-          className="group relative overflow-hidden bg-gradient-to-br from-red-500 to-orange-600 p-6 rounded-3xl text-white shadow-lg transition-transform hover:scale-[1.02]"
+          className="group relative overflow-hidden bg-gradient-to-br from-gold-500 to-gold-600 p-6 rounded-3xl text-ink shadow-lg transition-transform hover:scale-[1.02]"
        >
           <div className="relative z-10">
              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mb-3 group-hover:bg-white/30 transition-colors">
                 <CurrencyDollarIcon className="w-6 h-6" />
              </div>
              <h3 className="font-bold text-lg leading-tight">Sell Gift Card</h3>
-             <p className="text-red-100 text-xs mt-1">Instant Payment</p>
+             <p className="text-ink/70 text-xs mt-1">Instant Payment</p>
           </div>
           <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors" />
        </Link>
 
        <Link 
           href="/dashboard/rates"
-          className="group relative overflow-hidden bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 transition-transform hover:scale-[1.02] hover:border-red-100 dark:hover:border-red-900/30"
+          className="group relative overflow-hidden bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 transition-transform hover:scale-[1.02] hover:border-gold-100 dark:hover:border-gold-900/30"
        >
           <div className="relative z-10">
              <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-3 text-blue-600 dark:text-blue-400">
@@ -41,7 +41,7 @@ export default function QuickActions() {
 
        <Link 
           href="/dashboard/wallet"
-          className="group relative overflow-hidden bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 transition-transform hover:scale-[1.02] hover:border-red-100 dark:hover:border-red-900/30"
+          className="group relative overflow-hidden bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 transition-transform hover:scale-[1.02] hover:border-gold-100 dark:hover:border-gold-900/30"
        >
           <div className="relative z-10">
              <div className="w-10 h-10 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-3 text-green-600 dark:text-green-400">

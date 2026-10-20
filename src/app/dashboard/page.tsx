@@ -73,7 +73,7 @@ export default function DashboardPage() {
          {/* Earnings Card */}
          <div className="md:col-span-3 bg-gray-900 dark:bg-black rounded-[2.5rem] p-8 text-white relative overflow-hidden">
              {/* Background Pattern */}
-             <div className="absolute top-0 right-0 w-64 h-64 bg-red-600 rounded-full blur-[80px] opacity-20 -mr-16 -mt-16 pointer-events-none"></div>
+             <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500 rounded-full blur-[80px] opacity-20 -mr-16 -mt-16 pointer-events-none"></div>
              
              <div className="relative z-10 flex flex-col justify-between h-full gap-8">
                  <div className="flex items-start justify-between">
@@ -129,8 +129,8 @@ export default function DashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <span className="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg">
-              <ChartBarIcon className="w-5 h-5 text-red-600 dark:text-red-500" />
+            <span className="p-1.5 bg-gold-50 dark:bg-gold-900/20 rounded-lg">
+              <ChartBarIcon className="w-5 h-5 text-gold-700 dark:text-gold-400" />
             </span>
             Analytics &amp; Trends
           </h2>
@@ -159,7 +159,7 @@ export default function DashboardPage() {
              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 Recent Activity
              </h2>
-             <Link href="/dashboard/history" className="flex items-center gap-1 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors">
+             <Link href="/dashboard/history" className="flex items-center gap-1 text-sm font-semibold text-gold-700 dark:text-gold-400 hover:text-gold-800 transition-colors">
                  View All
                  <ChevronRightIcon className="w-4 h-4" />
              </Link>
@@ -167,7 +167,7 @@ export default function DashboardPage() {
          
          {isLoading ? (
              <div className="py-12 flex justify-center">
-                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500"></div>
              </div>
           ) : dashboardData?.recent_transactions?.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -191,7 +191,7 @@ export default function DashboardPage() {
                               <div className={`p-3 rounded-2xl ${
                                   tx.type === 'credit' 
                                   ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' 
-                                  : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                                  : 'bg-gold-100 text-gold-700 dark:bg-gold-900/30 dark:text-gold-400'
                               }`}>
                                   {tx.type === 'credit' ? <ArrowTrendingUpIcon className="w-6 h-6" /> : <ArrowTrendingDownIcon className="w-6 h-6" />}
                               </div>
@@ -205,7 +205,7 @@ export default function DashboardPage() {
                               </div>
                           </div>
                           <div className="text-right">
-                              <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-red-500'}`}>
+                              <p className={`font-black ${tx.type === 'credit' ? 'text-green-600' : 'text-gold-700 dark:text-gold-400'}`}>
                                   {tx.type === 'credit' ? '+' : '-'}₵{parseFloat(tx.amount).toFixed(2)}
                               </p>
                               <div className="flex items-center justify-end gap-1.5 mt-1">

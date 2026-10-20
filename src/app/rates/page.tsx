@@ -3,7 +3,7 @@ import RatesPage from "@/components/RatesPage";
 
 export const metadata: Metadata = {
   title: "Live Gift Card Rates",
-  description: "Check our live gift card rates for GHS, NGN, and RMB. We offer the best rates in Ghana for iTunes, Amazon, Steam, Google Play, and more. Trade securely with Dr iTunes Consult.",
+  description: "Check our live gift card rates for GHS, NGN, and RMB. We offer the best rates in Ghana for iTunes, Amazon, Steam, Google Play, and more. Trade securely with Aqiran Xchange.",
   keywords: [
     "gift card rates Ghana",
     "iTunes card rate Ghana",
@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function Page() {
-  return <RatesPage />;
+// card/region deep links (e.g. /rates?card=Steam&region=US) come from the home page.
+export default async function Page({ searchParams }: { searchParams: Promise<{ card?: string; region?: string }> }) {
+  const { card, region } = await searchParams;
+  return <RatesPage deepCard={card} deepRegion={region} />;
 }

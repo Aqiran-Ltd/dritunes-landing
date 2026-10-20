@@ -85,7 +85,7 @@ export default function VolumeChart() {
                 onClick={() => setActiveMetric(opt.value)}
                 className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                   activeMetric === opt.value
-                    ? 'bg-red-600 text-white shadow-sm'
+                    ? 'bg-gold-500 text-ink shadow-sm'
                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}
               >
@@ -130,7 +130,7 @@ export default function VolumeChart() {
       <div className="h-52 relative">
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-gray-900/60 rounded-xl z-10">
-            <div className="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
         {!loading && !hasData ? (
@@ -143,8 +143,8 @@ export default function VolumeChart() {
             <AreaChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="volGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#dc2626" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#F5B400" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#F5B400" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(156,163,175,0.15)" />
@@ -173,11 +173,11 @@ export default function VolumeChart() {
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#dc2626"
+                stroke="#D99E00"
                 strokeWidth={2.5}
                 fill="url(#volGrad)"
                 dot={false}
-                activeDot={{ r: 5, fill: '#dc2626', strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: '#D99E00', strokeWidth: 0 }}
               />
             </AreaChart>
           </ResponsiveContainer>

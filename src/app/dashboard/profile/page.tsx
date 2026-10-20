@@ -104,7 +104,7 @@ function ProfileForm({ user }: { user: any }) {
                     <button 
                         type="button" 
                         onClick={() => fileInputRef.current?.click()}
-                        className="absolute bottom-0 right-0 p-1.5 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-colors"
+                        className="absolute bottom-0 right-0 p-1.5 bg-gold-500 text-ink rounded-full shadow-lg hover:bg-gold-600 transition-colors"
                     >
                         <CameraIcon className="w-3.5 h-3.5" />
                     </button>
@@ -162,7 +162,7 @@ function ProfileForm({ user }: { user: any }) {
             </div>
             
              {message && (
-                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-gold-50 text-gold-700 dark:text-gold-400'}`}>
                     {message}
                 </div>
             )}
@@ -237,7 +237,7 @@ function SecurityForm() {
              </div>
 
              {message && (
-                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                <div className={`p-3 rounded-lg text-sm ${message.includes('success') ? 'bg-green-50 text-green-600' : 'bg-gold-50 text-gold-700 dark:text-gold-400'}`}>
                     {message}
                 </div>
             )}
@@ -259,10 +259,10 @@ export default function ProfilePage() {
       {/* Header Profile Card */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center md:items-start gap-6 relative overflow-hidden">
           
-          <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 
           <div className="relative">
-             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-red-500/20 overflow-hidden border-2 border-white dark:border-gray-800">
+             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gold-500 to-orange-500 flex items-center justify-center text-ink text-3xl font-bold shadow-xl shadow-gold-500/20 overflow-hidden border-2 border-white dark:border-gray-800">
                  {user.profile_picture_url ? (
                      <img src={user.profile_picture_url} alt={user.name} className="w-full h-full object-cover" />
                  ) : (

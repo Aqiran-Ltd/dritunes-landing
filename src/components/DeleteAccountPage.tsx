@@ -92,7 +92,7 @@ export default function DeleteAccountPage() {
                     <div>
                       <h3 className="text-sm font-bold text-red-800 dark:text-red-300">Warning: Permanent Data Loss</h3>
                       <div className="mt-2 text-sm text-red-700 dark:text-red-400 space-y-2">
-                        <p>If you delete your Dr iTunes Consult account:</p>
+                        <p>If you delete your Aqiran Xchange account:</p>
                         <ul className="list-disc pl-5 space-y-1">
                           <li>All your trade history will be permanently erased.</li>
                           <li>Your verification (KYC) data will be securely purged.</li>

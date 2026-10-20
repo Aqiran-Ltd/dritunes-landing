@@ -21,8 +21,8 @@ function Toggle({ label, description, checked, onChange, icon: Icon }: any) {
         checked={checked}
         onChange={onChange}
         className={`${
-          checked ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-700'
-        } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2`}
+          checked ? 'bg-gold-500' : 'bg-gray-200 dark:bg-gray-700'
+        } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2`}
       >
         <span className="sr-only">Use setting</span>
         <span

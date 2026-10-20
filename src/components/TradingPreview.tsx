@@ -36,7 +36,7 @@ export default function TradingPreview() {
       rate: "₵15.50",
       status: "Available",
       icon: "🛒",
-      color: "from-orange-400 to-red-500"
+      color: "from-orange-400 to-gold-500"
     },
     {
       name: "Apple Gift Card",
@@ -86,16 +86,16 @@ export default function TradingPreview() {
   ];
 
   return (
-    <section className="relative py-24 bg-gradient-to-br from-gray-900 via-red-900 to-gray-900 overflow-hidden">
+    <section className="relative py-24 bg-gradient-to-br from-gray-900 via-gold-900 to-gray-900 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(220,38,38,0.3),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(239,68,68,0.2),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(245,180,0,0.3),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,213,77,0.2),transparent_50%)]" />
         <motion.div
           style={{ y }}
           className="absolute top-0 left-0 w-full h-full"
         >
-          <div className="absolute top-20 left-20 w-96 h-96 bg-red-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+          <div className="absolute top-20 left-20 w-96 h-96 bg-gold-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
           <div className="absolute top-40 right-20 w-96 h-96 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
           <div className="absolute -bottom-8 left-40 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
         </motion.div>
@@ -106,7 +106,7 @@ export default function TradingPreview() {
         {particles.map((particle, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-red-400 rounded-full opacity-30"
+            className="absolute w-1 h-1 bg-gold-400 rounded-full opacity-30"
             animate={{
               x: [0, 150, 0],
               y: [0, -150, 0],
@@ -140,9 +140,9 @@ export default function TradingPreview() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
-            className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full mb-8 shadow-2xl"
+            className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-gold-500 to-orange-500 rounded-full mb-8 shadow-2xl"
           >
-            <RocketLaunchIcon className="w-12 h-12 text-white" />
+            <RocketLaunchIcon className="w-12 h-12 text-ink" />
           </motion.div>
           
           <motion.h2
@@ -150,7 +150,7 @@ export default function TradingPreview() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-red-200 to-orange-200 bg-clip-text text-transparent"
+            className="text-5xl md:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-gold-200 to-orange-200 bg-clip-text text-transparent"
           >
             Next-Gen Trading
           </motion.h2>
@@ -179,10 +179,10 @@ export default function TradingPreview() {
             {/* Tab Navigation */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-4">
-                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-gold-500 rounded-full animate-pulse"></div>
                 <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-white/60 text-sm ml-4 font-mono">Dr iTunes Trading Terminal</span>
+                <span className="text-white/60 text-sm ml-4 font-mono">Aqiran Xchange Trading Terminal</span>
               </div>
               <div className="text-green-400 text-sm font-mono">● LIVE</div>
             </div>
@@ -304,7 +304,7 @@ export default function TradingPreview() {
             whileHover={{ scale: 1.05, y: -3 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => audit.log('cta_click', { location: 'trading_preview', label: 'Start Trading Now' })}
-            className="group px-12 py-5 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold rounded-full shadow-2xl hover:shadow-red-500/25 transition-all duration-300 text-xl mb-6 flex items-center mx-auto"
+            className="group px-12 py-5 bg-gradient-to-r from-gold-500 to-orange-600 hover:from-gold-600 hover:to-orange-700 text-ink font-bold rounded-full shadow-2xl hover:shadow-gold-500/25 transition-all duration-300 text-xl mb-6 flex items-center mx-auto"
           >
             <FireIcon className="w-6 h-6 mr-2 group-hover:animate-bounce" />
             Start Trading Now
