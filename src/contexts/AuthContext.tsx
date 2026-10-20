@@ -156,6 +156,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     const token = localStorage.getItem('access_token');
     if (token) {
+      // Stop pushes to this browser before the session ends; the token is
+      // needed to authorise the call. device_id is set by NotificationContext.
+      const deviceId = localStorage.getItem('device_id');
+      if (deviceId) {
+        try {
+          await api.delete(`/devices/${encodeURIComponent(deviceId)}`, token);
+        } catch (error) {
+          console.error('Failed to unregister device', error);
+        }
+      }
       try {
         await api.post('/auth/logout', {}, token);
       } catch (error) {

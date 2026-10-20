@@ -1,9 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { messaging } from "@/lib/firebase";
+import { getFirebaseMessaging, registerMessagingServiceWorker } from "@/lib/firebase";
 import { getToken, onMessage } from "firebase/messaging";
 import { api } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
@@ -31,17 +32,21 @@ export const useNotification = () => useContext(NotificationContext);
 
 export const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
+  // AuthProvider wraps NotificationProvider (app/layout.tsx), so this is safe.
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
 
   const requestPermission = async () => {
+    const messaging = await getFirebaseMessaging();
     if (!messaging) return;
 
     try {
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
         const token = await getToken(messaging, {
-          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY // Optional, but good if needed. 
-          // Usually just getToken(messaging) works if simple config. 
-          // We'll stick to simple first.
+          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+          // Our registration passes the Firebase config to the worker.
+          serviceWorkerRegistration: await registerMessagingServiceWorker(),
         });
         if (token) {
           console.log("FCM Token:", token);
@@ -57,9 +62,13 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   const router = useRouter();
 
   useEffect(() => {
-    if (messaging) {
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+
+    getFirebaseMessaging().then((messaging) => {
+      if (!messaging || cancelled) return;
       // Handle foreground messages
-      const unsubscribe = onMessage(messaging, (payload) => {
+      unsubscribe = onMessage(messaging, (payload) => {
         console.log("Foreground message received:", payload);
         playNotificationSound();
         // Let the notification bell (NotificationsDropdown) know to refetch immediately,
@@ -149,9 +158,12 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
           </div>
         ), { duration: 5000 });
       });
+    });
 
-      return () => unsubscribe();
-    }
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, [router]);
 
   // Auto request on mount. requestPermission is async and only calls setFcmToken
@@ -163,10 +175,13 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     requestPermission();
   }, []);
 
-  // Register device with backend when we have a user and a token
+  // Register this browser with the backend whenever we have both a push token
+  // and a signed-in user: after the token arrives, after login, and after
+  // switching accounts. A visitor who gets a token before logging in is
+  // registered as soon as they sign in.
   useEffect(() => {
     const registerDevice = async () => {
-      if (!fcmToken) return;
+      if (!fcmToken || !userId) return;
       
       const accessToken = localStorage.getItem("access_token");
       if (!accessToken) return;
@@ -200,10 +215,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     };
 
     registerDevice();
-  }, [fcmToken]); // We rely on token presence. If user logs out/in, token might stay same, but we might want to re-register? 
-  // Actually, if we just check for token, we might miss the auth state. 
-  // But wait, we can't easily check 'user' here without importing useAuth, which might cause circular dep if Auth uses Notification?
-  // Layout: AuthProvider -> NotificationProvider. So Notification can use Auth.
+  }, [fcmToken, userId]);
   
   return (
     <NotificationContext.Provider value={{ fcmToken, requestPermission }}>
