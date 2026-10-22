@@ -282,13 +282,20 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Secondary Marketplace & Trademark Disclaimer */}
+        <div className="border-t border-gray-800/80 dark:border-gray-800 pt-6 pb-6 text-[11px] sm:text-xs leading-relaxed text-gray-400 dark:text-gray-400">
+          <p>
+            <strong className="text-gray-300 dark:text-gray-300">Independent Secondary Marketplace Disclaimer:</strong> Aqiran Xchange is an independent secondary marketplace facilitating peer and OTC gift card exchange. We are not affiliated with, endorsed by, sponsored by, or authorized by Apple Inc., Amazon.com, Inc., Valve Corporation (Steam), Google LLC, Razer Inc., Sony, Microsoft, or any other trademark owner. All registered trademarks and brand names are the property of their respective holders.
+          </p>
+        </div>
+
         {/* Bottom Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="border-t border-gray-800 dark:border-gray-700 pt-8"
+          className="border-t border-gray-800 dark:border-gray-700 pt-6"
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">

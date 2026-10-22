@@ -1,6 +1,12 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import BrandLogo from "@/components/BrandLogo";
+
+export const metadata: Metadata = {
+  title: "Account Sign In & Registration",
+  description: "Sign in or create your Aqiran Xchange account to trade gift cards with instant Mobile Money and bank payouts.",
+};
 
 export default function AuthLayout({
   children,

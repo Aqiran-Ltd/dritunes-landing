@@ -4,8 +4,15 @@ import ContactPage from "@/components/ContactPage";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with Aqiran Xchange. Visit our physical store in Tamale, reach out on WhatsApp, or send us an email for all your gift card trading inquiries.",
+  title: "Contact Us & 24/7 Trading Desk",
+  description: "Get in touch with Aqiran Xchange (formerly Dr iTunes Consult). Chat with our 24/7 support desk on WhatsApp and Telegram, visit our physical counter in Tamale, Ghana, or email info@aqiranxchange.com.",
+  keywords: [
+    "contact Aqiran Xchange",
+    "Aqiran Xchange Tamale",
+    "gift card trading WhatsApp Ghana",
+    "Dr iTunes Consult contact",
+    "gift card support Ghana"
+  ],
 };
 
 export default function Contact() {

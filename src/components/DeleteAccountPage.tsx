@@ -101,7 +101,7 @@ export default function DeleteAccountPage() {
                   </p>
                   <ul className="list-disc pl-4 space-y-1 text-xs sm:text-sm text-red-700 dark:text-red-400">
                     <li>Permanently erase your trade history and rates records.</li>
-                    <li>Securely purge your KYC verification documents.</li>
+                    <li>Securely purge your saved financial payout details (bank and mobile money accounts).</li>
                     <li>Cancel any active or pending transactions.</li>
                     <li>Revoke all connected mobile money and bank payout methods.</li>
                   </ul>

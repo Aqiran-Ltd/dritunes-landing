@@ -3,6 +3,7 @@ import Link from "next/link";
 import SectionHeading from "@/components/ui/SectionHeading";
 import StartTradeLink from "@/components/StartTradeLink";
 import { cardByName } from "@/lib/cardCatalogue";
+import { BuildingStorefrontIcon } from "@heroicons/react/24/outline";
 
 const tradingFacts = [
   { value: "10,000+", label: "customers have traded with us" },
@@ -10,9 +11,9 @@ const tradingFacts = [
 ];
 
 const tradeWays = [
-  { title: "In your dashboard", body: "Upload the card, follow its status and choose how you get paid." },
-  { title: "On WhatsApp or Telegram", body: "Message the team with your card details and get a quote." },
-  { title: "At the counter in Tamale", body: "Bring the card in and trade face to face." },
+  { title: "Web & Mobile App", body: "Upload your card on our website or mobile app (iOS & Android), track live rates, and receive instant MoMo or bank payouts." },
+  { title: "On WhatsApp or Telegram", body: "Message our 24/7 team with your card details and lock in a live quote." },
+  { title: "At the counter in Tamale", body: "Bring the card to our physical desk and trade face to face." },
 ];
 
 const handOfCards = [
@@ -46,8 +47,8 @@ const trust = [
     body: "Once your card is verified, cedis go straight to your mobile money or bank account.",
   },
   {
-    title: "Every trade is checked",
-    body: "We verify every customer and every card, so the people you trade alongside are real.",
+    title: "Every card is checked",
+    body: "We authenticate every gift card and trade in real time. Fast, secure settlements with zero KYC document hurdles.",
   },
   {
     title: "People, not a ticket queue",
@@ -95,10 +96,10 @@ export default function AboutPage() {
           </h1>
           <div className="mt-12 grid md:grid-cols-2 gap-8 md:gap-16 max-w-5xl">
             <p className="text-xl leading-relaxed text-gray-700 dark:text-gray-300 text-pretty">
-              Same founder, same team, same counter in Tamale. We buy gift cards from customers across Ghana and pay them in cedis, online or in person.
+              Same founder, same team, same counter in Tamale. We operate an independent secondary marketplace for digital gift cards across Ghana, paying out instantly in cedis via Mobile Money and local banks — online, in-app, or in person, with zero KYC hurdles.
             </p>
             <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 text-pretty">
-              The new name comes with a new website and app. Your account, your balance and your trade history are all still here.
+              The new name comes with our refreshed website and mobile app (iOS &amp; Android). Your account, your balance, and your trade history are all preserved.
             </p>
           </div>
         </div>
@@ -110,7 +111,7 @@ export default function AboutPage() {
           <div>
             <SectionHeading
               title="We buy gift cards and pay in cedis"
-              intro="Customers across Ghana sell us iTunes, Amazon, Steam, Razer Gold and many other cards, as physical cards or e-codes. We check each card and pay out to mobile money, a bank account or an Aqiran wallet."
+              intro="Customers across Ghana sell us Apple/iTunes, Amazon, Steam, Razer Gold and many other secondary cards, as physical cards or e-codes. We check each card and pay out instantly to Mobile Money (MTN MoMo, Telecel Cash, AT Money) or bank accounts."
             />
             <dl className="mt-10 grid grid-cols-2 border-y border-gray-200 dark:border-gray-800">
               {tradingFacts.map((fact, i) => (
@@ -241,6 +242,30 @@ export default function AboutPage() {
                     ))}
                   </ul>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Secondary Marketplace & Trademark Notice */}
+      <section className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/60 p-8 md:p-10">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-700 dark:text-gold shrink-0">
+                <BuildingStorefrontIcon className="w-5 h-5" />
+              </div>
+              <div className="space-y-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <h4 className="font-bold text-base sm:text-lg text-ink dark:text-white">
+                  Independent Secondary Marketplace Notice
+                </h4>
+                <p>
+                  <strong>Aqiran Xchange is an independent secondary marketplace</strong> facilitating customer-to-business and OTC exchange of pre-owned digital gift cards and stored-value balances. We are <strong>not affiliated with, endorsed by, sponsored by, authorized by, or in any way officially connected</strong> with any of the brand owners whose gift cards are traded on our platform (including Apple Inc., Amazon.com, Inc., Valve Corporation (Steam), Google LLC, Razer Inc., Sony Interactive Entertainment, or Microsoft Corporation).
+                </p>
+                <p>
+                  All registered trademarks, logos, brand names, and product emblems referenced on our website, mobile applications, and marketing materials are the exclusive property of their respective trademark holders. Mention of these trademarks is made strictly under nominative fair use to identify the brand, denomination, and secondary digital assets being exchanged.
+                </p>
               </div>
             </div>
           </div>

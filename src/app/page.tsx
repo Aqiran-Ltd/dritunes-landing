@@ -12,8 +12,8 @@ import { fetchRates, fetchGiftCardGroups, withBrandImages, type GiftCardBrand } 
 import { topRates } from "@/lib/rateBoard";
 
 export const metadata: Metadata = {
-  title: "Home | Aqiran Xchange",
-  description: "Trade gift cards at openly published rates and get paid in cedis. Visit our Tamale store or trade online 24/7.",
+  title: "Independent Gift Card Exchange & Instant Cedis Payouts",
+  description: "Sell Apple, Amazon, Steam, Razer, and Google Play gift cards at live, transparent market rates. Instant Mobile Money and bank payouts with zero KYC. Trade online 24/7 or visit our Tamale counter.",
 };
 
 export const revalidate = 60; // Revalidate every 60 seconds

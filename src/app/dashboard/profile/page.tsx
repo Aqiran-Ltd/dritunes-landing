@@ -316,7 +316,7 @@ export default function ProfilePage() {
               <h3 className="text-lg font-bold">Danger Zone</h3>
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-              Permanently delete your Aqiran Xchange account. All profile data, KYC verification records, and transaction history will be purged.
+              Permanently delete your Aqiran Xchange account. All profile data, saved payout details, and transaction records will be purged.
           </p>
           <div className="pt-4 border-t border-red-100 dark:border-red-950/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>

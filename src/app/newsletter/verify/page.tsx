@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import NewsletterVerifyPage from "@/components/NewsletterVerifyPage";
 
 export const metadata: Metadata = {
-  title: "Verify Newsletter Subscription | Aqiran Xchange",
-  description: "Confirm your residency in our digital ecosystem.",
+  title: "Verify Newsletter Subscription",
+  description: "Confirm your email subscription for Aqiran Xchange rate alerts and market updates.",
   robots: "noindex, nofollow",
 };
 
