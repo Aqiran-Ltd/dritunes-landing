@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { cardByName } from "@/lib/cardCatalogue";
 
-const frame = "relative w-full aspect-[3/2] rounded-2xl overflow-hidden bg-white dark:bg-gray-950 ring-1 ring-gray-200 dark:ring-gray-800";
+const frame = "relative w-full aspect-[16/10] sm:aspect-[3/2] rounded-xl sm:rounded-2xl overflow-hidden bg-white dark:bg-gray-950 ring-1 ring-gray-200 dark:ring-gray-800";
 
 /** A small hand of real cards. */
 function PickVisual() {
@@ -112,16 +112,16 @@ export default function TradeSteps({ className = "" }: { className?: string }) {
       {steps.map(({ title, body, Visual }, i) => (
         <li
           key={title}
-          className="grid grid-cols-[3.5rem_1fr] sm:grid-cols-[4rem_1fr_14rem] gap-x-4 gap-y-5 py-8 border-b border-gray-200 dark:border-gray-800 items-start"
+          className="grid grid-cols-[2.75rem_1fr] sm:grid-cols-[4rem_1fr_14rem] gap-x-3 sm:gap-x-4 gap-y-4 sm:gap-y-5 py-6 sm:py-8 border-b border-gray-200 dark:border-gray-800 items-start"
         >
-          <span aria-hidden="true" className="text-4xl sm:text-5xl font-bold tabular-nums tracking-[-0.05em] text-gold-700 dark:text-gold">
+          <span aria-hidden="true" className="text-3xl sm:text-5xl font-bold tabular-nums tracking-[-0.05em] text-gold-700 dark:text-gold">
             {i + 1}
           </span>
           <div>
-            <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ink dark:text-white">{title}</h3>
-            <p className="mt-2 max-w-prose leading-relaxed text-gray-600 dark:text-gray-400">{body}</p>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight text-ink dark:text-white">{title}</h3>
+            <p className="mt-1.5 sm:mt-2 text-sm sm:text-base max-w-prose leading-relaxed text-gray-600 dark:text-gray-400">{body}</p>
           </div>
-          <div aria-hidden="true" className="col-start-2 sm:col-start-3 max-w-[16rem] sm:max-w-none">
+          <div aria-hidden="true" className="col-start-2 sm:col-start-3 w-full max-w-sm sm:max-w-none">
             <Visual />
           </div>
         </li>

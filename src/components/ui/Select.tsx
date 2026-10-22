@@ -64,10 +64,10 @@ export function Select({
               border-2 transition-all duration-300 ease-out
               ${disabled ? 'opacity-50 cursor-not-allowed grayscale-[0.5]' : 'cursor-pointer'}
               ${error 
-                ? 'border-red-500 focus:ring-red-200' 
-                : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:ring-4 focus:ring-red-500/10'
+                ? 'border-red-500 focus:ring-4 focus:ring-red-500/15' 
+                : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20'
               }
-              focus:outline-none focus:border-gold-500 focus:bg-white dark:focus:bg-black
+              focus:outline-none focus:bg-white dark:focus:bg-black
               sm:text-sm
               ${leadingIcon ? 'pl-11' : ''}
             `}
@@ -95,14 +95,14 @@ export function Select({
             <Portal>
                 <ListboxOptions 
                 anchor="bottom start"
-                className="z-[9999] mt-2 max-h-60 w-[var(--button-width)] overflow-auto rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl py-1 text-base shadow-2xl ring-1 ring-black/5 focus:outline-none sm:text-sm border border-gray-100 dark:border-gray-800 custom-scrollbar"
+                className="z-[9999] mt-2 max-h-60 w-[var(--button-width)] min-w-[200px] max-w-[calc(100vw-2rem)] overflow-auto rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl py-1 text-base shadow-2xl ring-1 ring-black/5 focus:outline-none sm:text-sm border border-gray-100 dark:border-gray-800 custom-scrollbar"
                 >
                 {searchable && (
-                    <div className="sticky top-0 z-10 bg-white/50 dark:bg-black/50 backdrop-blur-md px-2 py-2 border-b border-gray-100 dark:border-gray-800">
+                    <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md px-2 py-2 border-b border-gray-100 dark:border-gray-800">
                     <div className="relative">
                         <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                         <input
-                        className="w-full rounded-xl border-none bg-gray-100 dark:bg-gray-800 py-2 pl-9 pr-4 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-gold-500/50 outline-none"
+                        className="w-full rounded-xl border-none bg-gray-100 dark:bg-gray-800 py-2 pl-9 pr-4 text-base sm:text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-gold-500/50 outline-none"
                         placeholder="Search..."
                         autoComplete="off"
                         value={query}

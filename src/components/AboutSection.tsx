@@ -56,7 +56,7 @@ export default function AboutSection() {
           </h2>
           
           <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-4xl mx-auto">
-            Founded in the heart of Tamale as Dr iTunes Consult, Aqiran Xchange has grown from a local startup to Ghana&apos;s most trusted gift card trading service. We offer both online trading via WhatsApp/Telegram and a physical store – giving you the flexibility to trade however you prefer.
+            Founded in the heart of Tamale as Dr iTunes Consult, Aqiran Xchange has grown from a local startup into a leading gift card trading service. We offer both online trading via WhatsApp/Telegram and a physical store – giving you the flexibility to trade however you prefer.
           </p>
         </motion.div>
 
@@ -254,7 +254,7 @@ export default function AboutSection() {
                     <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-gold-500 rounded-lg flex items-center justify-center mr-3">
                       <span className="text-white font-bold text-sm">🎁</span>
                     </div>
-                    <h4 className="text-white text-xl font-bold">Gift Card Exchange</h4>
+                    <h4 className="text-white text-xl font-bold">Gift Card Trading</h4>
                   </div>
                   
                   <div className="space-y-4">

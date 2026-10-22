@@ -5,7 +5,7 @@ const intro = "How Aqiran Xchange uses cookies to improve your digital experienc
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description: intro,
+  description: "Aqiran Xchange Cookie Policy. Learn how we use essential, functional, and performance cookies to power our gift card exchange platform on web and mobile browsers.",
 };
 
 const sections: LegalSection[] = [
@@ -32,5 +32,5 @@ const sections: LegalSection[] = [
 ];
 
 export default function Page() {
-  return <LegalPage title="Cookie Policy" intro={intro} updated="March 18, 2026" sections={sections} />;
+  return <LegalPage title="Cookie Policy" badge="Transparency & Control" intro={intro} updated="October 22, 2026" sections={sections} />;
 }

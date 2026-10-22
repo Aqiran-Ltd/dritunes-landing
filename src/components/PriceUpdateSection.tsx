@@ -167,8 +167,8 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
   };
 
   return (
-    <section id="calculator" className="py-24 lg:py-32 bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-20 items-start">
+    <section id="calculator" className="py-14 sm:py-24 lg:py-32 bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[0.8fr_1.2fr] gap-8 sm:gap-12 lg:gap-20 items-start">
         <div>
           <SectionHeading
             title="Work out your payout"
@@ -176,17 +176,18 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
           />
           <Link
             href="/rates"
-            className="mt-8 inline-block font-semibold text-ink dark:text-white underline decoration-gray-300 dark:decoration-gray-600 underline-offset-8 hover:decoration-ink dark:hover:decoration-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold rounded"
+            className="mt-6 sm:mt-8 inline-flex items-center gap-1.5 font-semibold text-sm sm:text-base text-ink dark:text-white underline decoration-gray-300 dark:decoration-gray-600 underline-offset-8 hover:decoration-ink dark:hover:decoration-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold rounded"
           >
-            Browse the full rates table
+            <span>Browse the full rates table</span>
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 sm:p-8 rounded-[28px] shadow-[0_30px_80px_-40px_rgba(26,26,29,0.35)]">
-            <div className="space-y-5">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-[28px] shadow-[0_30px_80px_-40px_rgba(26,26,29,0.35)]">
+            <div className="space-y-4 sm:space-y-5">
 
               {/* Categories & Regions Row */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div className="relative group">
                   <Select
                     label="Category"
@@ -208,7 +209,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
               </div>
 
               {/* Card Option & Type Row */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <Select
                   label="Card Amount"
                   options={cardOptions}
@@ -228,7 +229,28 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
 
               {/* Amount Input */}
               <div className="space-y-1.5">
-                <label htmlFor="quick-amount" className="text-sm font-medium text-gray-700 dark:text-gray-300">Card value in US dollars</label>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="quick-amount" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Card value in US dollars
+                  </label>
+                  {/* Quick Preset Amount Chips */}
+                  <div className="flex items-center gap-1.5">
+                    {["50", "100", "200", "500"].map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setAmount(preset)}
+                        className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all ${
+                          amount === preset
+                            ? "bg-gold text-ink shadow-sm"
+                            : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        ${preset}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</span>
                   <input
@@ -237,7 +259,7 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                     inputMode="decimal"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className={`w-full bg-gray-50 dark:bg-gray-800 border ${!isValid ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-200 dark:border-gray-700'} rounded-lg pl-8 pr-4 py-3 text-gray-900 dark:text-white font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all placeholder-gray-400`}
+                    className={`w-full bg-gray-50 dark:bg-gray-800 border ${!isValid ? 'border-red-500 ring-4 ring-red-500/15' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15'} rounded-xl pl-8 pr-4 py-3 text-gray-900 dark:text-white font-semibold text-lg focus:outline-none transition-all placeholder-gray-400`}
                     placeholder="100"
                   />
                 </div>
@@ -249,31 +271,31 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
               </div>
 
               {/* Result Card */}
-              <div aria-live="polite" className="bg-ink text-white rounded-2xl p-6 flex justify-between items-end gap-4">
+              <div aria-live="polite" className="bg-ink text-white rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row justify-between sm:items-end gap-2 sm:gap-4">
                 <div>
-                  <p className="text-sm text-gray-300">You would receive</p>
-                  <p className="mt-1 text-sm text-gray-400 tabular-nums">
+                  <p className="text-xs sm:text-sm text-gray-300">You would receive</p>
+                  <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-gray-400 tabular-nums">
                     {currentRate > 0 ? `₵${currentRate.toFixed(2)} for every $1` : "No rate for this card yet"}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   {isValid && calculatedValue > 0 ? (
-                    <span className="text-4xl font-bold tracking-[-0.04em] tabular-nums text-gold block">
+                    <span className="text-3xl sm:text-4xl font-bold tracking-tight tabular-nums text-gold block">
                       ₵{calculatedValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
                   ) : (
-                    <span className="text-lg font-semibold text-gray-400 block">
+                    <span className="text-base sm:text-lg font-semibold text-gray-400 block">
                       {!isValid ? "Check the amount" : "—"}
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className={`grid gap-3 ${settings?.offer_trade_via_whatsapp ? 'grid-cols-2' : 'grid-cols-1'}`}>
+              <div className={`grid gap-3 ${settings?.offer_trade_via_whatsapp ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
                  <button
                    onClick={() => router.push(`/dashboard/trade?asset=${encodeURIComponent(selectedCatName)}&region=${encodeURIComponent(selectedRegion)}&card=${encodeURIComponent(activeCard?.amount || '')}&amount=${encodeURIComponent(amount)}&type=${encodeURIComponent(selectedType)}`)}
                    disabled={!isValid || calculatedValue <= 0}
-                   className="w-full h-14 bg-gold hover:bg-gold-400 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-ink font-semibold rounded-full transition-colors flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink dark:focus-visible:outline-gold"
+                   className="w-full h-13 sm:h-14 bg-gold hover:bg-gold-400 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-ink font-semibold rounded-full transition-colors flex items-center justify-center text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink dark:focus-visible:outline-gold active:scale-[0.98]"
                  >
                    Trade this card
                  </button>
@@ -282,10 +304,10 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                  <button
                   onClick={handleTrade}
                   disabled={!isValid || calculatedValue <= 0}
-                  className="w-full h-14 bg-green-600 hover:bg-green-700 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors flex items-center justify-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                  className="w-full h-13 sm:h-14 bg-green-600 hover:bg-green-700 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors flex items-center justify-center gap-2 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 active:scale-[0.98]"
                 >
                   <ChatBubbleLeftEllipsisIcon className="w-5 h-5" />
-                  Trade on WhatsApp
+                  <span>Trade on WhatsApp</span>
                 </button>
                 )}
               </div>

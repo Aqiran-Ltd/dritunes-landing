@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         '/auth/callback',
         '/newsletter/verify',
         '/newsletter/unsubscribe',
+        '/sentry-example-page',
       ],
     },
     sitemap: 'https://aqiranxchange.com/sitemap.xml',

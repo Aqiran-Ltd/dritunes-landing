@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import Link from 'next/link';
 import {
   UserCircleIcon, 
   EnvelopeIcon, 
@@ -12,7 +13,9 @@ import {
   ShieldCheckIcon,
   KeyIcon,
   CheckBadgeIcon,
-  CameraIcon
+  CameraIcon,
+  ExclamationTriangleIcon,
+  TrashIcon
 } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
 
@@ -304,6 +307,30 @@ export default function ProfilePage() {
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-800">
           <ProfileForm user={user} />
           <SecurityForm />
+      </div>
+
+      {/* Danger Zone */}
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-red-200 dark:border-red-900/30">
+          <div className="flex items-center gap-2 text-red-600 dark:text-red-400 mb-2">
+              <ExclamationTriangleIcon className="w-5 h-5" />
+              <h3 className="text-lg font-bold">Danger Zone</h3>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+              Permanently delete your Aqiran Xchange account. All profile data, saved payout details, and transaction records will be purged.
+          </p>
+          <div className="pt-4 border-t border-red-100 dark:border-red-950/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Delete Account</h4>
+                  <p className="text-xs text-gray-500">This action is permanent and cannot be undone.</p>
+              </div>
+              <Link
+                  href="/auth/delete-account"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/30 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 font-semibold text-sm transition-colors shrink-0"
+              >
+                  <TrashIcon className="w-4 h-4" />
+                  <span>Delete My Account</span>
+              </Link>
+          </div>
       </div>
     </div>
   );

@@ -2,16 +2,20 @@ import type { Metadata } from "next";
 import RatesPage from "@/components/RatesPage";
 
 export const metadata: Metadata = {
-  title: "Live Gift Card Rates",
-  description: "Check our live gift card rates for GHS, NGN, and RMB. We offer the best rates in Ghana for iTunes, Amazon, Steam, Google Play, and more. Trade securely with Aqiran Xchange.",
+  title: "Live Gift Card Rates & Exchange Calculator",
+  description: "Check live secondary market gift card rates in Ghana (GHS, NGN, RMB). Calculate payouts for Apple/iTunes, Amazon, Steam, Google Play, Razer Gold & more with instant Mobile Money cashout and zero KYC.",
   keywords: [
     "gift card rates Ghana",
     "iTunes card rate Ghana",
+    "Apple gift card rate GHS",
     "Amazon gift card rate GHS",
-    "Steam card rate Ghana",
+    "Steam wallet rate Ghana",
     "Google Play rate GHS",
+    "Razer Gold rate Ghana",
     "sell gift cards Tamale",
-    "highest gift card rates Ghana"
+    "highest gift card rates Ghana",
+    "live gift card calculator Ghana",
+    "instant MoMo cashout gift cards"
   ],
 };
 

@@ -4,8 +4,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn about Aqiran Xchange, Ghana's leading ICT consultancy and gift card trading company. Our mission is to provide secure, fast, and reliable digital services.",
+  title: "About Us & Secondary Marketplace Disclaimers",
+  description: "Learn about Aqiran Xchange (formerly Dr iTunes Consult) — Ghana's trusted independent secondary gift card marketplace. Instant Mobile Money and bank payouts with zero KYC across web and mobile apps.",
 };
 
 export default function About() {

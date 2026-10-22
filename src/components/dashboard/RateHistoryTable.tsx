@@ -151,7 +151,7 @@ export default function RateHistoryTable() {
             placeholder="Search asset name…"
             value={assetSearch}
             onChange={e => setAssetSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
+            className="w-full pl-9 pr-4 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-gray-900 dark:text-white transition-all"
           />
           {assetSearch && (
             <button onClick={() => setAssetSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -185,7 +185,7 @@ export default function RateHistoryTable() {
             <select
               value={category}
               onChange={e => setCategory(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-gray-900 dark:text-white transition-all"
             >
               <option value="">All</option>
               <option value="gift_card">Gift Card</option>
@@ -197,7 +197,7 @@ export default function RateHistoryTable() {
             <select
               value={action}
               onChange={e => setAction(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-gray-900 dark:text-white transition-all"
             >
               <option value="">All</option>
               <option value="created">Created</option>
@@ -210,7 +210,7 @@ export default function RateHistoryTable() {
               type="date"
               value={from}
               onChange={e => setFrom(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-gray-900 dark:text-white transition-all"
             />
           </div>
           <div>
@@ -219,7 +219,7 @@ export default function RateHistoryTable() {
               type="date"
               value={to}
               onChange={e => setTo(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-gold-500"
+              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-gray-900 dark:text-white transition-all"
             />
           </div>
           {hasActiveFilters && (

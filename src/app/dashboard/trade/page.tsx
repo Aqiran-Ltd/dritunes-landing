@@ -368,7 +368,7 @@ export default function TradePage() {
                             type="number"
                             value={amount}
                             onChange={e => setAmount(e.target.value)}
-                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 font-bold text-lg"
+                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 font-bold text-lg text-gray-900 dark:text-white outline-none transition-all"
                             placeholder="100.00"
                           />
                       </div>
@@ -382,7 +382,7 @@ export default function TradePage() {
                                   type="text"
                                   value={code}
                                   onChange={e => setCode(e.target.value)}
-                                  className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 font-mono"
+                                  className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 font-mono text-gray-900 dark:text-white outline-none transition-all"
                                   placeholder="Enter your gift card code..."
                               />
                           </div>
