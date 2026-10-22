@@ -93,19 +93,19 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setHovering(false);
       }}
-      className="relative rounded-[28px] bg-ink text-white p-6 sm:p-8 shadow-[0_30px_80px_-30px_rgba(26,26,29,0.55)] ring-1 ring-white/5 dark:ring-gold/25"
+      className="relative rounded-2xl sm:rounded-[28px] bg-ink text-white p-4 sm:p-6 lg:p-8 shadow-[0_30px_80px_-30px_rgba(26,26,29,0.55)] ring-1 ring-white/5 dark:ring-gold/25"
     >
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <span className="grid place-items-center w-10 h-10 rounded-full bg-gold text-ink">
-            <ExchangeArrows className="w-5 h-5" />
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <span className="grid place-items-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gold text-ink shrink-0">
+            <ExchangeArrows className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
           <div>
-            <p className="font-semibold leading-tight">Today&apos;s payout</p>
-            <p className="text-sm text-gray-400">Cedis for every $1 of card value</p>
+            <p className="font-semibold text-sm sm:text-base leading-tight">Today&apos;s payout</p>
+            <p className="text-xs sm:text-sm text-gray-400">Cedis for every $1 of card value</p>
           </div>
         </div>
-        <span className="flex items-center gap-2 text-sm text-gray-300">
+        <span className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-300 shrink-0">
           <span className="relative flex w-2 h-2">
             {!paused && <span className="absolute inline-flex h-full w-full rounded-full bg-crimson opacity-60 motion-safe:animate-ping" />}
             <span className={`relative inline-flex w-2 h-2 rounded-full ${paused ? "bg-gray-500" : "bg-crimson"}`} />
@@ -115,7 +115,7 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
       </div>
 
       {rows.length > 0 ? (
-        <ul aria-live="off" className="mt-6 divide-y divide-white/10 border-y border-white/10">
+        <ul aria-live="off" className="mt-5 sm:mt-6 divide-y divide-white/10 border-y border-white/10">
           {slots.map((rowIndex, slot) => {
             const row = rows[rowIndex];
             return (
@@ -129,7 +129,7 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                       initial={{ opacity: 1 }}
                       animate={{ opacity: 0 }}
                       transition={{ duration: 1.6, ease: "easeOut" }}
-                      className="absolute inset-y-1 -left-3 right-0 rounded-lg bg-gradient-to-r from-gold/15 to-transparent border-l-2 border-gold pointer-events-none"
+                      className="absolute inset-y-1 -left-2 sm:-left-3 right-0 rounded-lg bg-gradient-to-r from-gold/15 to-transparent border-l-2 border-gold pointer-events-none"
                     />
                   )}
                 </AnimatePresence>
@@ -137,9 +137,9 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                 <Link
                   href={ratesHref(row.category, row.region)}
                   aria-label={`${row.category}, ${row.region} card: ₵${formatRate(row.rate)} for every $1. See all ${row.category} rates`}
-                  className="relative flex items-center justify-between gap-4 py-3.5 -mx-3 px-3 rounded-xl overflow-hidden transition-colors hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-gold"
+                  className="relative flex items-center justify-between gap-3 py-3 sm:py-3.5 -mx-2 sm:-mx-3 px-2 sm:px-3 rounded-xl overflow-hidden transition-colors hover:bg-white/[0.06] active:bg-white/[0.08] focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-gold"
                 >
-                <div className="relative min-w-0 h-12 flex-1 overflow-hidden">
+                <div className="relative min-w-0 h-11 sm:h-12 flex-1 overflow-hidden">
                   <AnimatePresence initial={false} mode="popLayout">
                     <motion.div
                       key={row.id}
@@ -148,13 +148,13 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                       exit={{ y: "-100%", opacity: 0 }}
                       transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="relative w-14 h-[37px] shrink-0 rounded-md overflow-hidden ring-1 ring-white/10">
+                      <div className="flex items-center gap-2.5 sm:gap-3">
+                        <span className="relative w-12 sm:w-14 h-[32px] sm:h-[37px] shrink-0 rounded-md overflow-hidden ring-1 ring-white/10">
                           <BrandImage name={row.category} imageUrl={row.logoUrl} variant="mini" />
                         </span>
                         <div className="min-w-0">
-                          <p className="font-medium truncate">{row.category}</p>
-                          <p className="text-sm text-gray-400 truncate">
+                          <p className="font-medium text-sm sm:text-base truncate">{row.category}</p>
+                          <p className="text-xs sm:text-sm text-gray-400 truncate">
                             {row.region} card, ${row.amount}
                           </p>
                         </div>
@@ -163,8 +163,8 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
                   </AnimatePresence>
                 </div>
 
-                <p className="relative shrink-0 text-2xl font-semibold tabular-nums text-gold tracking-tight">
-                  <span className="text-base text-gold/70 mr-0.5">₵</span>
+                <p className="relative shrink-0 text-xl sm:text-2xl font-semibold tabular-nums text-gold tracking-tight">
+                  <span className="text-sm sm:text-base text-gold/70 mr-0.5">₵</span>
                   <RollingNumber value={formatRate(row.rate)} />
                 </p>
                 </Link>
@@ -173,13 +173,13 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
           })}
         </ul>
       ) : (
-        <div className="mt-6 rounded-2xl border border-dashed border-white/15 px-5 py-10 text-center">
-          <p className="font-medium">Rates are being refreshed</p>
-          <p className="mt-1 text-sm text-gray-400">The full rates page always has the latest figures.</p>
+        <div className="mt-6 rounded-2xl border border-dashed border-white/15 px-4 py-8 sm:px-5 sm:py-10 text-center">
+          <p className="font-medium text-sm sm:text-base">Rates are being refreshed</p>
+          <p className="mt-1 text-xs sm:text-sm text-gray-400">The full rates page always has the latest figures.</p>
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+      <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 text-xs sm:text-sm">
         <p className="text-gray-400">{time ? `Updated at ${time}. Rates move through the day.` : "Rates move through the day."}</p>
         <div className="flex items-center gap-4">
           {rotates && (
@@ -196,7 +196,7 @@ export default function RateBoard({ rows, updatedAt }: RateBoardProps) {
             href="/rates"
             className="font-semibold text-gold underline decoration-gold/40 underline-offset-4 hover:decoration-gold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold rounded"
           >
-            See every rate
+            See every rate →
           </Link>
         </div>
       </div>

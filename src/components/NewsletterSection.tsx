@@ -39,41 +39,43 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section id="newsletter" className="bg-gold text-ink py-20 lg:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+    <section id="newsletter" className="bg-gold text-ink py-14 sm:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-start">
         <div className="max-w-xl">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.05] text-balance">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.08] text-balance">
             Hear about rate changes before you trade
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-ink/80 text-pretty">
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg leading-relaxed text-ink/80 text-pretty">
             One short email a week with the cards paying best right now, plus notice of new cards we accept. Add your phone number if you would rather get it by SMS.
           </p>
         </div>
 
         <div>
-          <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-3.5 sm:gap-4">
             <div>
-              <label htmlFor="nl-name" className="block text-sm font-medium mb-1.5">Your name</label>
-              <input id="nl-name" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
+              <label htmlFor="nl-name" className="block text-xs sm:text-sm font-medium mb-1.5">Your name</label>
+              <input id="nl-name" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
             </div>
             <div>
-              <label htmlFor="nl-email" className="block text-sm font-medium mb-1.5">Email address</label>
-              <input id="nl-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
+              <label htmlFor="nl-email" className="block text-xs sm:text-sm font-medium mb-1.5">Email address</label>
+              <input id="nl-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="nl-phone" className="block text-sm font-medium mb-1.5">Phone number <span className="font-normal text-ink/60">(optional, for SMS)</span></label>
-              <input id="nl-phone" type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" />
+              <label htmlFor="nl-phone" className="block text-xs sm:text-sm font-medium mb-1.5">Phone number <span className="font-normal text-ink/60">(optional, for SMS)</span></label>
+              <input id="nl-phone" type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" />
             </div>
-            <div className="sm:col-span-2 flex items-start gap-3">
-              <input id="nl-consent" type="checkbox" className="mt-1 w-4 h-4 rounded border-ink/30 accent-ink" required />
-              <label htmlFor="nl-consent" className="text-sm text-ink/80">
-                Send me rate updates from Aqiran Xchange. I can unsubscribe from any email.
+            <div className="sm:col-span-2">
+              <label htmlFor="nl-consent" className="flex items-start gap-3 cursor-pointer py-1">
+                <input id="nl-consent" type="checkbox" className="mt-0.5 w-4 h-4 rounded border-ink/30 accent-ink shrink-0" required />
+                <span className="text-xs sm:text-sm text-ink/80 leading-snug">
+                  Send me rate updates from Aqiran Xchange. I can unsubscribe from any email.
+                </span>
               </label>
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="sm:col-span-2 h-14 rounded-full bg-ink text-white font-semibold transition-colors hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+              className="sm:col-span-2 h-13 sm:h-14 rounded-full bg-ink text-white font-semibold text-base transition-all hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink active:scale-[0.98]"
             >
               {isLoading && (
                 <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -81,7 +83,7 @@ export default function NewsletterSection() {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               )}
-              {isLoading ? "Subscribing" : "Subscribe"}
+              {isLoading ? "Subscribing..." : "Subscribe to updates"}
             </button>
           </form>
 

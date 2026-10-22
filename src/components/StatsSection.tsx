@@ -13,13 +13,13 @@ export default function StatsSection() {
           {stats.map((stat, i) => (
             <div
               key={stat.value}
-              className={`py-8 lg:py-10 border-gray-200 dark:border-gray-800 ${i % 2 === 1 ? "pl-6 border-l" : "pr-4"} ${i > 0 ? "lg:pl-8 lg:border-l" : ""} ${i > 1 ? "border-t lg:border-t-0" : ""}`}
+              className={`py-6 sm:py-8 lg:py-10 border-gray-200 dark:border-gray-800 ${i % 2 === 1 ? "pl-4 sm:pl-6 border-l" : "pr-3 sm:pr-6"} ${i > 0 ? "lg:pl-8 lg:border-l" : ""} ${i > 1 ? "border-t lg:border-t-0" : ""}`}
             >
               <dt className="sr-only">{stat.label}</dt>
-              <dd className="text-4xl md:text-5xl font-bold tracking-[-0.04em] tabular-nums text-ink dark:text-white">
+              <dd className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight tabular-nums text-ink dark:text-white">
                 {stat.value}
               </dd>
-              <dd className="mt-2 text-gray-600 dark:text-gray-400">{stat.label}</dd>
+              <dd className="mt-1.5 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-snug">{stat.label}</dd>
             </div>
           ))}
         </dl>

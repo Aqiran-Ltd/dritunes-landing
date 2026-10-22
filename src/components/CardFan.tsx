@@ -4,15 +4,15 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { cardByName } from "@/lib/cardCatalogue";
 
-// Back to front, as left/top percentages of the fan area. Each card is 38% of
+// Back to front, as left/top percentages of the fan area. Each card is 35% of
 // the board's width; they fan out from a stack in the middle once on load.
-const CARD_WIDTH = 38;
-const STACK_LEFT = 31;
+const CARD_WIDTH = 35;
+const STACK_LEFT = 32.5;
 const FAN = [
-  { name: "Razer Gold", left: 3, top: 26, rotate: -9 },
-  { name: "Amazon", left: 21, top: 8, rotate: -3 },
-  { name: "Steam", left: 40, top: 4, rotate: 3 },
-  { name: "Apple / iTunes", left: 59, top: 20, rotate: 9 },
+  { name: "Razer Gold", left: 6, top: 26, rotate: -7 },
+  { name: "Amazon", left: 23, top: 8, rotate: -2.5 },
+  { name: "Steam", left: 41, top: 4, rotate: 2.5 },
+  { name: "Apple / iTunes", left: 58, top: 20, rotate: 7 },
 ];
 
 /** Real gift cards tucked behind the top of the rate board: the "cards in" half of the hero. */

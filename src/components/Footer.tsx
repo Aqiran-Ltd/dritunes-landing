@@ -100,9 +100,9 @@ export default function Footer() {
       
       <div className="max-w-7xl mx-auto px-4 py-16 relative z-10">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-12">
           {/* Company Info */}
-          <div className="lg:col-span-1">
+          <div className="sm:col-span-2 lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -110,17 +110,16 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               className="mb-8"
             >
-              <Link href="/" target="_blank" rel="noopener noreferrer" className="inline-block mb-4" aria-label="Aqiran Xchange home">
-                <BrandLogo variant="on-dark" className="h-14" />
+              <Link href="/" className="inline-block mb-4" aria-label="Aqiran Xchange home">
+                <BrandLogo variant="on-dark" className="h-12 sm:h-14" />
               </Link>
-              <p className="flex items-center gap-2 mb-6 text-sm text-gray-400">
+              <p className="flex items-center gap-2 mb-4 text-xs sm:text-sm text-gray-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-crimson" />
                 Formerly Dr iTunes Consult
               </p>
-              <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed mb-6">
-                Ghana&apos;s premier gift card trading service. Trusted by thousands for secure, fast, and reliable transactions with 24/7 support.
+              <p className="text-gray-300 dark:text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
+                Secure, fast, and reliable gift card trading with 24/7 support. Trade online or visit our physical counter in Tamale.
               </p>
-              
             </motion.div>
           </div>
 
@@ -132,7 +131,7 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <h4 className="text-base font-semibold text-white mb-6">
+              <h4 className="text-base font-semibold text-white mb-4 sm:mb-6">
                 Quick Links
               </h4>
               <ul className="space-y-3">
@@ -145,25 +144,23 @@ export default function Footer() {
                   { name: "Privacy Policy", href: "/privacy" },
                   { name: "Terms of Service", href: "/terms" }
                 ].map((link) => {
-                  // Normalize paths by removing trailing slashes for comparison
                   const normalize = (path: string) => path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
                   const isActive = normalize(pathname) === normalize(link.href);
                   return (
                     <li key={link.name}>
-                      <motion.a
+                      <Link
                         href={link.href}
-                        whileHover={{ x: 5 }}
-                        className={`text-sm flex items-center group transition-colors duration-200 ${
+                        className={`text-sm py-1 flex items-center group transition-colors duration-200 ${
                           isActive 
                             ? "text-gold-400 font-medium" 
                             : "text-gray-300 dark:text-gray-400 hover:text-gold-400 dark:hover:text-gold-300"
                         }`}
                       >
-                        <span className={`w-1 h-1 bg-gold-500 rounded-full mr-3 transition-opacity duration-200 ${
+                        <span className={`w-1.5 h-1.5 bg-gold-500 rounded-full mr-2.5 transition-opacity duration-200 ${
                           isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                         }`}></span>
                         {link.name}
-                      </motion.a>
+                      </Link>
                     </li>
                   );
                 })}
@@ -179,62 +176,59 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h4 className="text-base font-semibold text-white mb-6">
+              <h4 className="text-base font-semibold text-white mb-4 sm:mb-6">
                 Contact Info
               </h4>
               <ul className="space-y-4">
                 <li>
-                  <motion.a
+                  <a
                     href={socials?.whatsapp ? `https://wa.me/${socials.whatsapp.replace(/\D/g, '')}` : "https://wa.me/233548434599"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ x: 5 }}
                     className="text-gray-300 dark:text-gray-400 hover:text-green-400 dark:hover:text-green-300 transition-colors duration-200 text-sm flex items-center group"
                   >
-                    <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                    <div className="w-9 h-9 bg-green-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-200 shrink-0">
                       <PhoneIcon className="w-4 h-4 text-white" />
                     </div>
                     <div>
                       <div className="font-medium">WhatsApp</div>
                       <div className="text-xs text-gray-400">24/7 Support</div>
                     </div>
-                  </motion.a>
+                  </a>
                 </li>
                 <li>
-                  <motion.a
+                  <a
                     href={socials?.telegram || "https://t.me/dritunes"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ x: 5 }}
                     className="text-gray-300 dark:text-gray-400 hover:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 text-sm flex items-center group"
                   >
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                    <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-200 shrink-0">
                       <ChatBubbleLeftRightIcon className="w-4 h-4 text-white" />
                     </div>
                     <div>
                       <div className="font-medium">Telegram</div>
                       <div className="text-xs text-gray-400">Instant Chat</div>
                     </div>
-                  </motion.a>
+                  </a>
                 </li>
                 <li>
-                  <motion.a
+                  <a
                     href="mailto:info@aqiranxchange.com"
-                    whileHover={{ x: 5 }}
                     className="text-gray-300 dark:text-gray-400 hover:text-gold-400 dark:hover:text-gold-300 transition-colors duration-200 text-sm flex items-center group"
                   >
-                    <div className="w-8 h-8 bg-gold-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                    <div className="w-9 h-9 bg-gold-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform duration-200 shrink-0">
                       <EnvelopeIcon className="w-4 h-4 text-ink" />
                     </div>
                     <div>
                       <div className="font-medium">Email</div>
-                      <div className="text-xs text-gray-400">info@aqiranxchange.com</div>
+                      <div className="text-xs text-gray-400 truncate max-w-[180px]">info@aqiranxchange.com</div>
                     </div>
-                  </motion.a>
+                  </a>
                 </li>
                 <li>
                   <div className="text-gray-300 dark:text-gray-400 text-sm flex items-center group">
-                    <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center mr-3">
+                    <div className="w-9 h-9 bg-purple-600 rounded-lg flex items-center justify-center mr-3 shrink-0">
                       <MapPinIcon className="w-4 h-4 text-white" />
                     </div>
                     <div>
@@ -255,22 +249,22 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h4 className="text-base font-semibold text-white mb-6">
+              <h4 className="text-base font-semibold text-white mb-4 sm:mb-6">
                 Follow Us
               </h4>
               
               {/* Social Media Icons */}
-              <div className="grid grid-cols-3 gap-3 mb-8">
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-6">
                 {socialLinks.map((social) => (
                   <motion.a
                     key={social.name}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => track('Social Link Click', { platform: social.name })}
-                    className={`w-12 h-12 ${social.bgColor} rounded-xl flex items-center justify-center text-white transition-all duration-300 shadow-lg hover:shadow-xl`}
+                    className={`h-11 sm:h-12 ${social.bgColor} rounded-xl flex items-center justify-center text-white transition-all duration-300 shadow-md hover:shadow-lg`}
                     title={social.name}
                   >
                     {social.icon}
@@ -278,24 +272,11 @@ export default function Footer() {
                 ))}
               </div>
 
-              {/* Newsletter Signup */}
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
-                <h5 className="text-sm font-semibold text-white mb-2">Stay Updated</h5>
-                <p className="text-xs text-gray-400 mb-3">Get the latest digital finance news and trading tips</p>
-                <div className="flex space-x-2">
-                  <input
-                    type="email"
-                    placeholder="Your email"
-                    className="flex-1 min-w-0 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gold-500/50"
-                  />
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="shrink-0 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-ink text-xs font-medium rounded-lg transition-colors duration-200"
-                  >
-                    Subscribe
-                  </motion.button>
-                </div>
+              {/* Quick WhatsApp / Store banner */}
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3.5">
+                <p className="text-xs font-semibold text-gold-400 mb-1">Store & Trade Hours</p>
+                <p className="text-xs text-gray-300">Mon – Sun: 24/7 Online</p>
+                <p className="text-xs text-gray-400 mt-0.5">Physical Counter: Tamale, Ghana</p>
               </div>
             </motion.div>
           </div>
@@ -309,28 +290,28 @@ export default function Footer() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="border-t border-gray-800 dark:border-gray-700 pt-8"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex items-center space-x-6">
-              <p className="text-gray-400 dark:text-gray-500 text-sm">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+              <p className="text-gray-400 dark:text-gray-500 text-xs sm:text-sm">
                 © {currentYear} Aqiran Xchange. All rights reserved.
               </p>
-              <div className="flex items-center space-x-4 text-xs">
-                <a href="/privacy" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Privacy Policy</a>
+              <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs">
+                <Link href="/privacy" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Privacy Policy</Link>
                 <span className="text-gray-600">•</span>
-                <a href="/terms" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Terms of Service</a>
+                <Link href="/terms" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Terms of Service</Link>
                 <span className="text-gray-600">•</span>
-                <a href="/cookies" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Cookie Policy</a>
+                <Link href="/cookies" className="text-gray-400 hover:text-gold-400 transition-colors duration-200">Cookie Policy</Link>
                 <span className="text-gray-600">•</span>
-                <a href="/auth/delete-account" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Delete Account</a>
+                <Link href="/auth/delete-account" className="text-gray-400 hover:text-red-400 transition-colors duration-200">Delete Account</Link>
               </div>
             </div>
             
-            <p className="text-gray-400 text-xs">Made in Tamale, Ghana</p>
+            <p className="text-gray-400 text-xs shrink-0">Made in Tamale, Ghana</p>
           </div>
         </motion.div>
 
         {/* Oversized wordmark, cropped by the footer edge */}
-        <div aria-hidden="true" className="mt-12 -mb-28 md:-mb-40 pointer-events-none select-none">
+        <div aria-hidden="true" className="mt-8 -mb-20 sm:-mb-28 md:-mb-40 pointer-events-none select-none overflow-hidden max-w-full">
           <Image
             src="/logo/aqiran-xchange-full-logo-mono-white.svg"
             alt=""

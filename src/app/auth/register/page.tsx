@@ -133,15 +133,13 @@ export default function RegisterPage() {
                         className={`
                           w-full px-4 py-3 rounded-xl
                           bg-gray-50 dark:bg-gray-900 
-                          border-2 
+                          border
                           ${fieldErrors.country 
-                            ? 'border-red-500 focus:border-red-600' 
-                            : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:border-red-600'
+                            ? 'border-red-500 dark:border-red-500/80 focus:border-red-500 focus:ring-4 focus:ring-red-500/15 text-red-900 dark:text-red-200' 
+                            : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 text-gray-900 dark:text-white'
                           }
-                          focus:ring-4 focus:ring-gold-500/10
-                          transition-all duration-300 ease-out
-                          text-gray-900 dark:text-gray-100
-                          focus:outline-none focus:bg-white dark:focus:bg-black
+                          transition-all duration-200 ease-out
+                          focus:outline-none focus:bg-white dark:focus:bg-gray-950
                           pl-11 appearance-none cursor-pointer
                         `}
                         required

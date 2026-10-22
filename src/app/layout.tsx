@@ -26,10 +26,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://aqiranxchange.com"),
   title: {
-    default: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
+    default: "Aqiran Xchange",
     template: "%s | Aqiran Xchange"
   },
-  description: "Ghana's most trusted gift card trading service. Trade online via WhatsApp/Telegram or visit our physical store in Tamale. Best rates, 24/7 support, secure transactions for Gift Cards.",
+  description: "Trade gift cards online via WhatsApp or visit our physical store in Tamale. Best rates, 24/7 support, and instant cedis payout.",
   keywords: [
     "gift card exchange Ghana", 
     "Tamale gift card store", 
@@ -60,8 +60,8 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
-    description: "Ghana's most trusted gift card trading service. Trade online or visit our Tamale store for the best rates on Gift Cards.",
+    title: "Aqiran Xchange",
+    description: "Trade online or visit our Tamale store for the best rates on gift cards.",
     url: "https://aqiranxchange.com",
     siteName: "Aqiran Xchange",
     type: "website",
@@ -77,8 +77,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aqiran Xchange - Ghana's Premier Gift Card Trading Service",
-    description: "Trade Gift Cards securely in Ghana. Best rates, 24/7 support, and physical store in Tamale.",
+    title: "Aqiran Xchange",
+    description: "Trade gift cards securely. Best rates, 24/7 support, and physical store in Tamale.",
     images: ['/og-image.png'],
     creator: "@dritunes",
   },

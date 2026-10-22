@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn about Aqiran Xchange, Ghana's leading ICT consultancy and gift card trading company. Our mission is to provide secure, fast, and reliable digital services.",
+  description: "Learn about Aqiran Xchange, a leading digital services and gift card trading platform. Our mission is to provide secure, fast, and reliable digital services.",
 };
 
 export default function About() {

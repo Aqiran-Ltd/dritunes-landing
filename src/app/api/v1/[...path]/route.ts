@@ -53,9 +53,9 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
   }
 
   // 3. Create Request Body (if applicable)
-  // We need to read the body for POST/PUT/PATCH
+  // We need to read the body for POST/PUT/PATCH/DELETE
   let body: BodyInit | null = null;
-  if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
      // Be careful with body streams. 
      // For typical JSON/FormData, we can pass the blob or arrayBuffer.
      const blob = await request.blob();

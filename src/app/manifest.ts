@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Aqiran Xchange',
     short_name: 'Aqiran Xchange',
-    description: "Ghana's Premier Gift Card Trading Service",
+    description: "Gift Card Trading Service",
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
