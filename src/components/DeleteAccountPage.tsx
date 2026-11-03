@@ -151,6 +151,8 @@ export default function DeleteAccountPage() {
               <Input
                 type="email"
                 label="Confirm Email Address"
+                autoComplete="email"
+                maxLength={254}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -161,6 +163,9 @@ export default function DeleteAccountPage() {
               <Input
                 type="password"
                 label="Verify Your Password"
+                autoComplete="current-password"
+                minLength={8}
+                maxLength={256}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

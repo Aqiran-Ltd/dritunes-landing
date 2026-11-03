@@ -84,14 +84,38 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData._hp) return;
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const normalizedPhone = formData.phone.replace(/[\s()-]/g, '').trim();
+    const trimmedSubject = formData.subject.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (trimmedName.length < 2) {
+      toast.error("Please enter your name (at least 2 characters).");
+      return;
+    }
+    if (!/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
+      toast.error("Please enter a valid phone number (9 to 15 digits).");
+      return;
+    }
+    if (trimmedSubject.length < 2) {
+      toast.error("Please enter a subject.");
+      return;
+    }
+    if (trimmedMessage.length < 3) {
+      toast.error("Please enter a message.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       await api.post("/contact", {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        subject: formData.subject.trim(),
-        content: `${formData.message.trim()}\n\nPhone: ${formData.phone.trim()}`,
+        name: trimmedName,
+        email: trimmedEmail,
+        subject: trimmedSubject,
+        content: `${trimmedMessage}\n\nPhone: ${normalizedPhone}`,
         _hp: formData._hp
       });
       
@@ -203,7 +227,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <label htmlFor="c-name" className="block text-sm font-medium mb-1.5">Your name</label>
-                <input id="c-name" type="text" name="name" autoComplete="name" maxLength={120} value={formData.name} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
+                <input id="c-name" type="text" name="name" autoComplete="name" minLength={2} maxLength={120} value={formData.name} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
               </div>
               <div>
                 <label htmlFor="c-email" className="block text-sm font-medium mb-1.5">Email address</label>
@@ -211,15 +235,15 @@ export default function ContactPage() {
               </div>
               <div>
                 <label htmlFor="c-phone" className="block text-sm font-medium mb-1.5">Phone number</label>
-                <input id="c-phone" type="tel" name="phone" autoComplete="tel" maxLength={24} value={formData.phone} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
+                <input id="c-phone" type="tel" inputMode="tel" name="phone" autoComplete="tel" minLength={9} maxLength={20} value={formData.phone} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
               </div>
               <div>
                 <label htmlFor="c-subject" className="block text-sm font-medium mb-1.5">Subject</label>
-                <input id="c-subject" type="text" name="subject" maxLength={200} value={formData.subject} onChange={handleChange} placeholder="A trade, a payout, training" className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
+                <input id="c-subject" type="text" name="subject" minLength={2} maxLength={200} value={formData.subject} onChange={handleChange} placeholder="A trade, a payout, training" className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
               </div>
               <div className="sm:col-span-2">
                 <label htmlFor="c-message" className="block text-sm font-medium mb-1.5">Message</label>
-                <textarea id="c-message" name="message" rows={6} maxLength={3500} value={formData.message} onChange={handleChange} placeholder="If it is about a trade, include the trade number." className="w-full px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all py-3 resize-y" required />
+                <textarea id="c-message" name="message" rows={6} minLength={3} maxLength={3500} value={formData.message} onChange={handleChange} placeholder="If it is about a trade, include the trade number." className="w-full px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all py-3 resize-y" required />
               </div>
               <button
                 type="submit"

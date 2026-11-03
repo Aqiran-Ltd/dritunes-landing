@@ -59,6 +59,7 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
           <MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />
           <input 
             type="text" 
+            maxLength={100}
             placeholder="Search transactions..." 
             className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-sm placeholder-gray-400 text-gray-900 dark:text-white ml-2"
           />

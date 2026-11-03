@@ -445,6 +445,7 @@ export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string;
               <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-gold-700 transition-colors" />
               <input 
                 type="text" 
+                maxLength={100}
                 value={searchQuery} 
                 onChange={e => setSearchQuery(e.target.value)} 
                 placeholder="Search assets, regions, or denominations..." 
@@ -569,7 +570,7 @@ export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string;
                   </div>
                   <div className="relative">
                     <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
-                    <input type="text" value={categorySearch} onChange={(e) => setCategorySearch(e.target.value)} placeholder="Find a brand (e.g. Steam, Apple, Nike...)" className="w-full pl-14 pr-6 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-lg font-medium text-gray-900 dark:text-white outline-none transition-all" />
+                    <input type="text" maxLength={100} value={categorySearch} onChange={(e) => setCategorySearch(e.target.value)} placeholder="Find a brand (e.g. Steam, Apple, Nike...)" className="w-full pl-14 pr-6 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-lg font-medium text-gray-900 dark:text-white outline-none transition-all" />
                   </div>
                 </div>
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">

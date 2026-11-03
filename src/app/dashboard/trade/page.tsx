@@ -26,6 +26,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import { parseAmountRule, validateAmount, getHelperText } from '@/lib/validation';
+
+const MAX_TRADE_IMAGES = 10;
+const MAX_TRADE_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB (matches backend max:5120)
+const ALLOWED_TRADE_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 export default function TradePage() {
   useAuth();
@@ -66,17 +71,43 @@ export default function TradePage() {
     setIsDragging(false);
   };
 
+  const addValidatedFiles = (fileList: FileList | File[]) => {
+    const incoming = Array.from(fileList);
+    const validFiles: File[] = [];
+
+    for (const file of incoming) {
+      if (attachments.length + validFiles.length >= MAX_TRADE_IMAGES) {
+        toast.error(`You can upload up to ${MAX_TRADE_IMAGES} images per trade.`);
+        break;
+      }
+      if (!ALLOWED_TRADE_IMAGE_TYPES.includes(file.type.toLowerCase())) {
+        toast.error(`"${file.name}" is not a supported image (use JPG, PNG, GIF, or WEBP).`);
+        continue;
+      }
+      if (file.size > MAX_TRADE_IMAGE_BYTES) {
+        toast.error(`"${file.name}" exceeds the 5MB size limit.`);
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    if (validFiles.length > 0) {
+      setAttachments(prev => [...prev, ...validFiles]);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setAttachments(prev => [...prev, ...Array.from(e.dataTransfer.files)]);
+      addValidatedFiles(e.dataTransfer.files);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setAttachments(prev => [...prev, ...Array.from(e.target.files!)]);
+      addValidatedFiles(e.target.files);
+      e.target.value = '';
     }
   };
 
@@ -212,19 +243,38 @@ export default function TradePage() {
      return selectedType === 'physical' ? activeCard.rates.ghsPhysical : activeCard.rates.ghsEcode;
   }, [activeCard, selectedType]);
 
+  const amountCheck = useMemo(() => {
+      if (!activeCard) {
+          return { isValid: false, message: '', helper: '' };
+      }
+      const rule = parseAmountRule(activeCard.amount);
+      const helper = getHelperText(rule);
+      if (!amount.trim()) {
+          return { isValid: false, message: '', helper };
+      }
+      const amt = parseFloat(amount);
+      const res = validateAmount(amt, rule);
+      return {
+          isValid: res.isValid,
+          message: res.message || '',
+          helper,
+      };
+  }, [activeCard, amount]);
+
   const estimatedPayout = useMemo(() => {
       const amt = parseFloat(amount);
-      if (isNaN(amt) || !currentRate) return 0;
+      if (isNaN(amt) || !currentRate || !amountCheck.isValid) return 0;
       return amt * currentRate;
-  }, [amount, currentRate]);
+  }, [amount, currentRate, amountCheck.isValid]);
 
   const isValid = useMemo(() => {
       const amt = parseFloat(amount);
       const isWithdrawalValid = withdrawalPreference === 'wallet' || (withdrawalPreference === 'direct_payout' && selectedUserMethodId !== -1);
-      const isCodeValid = selectedType !== 'ecode' || code.trim().length > 0;
-      const isAttachmentsValid = selectedType !== 'physical' || attachments.length > 0;
-      return !!activeCard && !!selectedType && estimatedPayout > 0 && !isNaN(amt) && amt > 0 && isWithdrawalValid && isCodeValid && isAttachmentsValid;
-  }, [activeCard, selectedType, estimatedPayout, amount, code, attachments, withdrawalPreference, selectedUserMethodId]);
+      const trimmedCode = code.trim();
+      const isCodeValid = selectedType !== 'ecode' || (trimmedCode.length >= 3 && trimmedCode.length <= 500);
+      const isAttachmentsValid = selectedType !== 'physical' || (attachments.length > 0 && attachments.length <= MAX_TRADE_IMAGES);
+      return !!activeCard && !!selectedType && amountCheck.isValid && estimatedPayout > 0 && !isNaN(amt) && amt >= 0.01 && amt <= 100000 && isWithdrawalValid && isCodeValid && isAttachmentsValid;
+  }, [activeCard, selectedType, amountCheck.isValid, estimatedPayout, amount, code, attachments, withdrawalPreference, selectedUserMethodId]);
 
   // -- Submit Handler --
   const handleSubmit = async () => {
@@ -366,11 +416,24 @@ export default function TradePage() {
                           <label className="block text-sm font-medium text-gray-500 mb-1">Total Amount ($)</label>
                           <input
                             type="number"
+                            inputMode="decimal"
+                            min="0.01"
+                            max="100000"
+                            step="any"
                             value={amount}
                             onChange={e => setAmount(e.target.value)}
-                            className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 font-bold text-lg text-gray-900 dark:text-white outline-none transition-all"
+                            className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border ${amount.trim() && !amountCheck.isValid ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/15' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15'} font-bold text-lg text-gray-900 dark:text-white outline-none transition-all`}
                             placeholder="100.00"
+                            required
                           />
+                          {(amountCheck.helper || amountCheck.message) && (
+                            <div className="mt-1.5 flex items-center justify-between text-xs min-h-[1.25rem]">
+                              <span className="text-gray-500 dark:text-gray-400 font-medium">{amountCheck.helper}</span>
+                              {amount.trim() && !amountCheck.isValid && (
+                                <span className="text-red-500 font-bold">{amountCheck.message}</span>
+                              )}
+                            </div>
+                          )}
                       </div>
 
                       {selectedType === 'ecode' ? (
@@ -381,9 +444,12 @@ export default function TradePage() {
                               <input
                                   type="text"
                                   value={code}
+                                  minLength={3}
+                                  maxLength={500}
                                   onChange={e => setCode(e.target.value)}
                                   className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 font-mono text-gray-900 dark:text-white outline-none transition-all"
                                   placeholder="Enter your gift card code..."
+                                  required
                               />
                           </div>
                       ) : (
@@ -440,14 +506,14 @@ export default function TradePage() {
                                                   name="file-upload"
                                                   type="file"
                                                   className="sr-only"
-                                                  accept="image/*"
+                                                  accept="image/jpeg,image/png,image/gif,image/webp"
                                                   multiple
                                                   onChange={handleFileChange}
                                               />
                                               <p className="pl-1">or drag and drop</p>
                                           </div>
                                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                              PNG, JPG, GIF up to 10MB
+                                              PNG, JPG, GIF, WEBP up to 5MB (max 10 images)
                                           </p>
                                       </div>
                                   </div>
@@ -572,6 +638,7 @@ export default function TradePage() {
                        <label className="block text-sm font-medium text-gray-500 mb-1">Additional Notes (Optional)</label>
                        <textarea 
                          value={userNotes} 
+                         maxLength={2000}
                          onChange={e => setUserNotes(e.target.value)}
                          placeholder="e.g. Specific instructions for this payout..."
                          className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 min-h-[80px]"

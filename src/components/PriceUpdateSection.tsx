@@ -257,6 +257,9 @@ export default function PriceUpdateSection({ initialCategories = [] }: PriceUpda
                     id="quick-amount"
                     type="number"
                     inputMode="decimal"
+                    min="0.01"
+                    max="100000"
+                    step="any"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     className={`w-full bg-gray-50 dark:bg-gray-800 border ${!isValid ? 'border-red-500 ring-4 ring-red-500/15' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15'} rounded-xl pl-8 pr-4 py-3 text-gray-900 dark:text-white font-semibold text-lg focus:outline-none transition-all placeholder-gray-400`}

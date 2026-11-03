@@ -56,18 +56,43 @@ function ProfileForm({ user }: { user: any }) {
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
+        const trimmedName = name.trim();
+        if (trimmedName.length < 2 || trimmedName.length > 255) {
+            const msg = 'Full name must be between 2 and 255 characters.';
+            toast.error(msg);
+            setMessage(msg);
+            return;
+        }
+        const normalizedPhone = phone.replace(/[\s()-]/g, '').trim();
+        if (normalizedPhone && !/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
+            const msg = 'Enter a valid phone number (9 to 15 digits, optional leading +).';
+            toast.error(msg);
+            setMessage(msg);
+            return;
+        }
+        if (dob) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (dob > todayStr || dob < '1900-01-01') {
+                const msg = 'Please enter a valid date of birth.';
+                toast.error(msg);
+                setMessage(msg);
+                return;
+            }
+        }
+
+        const phoneChanged = normalizedPhone !== (user.phone_number || '');
         const loadingToast = toast.loading('Updating profile...');
         setIsLoading(true);
         try {
             // Prepare FormData (for file upload support)
             const formData = new FormData();
-            formData.append('name', name);
-            if (phone) formData.append('phone_number', phone);
+            formData.append('name', name.trim());
+            if (normalizedPhone) formData.append('phone_number', normalizedPhone);
             if (country) formData.append('country', country);
             if (dob) formData.append('date_of_birth', dob);
-            if (address) formData.append('address', address);
-            if (city) formData.append('city', city);
-            if (state) formData.append('state', state);
+            if (address) formData.append('address', address.trim());
+            if (city) formData.append('city', city.trim());
+            if (state) formData.append('state', state.trim());
 
             if (photo) {
                 formData.append('profile_picture', photo);
@@ -83,10 +108,15 @@ function ProfileForm({ user }: { user: any }) {
                  const updatedUser = data.data || data.user || data;
                  if (updatedUser && updatedUser.id) {
                      updateUser(updatedUser);
+                     setPhone(updatedUser.phone_number || normalizedPhone);
                  }
                  
-                 toast.success(data.message || 'Profile updated successfully!', { id: loadingToast });
-                 setMessage(data.message || 'Profile updated successfully!');
+                 const successMsg =
+                     phoneChanged && updatedUser?.phone_verified_at === null
+                         ? 'Profile updated! Please verify your new phone number.'
+                         : data.message || 'Profile updated successfully!';
+                 toast.success(successMsg, { id: loadingToast });
+                 setMessage(successMsg);
             } else {
                  throw new Error(data.message || 'Failed to update profile.');
             }
@@ -127,46 +157,54 @@ function ProfileForm({ user }: { user: any }) {
                         ref={fileInputRef} 
                         onChange={handlePhotoChange} 
                         className="hidden" 
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/gif,image/webp"
                     />
                 </div>
                 <div>
                      <p className="text-sm font-medium text-gray-900 dark:text-white">Profile Photo</p>
-                     <p className="text-xs text-gray-500 mt-1">Accepts JPG, PNG or GIF. Max 2MB.</p>
+                     <p className="text-xs text-gray-500 mt-1">Accepts JPG, PNG, GIF or WEBP. Max 2MB.</p>
                 </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                    <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full Name" required />
+                    <Input value={name} autoComplete="name" minLength={2} maxLength={255} onChange={(e) => setName(e.target.value)} placeholder="Full Name" required />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
-                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone Number" />
+                    <Input type="tel" inputMode="tel" autoComplete="tel" value={phone} minLength={9} maxLength={20} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. 0241234567 or +233241234567" />
                 </div>
                 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Birth</label>
-                    <Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
+                    <Input type="date" min="1900-01-01" max={new Date().toISOString().split('T')[0]} value={dob} onChange={(e) => setDob(e.target.value)} />
                 </div>
                  <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address</label>
-                    <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street Address" />
+                    <Input value={address} maxLength={500} onChange={(e) => setAddress(e.target.value)} placeholder="Street Address" />
                 </div>
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">City</label>
-                    <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
+                    <Input value={city} maxLength={100} onChange={(e) => setCity(e.target.value)} placeholder="City" />
                 </div>
                  <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State / Region</label>
-                    <Input value={state} onChange={(e) => setState(e.target.value)} placeholder="State or Region" />
+                    <Input value={state} maxLength={100} onChange={(e) => setState(e.target.value)} placeholder="State or Region" />
                 </div>
 
                  <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Country</label>
-                    <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="Country Code (e.g. GH)" />
+                    <select
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 text-gray-900 dark:text-white transition-all duration-200 ease-out focus:outline-none focus:bg-white dark:focus:bg-gray-950"
+                    >
+                        <option value="">Select Country</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Nigeria">Nigeria</option>
+                    </select>
                 </div>
             </div>
             
@@ -197,6 +235,10 @@ function SecurityForm() {
 
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (password.length < 8 || password.length > 256) {
+            setMessage('New password must be at least 8 characters.');
+            return;
+        }
         if (password !== passwordConfirmation) {
             setMessage('Passwords do not match.');
             return;
@@ -236,16 +278,16 @@ function SecurityForm() {
              <div className="space-y-4">
                  <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
-                    <Input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" required />
+                    <Input type="password" autoComplete="current-password" minLength={8} maxLength={256} value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" required />
                  </div>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                      <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
-                        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+                        <Input type="password" autoComplete="new-password" minLength={8} maxLength={256} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
                      </div>
                      <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
-                        <Input type="password" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} placeholder="••••••••" required />
+                        <Input type="password" autoComplete="new-password" minLength={8} maxLength={256} value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} placeholder="••••••••" required />
                      </div>
                  </div>
              </div>

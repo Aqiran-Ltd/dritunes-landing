@@ -99,6 +99,30 @@ export default function PaymentMethodsManager() {
       return;
     }
 
+    const trimmedName = accountName.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 120) {
+      setError('Please enter a valid account holder name (2 to 120 characters).');
+      return;
+    }
+
+    if (!bankName.trim()) {
+      setError(selectedCategory === 'momo' ? 'Please select a mobile money network operator.' : 'Please select a bank.');
+      return;
+    }
+
+    const normalizedAccNum = accountNumber.replace(/[\s()-]/g, '').trim();
+    if (selectedCategory === 'momo') {
+      if (!/^\+?[0-9]{9,15}$/.test(normalizedAccNum)) {
+        setError('Please enter a valid Mobile Money phone number (9 to 15 digits).');
+        return;
+      }
+    } else {
+      if (!/^[0-9A-Za-z-]{6,30}$/.test(normalizedAccNum)) {
+        setError('Please enter a valid bank account number (6 to 30 characters).');
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     setError(null);
     const loadingToast = toast.loading('Saving payment method...');
@@ -108,10 +132,10 @@ export default function PaymentMethodsManager() {
 
       await addUserPaymentMethod(token, {
         payment_type: selectedCategory,
-        account_name: accountName,
-        account_number: accountNumber,
-        bank_name: bankName,
-        branch: branch,
+        account_name: trimmedName,
+        account_number: normalizedAccNum,
+        bank_name: bankName.trim(),
+        branch: branch.trim().slice(0, 100),
         is_default: userMethods.length === 0 // Default if it's the first one
       });
 
@@ -359,6 +383,8 @@ export default function PaymentMethodsManager() {
                       <label className="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Account Holder Name</label>
                       <Input 
                         value={accountName}
+                        minLength={2}
+                        maxLength={120}
                         onChange={(e) => setAccountName(e.target.value)}
                         placeholder="e.g. John Doe"
                         required
@@ -372,6 +398,9 @@ export default function PaymentMethodsManager() {
                       </label>
                       <Input 
                         value={accountNumber}
+                        inputMode={selectedCategory === 'momo' ? 'tel' : 'text'}
+                        minLength={selectedCategory === 'momo' ? 9 : 6}
+                        maxLength={selectedCategory === 'momo' ? 20 : 30}
                         onChange={(e) => setAccountNumber(e.target.value)}
                         placeholder={selectedCategory === 'momo' ? 'e.g. 0541234567' : 'e.g. 1234567890'}
                         required
@@ -395,6 +424,7 @@ export default function PaymentMethodsManager() {
                         <label className="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Branch (Optional)</label>
                         <Input 
                           value={branch}
+                          maxLength={100}
                           onChange={(e) => setBranch(e.target.value)}
                           placeholder="e.g. Airport Residential"
                           className="rounded-2xl h-12"

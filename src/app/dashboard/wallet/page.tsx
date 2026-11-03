@@ -113,8 +113,8 @@ export default function WalletPage() {
     }
 
     const amount = parseFloat(withdrawAmount);
-    if (isNaN(amount) || amount <= 0) {
-        setWithdrawStatus({ type: 'error', message: 'Please enter a valid amount.' });
+    if (isNaN(amount) || amount < 1) {
+        setWithdrawStatus({ type: 'error', message: 'Minimum withdrawal amount is ₵1.00.' });
         return;
     }
 
@@ -205,6 +205,7 @@ export default function WalletPage() {
                     <Input 
                         placeholder="Search notes or reference..."
                         value={searchTerm}
+                        maxLength={100}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         icon={<MagnifyingGlassIcon className="w-4 h-4 text-gray-400" />}
                         className="rounded-2xl h-10 text-xs"
@@ -375,6 +376,10 @@ export default function WalletPage() {
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">₵</span>
                     <Input 
                       type="number"
+                      inputMode="decimal"
+                      min="1"
+                      max={wallet?.balance || undefined}
+                      step="0.01"
                       value={withdrawAmount}
                       onChange={(e) => setWithdrawAmount(e.target.value)}
                       placeholder="0.00"

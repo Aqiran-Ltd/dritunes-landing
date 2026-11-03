@@ -86,6 +86,10 @@ export function validateAmount(amount: number, rule: ValidationRule): { isValid:
         return { isValid: false, message: 'Enter a valid amount' };
     }
 
+    if (amount < 0.01 || amount > 100000) {
+        return { isValid: false, message: 'Amount must be between $0.01 and $100,000' };
+    }
+
     switch (rule.type) {
         case 'RANGE':
             if (amount < (rule.min || 0) || amount > (rule.max || Infinity)) {

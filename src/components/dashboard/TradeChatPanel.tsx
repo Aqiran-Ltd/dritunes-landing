@@ -31,6 +31,16 @@ import {
 const POLL_INTERVAL_MS = 8000;
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // matches backend `max:20480` (KB)
 const MAX_ATTACHMENTS = 5;
+const ALLOWED_CHAT_MIMES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'application/pdf',
+  'video/mp4',
+  'video/quicktime',
+  'video/webm',
+];
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
 const VIDEO_EXTENSIONS = ['mp4', 'mov', 'avi', 'webm'];
@@ -216,6 +226,10 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
       if (pendingFiles.length + accepted.length >= MAX_ATTACHMENTS) {
         toast.error(`You can attach up to ${MAX_ATTACHMENTS} files per message`);
         break;
+      }
+      if (!ALLOWED_CHAT_MIMES.includes(file.type.toLowerCase())) {
+        toast.error(`"${file.name}" has an unsupported file type`);
+        continue;
       }
       if (file.size > MAX_FILE_SIZE) {
         toast.error(`"${file.name}" exceeds the 20MB limit`);
@@ -505,6 +519,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
           ref={fileInputRef}
           type="file"
           multiple
+          accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,video/mp4,video/quicktime,video/webm"
           className="hidden"
           onChange={(e) => handleFileSelect(e.target.files)}
         />
@@ -520,6 +535,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
         <textarea
           ref={textareaRef}
           value={messageText}
+          maxLength={4000}
           onChange={(e) => {
             setMessageText(e.target.value);
             e.target.style.height = 'auto';

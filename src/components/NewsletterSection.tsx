@@ -17,14 +17,28 @@ export default function NewsletterSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (honeypot) return;
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const normalizedPhone = phone.replace(/[\s()-]/g, '').trim();
+
+    if (trimmedName.length < 2) {
+      setError("Please enter your name (at least 2 characters).");
+      return;
+    }
+    if (normalizedPhone && !/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
+      setError("Please enter a valid phone number (9 to 15 digits, optional leading +).");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     
     try {
       await api.post("/newsletter/subscribe", {
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
+        name: trimmedName,
+        email: trimmedEmail,
+        phone: normalizedPhone,
         _hp: honeypot,
       });
       
@@ -61,7 +75,7 @@ export default function NewsletterSection() {
             </div>
             <div>
               <label htmlFor="nl-name" className="block text-xs sm:text-sm font-medium mb-1.5">Your name</label>
-              <input id="nl-name" type="text" autoComplete="name" maxLength={120} value={name} onChange={(e) => setName(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
+              <input id="nl-name" type="text" autoComplete="name" minLength={2} maxLength={120} value={name} onChange={(e) => setName(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
             </div>
             <div>
               <label htmlFor="nl-email" className="block text-xs sm:text-sm font-medium mb-1.5">Email address</label>
@@ -69,7 +83,7 @@ export default function NewsletterSection() {
             </div>
             <div className="sm:col-span-2">
               <label htmlFor="nl-phone" className="block text-xs sm:text-sm font-medium mb-1.5">Phone number <span className="font-normal text-ink/60">(optional, for SMS)</span></label>
-              <input id="nl-phone" type="tel" autoComplete="tel" maxLength={24} value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" />
+              <input id="nl-phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={20} value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" />
             </div>
             <div className="sm:col-span-2">
               <label htmlFor="nl-consent" className="flex items-start gap-3 cursor-pointer py-1">

@@ -39,6 +39,44 @@ export default function RegisterPage() {
     setError('');
     setFieldErrors({});
 
+    const trimmedName = formData.name.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 255) {
+      const msg = "Please enter your full name (2 to 255 characters)";
+      setError(msg);
+      setFieldErrors({ name: [msg] });
+      toast.error(msg);
+      setIsLoading(false);
+      return;
+    }
+
+    const normalizedPhone = formData.phone_number.replace(/[\s()-]/g, '').trim();
+    if (!/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
+      const msg = "Enter a valid phone number (9 to 15 digits, optional leading +)";
+      setError(msg);
+      setFieldErrors({ phone_number: [msg] });
+      toast.error(msg);
+      setIsLoading(false);
+      return;
+    }
+
+    if (!['Ghana', 'Nigeria'].includes(formData.country)) {
+      const msg = "Please select a valid country";
+      setError(msg);
+      setFieldErrors({ country: [msg] });
+      toast.error(msg);
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 8 || formData.password.length > 256) {
+      const msg = "Password must be at least 8 characters";
+      setError(msg);
+      setFieldErrors({ password: [msg] });
+      toast.error(msg);
+      setIsLoading(false);
+      return;
+    }
+
     if (formData.password !== formData.password_confirmation) {
       const msg = "Passwords do not match";
       setError(msg);
@@ -49,7 +87,7 @@ export default function RegisterPage() {
 
     const loadingToast = toast.loading('Creating your account...');
     try {
-      await register(formData);
+      await register({ ...formData, name: trimmedName, email: formData.email.trim(), phone_number: normalizedPhone });
       toast.success('Account created successfully!', { id: loadingToast });
     } catch (err: any) {
       const msg = err.message || 'Failed to register';
@@ -90,6 +128,9 @@ export default function RegisterPage() {
             name="name"
             label="Full Name"
             placeholder="John Doe"
+            autoComplete="name"
+            minLength={2}
+            maxLength={255}
             value={formData.name}
             onChange={handleChange}
             icon={<UserIcon className="w-5 h-5" />}
@@ -102,6 +143,8 @@ export default function RegisterPage() {
             type="email"
             label="Email Address"
             placeholder="name@example.com"
+            autoComplete="email"
+            maxLength={254}
             value={formData.email}
             onChange={handleChange}
             icon={<EnvelopeIcon className="w-5 h-5" />}
@@ -112,6 +155,11 @@ export default function RegisterPage() {
         <div className="grid grid-cols-2 gap-4">
             <Input
                 name="phone_number"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                minLength={9}
+                maxLength={20}
                 label="Phone Number"
                 placeholder="024XXXXXXX"
                 value={formData.phone_number}
@@ -169,7 +217,10 @@ export default function RegisterPage() {
             name="password"
             type="password"
             label="Password"
-            placeholder="Create a password"
+            placeholder="Create a password (min. 8 chars)"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={256}
             value={formData.password}
             onChange={handleChange}
             icon={<LockClosedIcon className="w-5 h-5" />}
@@ -182,6 +233,9 @@ export default function RegisterPage() {
             type="password"
             label="Confirm Password"
             placeholder="Confirm your password"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={256}
             value={formData.password_confirmation}
             onChange={handleChange}
             icon={<LockClosedIcon className="w-5 h-5" />}

@@ -105,6 +105,7 @@ export function Select({
                         className="w-full rounded-xl border-none bg-gray-100 dark:bg-gray-800 py-2 pl-9 pr-4 text-base sm:text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-gold-500/50 outline-none"
                         placeholder="Search..."
                         autoComplete="off"
+                        maxLength={100}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={(e) => e.stopPropagation()}

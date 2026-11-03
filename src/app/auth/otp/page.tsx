@@ -234,7 +234,7 @@ function OtpContent() {
                     type="submit" 
                     fullWidth 
                     isLoading={isLoading}
-                    disabled={token.length < 4}
+                    disabled={token.length !== 6}
                     >
                     Verify {activeMethod === 'phone' ? 'Phone' : 'Email'}
                     </Button>

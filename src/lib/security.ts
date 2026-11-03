@@ -18,33 +18,37 @@ export interface RateLimitConfig {
 }
 
 const RATE_LIMIT_TIERS: Record<string, RateLimitConfig> = {
-  // Strict limit for authentication, password resets, and OTP verification
+  // Matches backend `throttle:strict` (contact, newsletter/subscribe, wallet/withdraw, auth/delete)
+  strict: { windowMs: 60_000, maxRequests: 5 },
+  // Matches backend `throttle:auth` (10 req/min per IP on auth endpoints)
   auth: { windowMs: 60_000, maxRequests: 10 },
-  // Strict limit for public unauthenticated write endpoints (contact, newsletter)
-  public_write: { windowMs: 60_000, maxRequests: 8 },
   // Moderate limit for client-side audit logging
   audit: { windowMs: 60_000, maxRequests: 25 },
-  // Default limit for general API calls
-  default: { windowMs: 60_000, maxRequests: 90 },
+  // Authenticated write operations
+  write: { windowMs: 60_000, maxRequests: 30 },
+  // Matches backend `throttle:api` (60 req/min)
+  default: { windowMs: 60_000, maxRequests: 60 },
 };
 
 export function getRateLimitTier(path: string, method: string): { bucket: string; config: RateLimitConfig } {
   const cleanPath = path.replace(/^\/+|\/+$/g, '').toLowerCase();
 
-  if (cleanPath.startsWith('auth/')) {
-    return { bucket: 'auth', config: RATE_LIMIT_TIERS.auth };
-  }
   if (
     cleanPath === 'contact' ||
-    cleanPath.startsWith('newsletter/')
+    cleanPath === 'newsletter/subscribe' ||
+    cleanPath === 'wallet/withdraw' ||
+    cleanPath === 'auth/delete'
   ) {
-    return { bucket: 'public_write', config: RATE_LIMIT_TIERS.public_write };
+    return { bucket: 'strict', config: RATE_LIMIT_TIERS.strict };
+  }
+  if (cleanPath.startsWith('auth/')) {
+    return { bucket: 'auth', config: RATE_LIMIT_TIERS.auth };
   }
   if (cleanPath === 'audit/log') {
     return { bucket: 'audit', config: RATE_LIMIT_TIERS.audit };
   }
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase())) {
-    return { bucket: 'write', config: { windowMs: 60_000, maxRequests: 30 } };
+    return { bucket: 'write', config: RATE_LIMIT_TIERS.write };
   }
   return { bucket: 'default', config: RATE_LIMIT_TIERS.default };
 }
@@ -586,7 +590,8 @@ export function inspectPayload(
 // ─────────────────────────────────────────────────────────────────────────────
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
-const PHONE_REGEX = /^[+\d\s()-]{6,24}$/;
+// Synced with backend regex in AuthController & ProfileController: /^\+?[0-9]{9,15}$/
+const PHONE_REGEX = /^\+?[0-9]{9,15}$/;
 
 export function sanitizeText(input: string, maxLength = 1000): string {
   return input
@@ -596,6 +601,10 @@ export function sanitizeText(input: string, maxLength = 1000): string {
     .slice(0, maxLength);
 }
 
+export function normalizePhone(phone: string): string {
+  return phone.replace(/[\s()-]/g, '').trim().slice(0, 20);
+}
+
 export function isValidEmail(email: string): boolean {
   if (!email || typeof email !== 'string' || email.length > 254) return false;
   return EMAIL_REGEX.test(email.trim());
@@ -603,7 +612,8 @@ export function isValidEmail(email: string): boolean {
 
 export function isValidPhone(phone: string): boolean {
   if (!phone || typeof phone !== 'string') return false;
-  return PHONE_REGEX.test(phone.trim());
+  const normalized = normalizePhone(phone);
+  return normalized.length <= 20 && PHONE_REGEX.test(normalized);
 }
 
 export interface EndpointValidationResult {
@@ -662,9 +672,9 @@ export function validateEndpointBody(
 
   // 3. Newsletter subscription (/newsletter/subscribe)
   if (cleanPath === 'newsletter/subscribe') {
-    const name = typeof sanitized.name === 'string' ? sanitizeText(sanitized.name, 120) : '';
+    const name = typeof sanitized.name === 'string' ? sanitizeText(sanitized.name, 255) : '';
     const email = typeof sanitized.email === 'string' ? sanitizeText(sanitized.email, 254) : '';
-    const phone = typeof sanitized.phone === 'string' ? sanitizeText(sanitized.phone, 24) : '';
+    const phone = typeof sanitized.phone === 'string' ? normalizePhone(sanitized.phone) : '';
 
     if (!name || name.length < 2) {
       return { valid: false, message: 'Please provide a valid name.' };
@@ -673,7 +683,7 @@ export function validateEndpointBody(
       return { valid: false, message: 'Please provide a valid email address.' };
     }
     if (phone && !isValidPhone(phone)) {
-      return { valid: false, message: 'Please provide a valid phone number.' };
+      return { valid: false, message: 'Please provide a valid phone number (9–15 digits, optional leading +).' };
     }
 
     return {
@@ -724,11 +734,11 @@ export function validateEndpointBody(
     };
   }
 
-  // 6. Auth Register (/auth/register)
+  // 6. Auth Register (/auth/register) — synced with AuthController::register rules
   if (cleanPath === 'auth/register') {
-    const name = typeof sanitized.name === 'string' ? sanitizeText(sanitized.name, 120) : '';
+    const name = typeof sanitized.name === 'string' ? sanitizeText(sanitized.name, 255) : '';
     const email = typeof sanitized.email === 'string' ? sanitizeText(sanitized.email, 254) : '';
-    const phone_number = typeof sanitized.phone_number === 'string' ? sanitizeText(sanitized.phone_number, 24) : '';
+    const phone_number = typeof sanitized.phone_number === 'string' ? normalizePhone(sanitized.phone_number) : '';
     const country = typeof sanitized.country === 'string' ? sanitizeText(sanitized.country, 64) : '';
     const password = typeof sanitized.password === 'string' ? sanitized.password : '';
     const password_confirmation = typeof sanitized.password_confirmation === 'string' ? sanitized.password_confirmation : '';
@@ -740,10 +750,10 @@ export function validateEndpointBody(
       return { valid: false, message: 'Please provide a valid email address.' };
     }
     if (!isValidPhone(phone_number)) {
-      return { valid: false, message: 'Please provide a valid phone number.' };
+      return { valid: false, message: 'Phone number must be 9 to 15 digits (optional leading +).' };
     }
     if (!['Ghana', 'Nigeria'].includes(country)) {
-      return { valid: false, message: 'Please select a valid country.' };
+      return { valid: false, message: 'Please select a valid country (Ghana or Nigeria).' };
     }
     if (!password || password.length < 8 || password.length > 256) {
       return { valid: false, message: 'Password must be between 8 and 256 characters.' };
@@ -762,7 +772,7 @@ export function validateEndpointBody(
     };
   }
 
-  // 7. Forgot / Reset Password
+  // 7. Forgot / Verify OTP / Reset Password — synced with AuthController rules (6-digit token)
   if (cleanPath === 'auth/forgot-password') {
     const email = typeof sanitized.email === 'string' ? sanitizeText(sanitized.email, 254) : '';
     if (!isValidEmail(email)) {
@@ -771,14 +781,31 @@ export function validateEndpointBody(
     return { valid: true, sanitizedBody: { email } };
   }
 
+  if (cleanPath === 'auth/verify-otp') {
+    const email = typeof sanitized.email === 'string' ? sanitizeText(sanitized.email, 254) : '';
+    const token = typeof sanitized.token === 'string' ? sanitizeText(sanitized.token, 6) : '';
+    if (!isValidEmail(email) || !/^[0-9]{6}$/.test(token)) {
+      return { valid: false, message: 'Invalid verification code or email address.' };
+    }
+    return { valid: true, sanitizedBody: { email, token } };
+  }
+
+  if (cleanPath === 'auth/verify-phone' || cleanPath === 'auth/verify-email') {
+    const token = typeof sanitized.token === 'string' ? sanitizeText(sanitized.token, 6) : '';
+    if (!/^[0-9]{6}$/.test(token)) {
+      return { valid: false, message: 'Verification code must be 6 digits.' };
+    }
+    return { valid: true, sanitizedBody: { token } };
+  }
+
   if (cleanPath === 'auth/reset-password') {
     const email = typeof sanitized.email === 'string' ? sanitizeText(sanitized.email, 254) : '';
-    const token = typeof sanitized.token === 'string' ? sanitizeText(sanitized.token, 64) : '';
+    const token = typeof sanitized.token === 'string' ? sanitizeText(sanitized.token, 6) : '';
     const password = typeof sanitized.password === 'string' ? sanitized.password : '';
     const password_confirmation = typeof sanitized.password_confirmation === 'string' ? sanitized.password_confirmation : '';
 
-    if (!isValidEmail(email) || !/^[A-Za-z0-9_-]{4,64}$/.test(token)) {
-      return { valid: false, message: 'Invalid reset token or email address.' };
+    if (!isValidEmail(email) || !/^[0-9]{6}$/.test(token)) {
+      return { valid: false, message: 'Invalid 6-digit reset code or email address.' };
     }
     if (!password || password.length < 8 || password.length > 256) {
       return { valid: false, message: 'Password must be at least 8 characters.' };
@@ -787,6 +814,122 @@ export function validateEndpointBody(
       valid: true,
       sanitizedBody: { email, token, password, password_confirmation },
     };
+  }
+
+  // 8. Change Password & Delete Account (/auth/change-password, /auth/delete)
+  if (cleanPath === 'auth/change-password') {
+    const current_password = typeof sanitized.current_password === 'string' ? sanitized.current_password : '';
+    const password = typeof sanitized.password === 'string' ? sanitized.password : '';
+    const password_confirmation = typeof sanitized.password_confirmation === 'string' ? sanitized.password_confirmation : '';
+
+    if (!current_password || current_password.length > 256) {
+      return { valid: false, message: 'Current password is required.' };
+    }
+    if (!password || password.length < 8 || password.length > 256) {
+      return { valid: false, message: 'New password must be between 8 and 256 characters.' };
+    }
+    if (password !== password_confirmation) {
+      return { valid: false, message: 'Passwords do not match.' };
+    }
+
+    return {
+      valid: true,
+      sanitizedBody: { current_password, password, password_confirmation },
+    };
+  }
+
+  if (cleanPath === 'auth/delete') {
+    const email = typeof sanitized.email === 'string' ? sanitizeText(sanitized.email, 254) : '';
+    const password = typeof sanitized.password === 'string' ? sanitized.password : '';
+
+    if (email && !isValidEmail(email)) {
+      return { valid: false, message: 'Please provide a valid email address.' };
+    }
+    if (!password || password.length > 256) {
+      return { valid: false, message: 'Password is required to confirm account deletion.' };
+    }
+
+    return {
+      valid: true,
+      sanitizedBody: { ...(email ? { email } : {}), password },
+    };
+  }
+
+  // 9. User Payment Methods (/user-payment-methods) — synced with UserPaymentMethodController
+  if (cleanPath === 'user-payment-methods') {
+    const payment_type = typeof sanitized.payment_type === 'string' ? sanitizeText(sanitized.payment_type, 20).toLowerCase() : '';
+    const account_name = typeof sanitized.account_name === 'string' ? sanitizeText(sanitized.account_name, 120) : '';
+    const rawAccountNumber = typeof sanitized.account_number === 'string' ? sanitized.account_number.replace(/[\s()-]/g, '').trim() : '';
+    const bank_name = typeof sanitized.bank_name === 'string' ? sanitizeText(sanitized.bank_name, 120) : '';
+    const branch = typeof sanitized.branch === 'string' ? sanitizeText(sanitized.branch, 100) : '';
+    const is_default = Boolean(sanitized.is_default);
+
+    if (!['momo', 'bank'].includes(payment_type)) {
+      return { valid: false, message: 'Invalid payment type (must be momo or bank).' };
+    }
+    if (account_name.length < 2) {
+      return { valid: false, message: 'Account holder name must be at least 2 characters.' };
+    }
+    if (!bank_name) {
+      return { valid: false, message: 'Please select a bank or network operator.' };
+    }
+    if (payment_type === 'momo') {
+      if (!isValidPhone(rawAccountNumber)) {
+        return { valid: false, message: 'Invalid Mobile Money phone number (9 to 15 digits).' };
+      }
+    } else if (!/^[0-9A-Za-z-]{6,30}$/.test(rawAccountNumber)) {
+      return { valid: false, message: 'Invalid bank account number (6 to 30 characters).' };
+    }
+
+    return {
+      valid: true,
+      sanitizedBody: {
+        payment_type,
+        account_name,
+        account_number: rawAccountNumber,
+        bank_name,
+        branch: branch || null,
+        is_default,
+      },
+    };
+  }
+
+  // 10. Wallet Withdrawal (/wallet/withdraw) — synced with WalletController::withdraw
+  if (cleanPath === 'wallet/withdraw') {
+    const amount = Number(sanitized.amount);
+    const user_payment_method_id = Number(sanitized.user_payment_method_id);
+
+    if (!Number.isFinite(amount) || amount < 1 || amount > 1_000_000) {
+      return { valid: false, message: 'Withdrawal amount must be at least ₵1.00.' };
+    }
+    if (!Number.isInteger(user_payment_method_id) || user_payment_method_id <= 0) {
+      return { valid: false, message: 'Please select a valid payout account.' };
+    }
+
+    return {
+      valid: true,
+      sanitizedBody: { amount, user_payment_method_id },
+    };
+  }
+
+  // 11. Trades creation (JSON body) — synced with TradeController::store rules
+  if (cleanPath === 'trades') {
+    const amount = Number(sanitized.amount);
+    if (!Number.isFinite(amount) || amount < 0.01 || amount > 100_000) {
+      return { valid: false, message: 'Trade amount must be between 0.01 and 100,000.' };
+    }
+    if (typeof sanitized.asset_name === 'string') {
+      sanitized.asset_name = sanitizeText(sanitized.asset_name, 100);
+    }
+    if (typeof sanitized.denomination === 'string') {
+      sanitized.denomination = sanitizeText(sanitized.denomination, 100);
+    }
+    if (typeof sanitized.user_notes === 'string') {
+      sanitized.user_notes = sanitizeText(sanitized.user_notes, 2000);
+    }
+    if (typeof sanitized.code === 'string') {
+      sanitized.code = sanitizeText(sanitized.code, 500);
+    }
   }
 
   return { valid: true, sanitizedBody: sanitized };

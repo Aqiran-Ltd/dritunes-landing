@@ -31,6 +31,19 @@ function ResetPasswordContent() {
     setIsLoading(true);
     setError('');
 
+    const cleanToken = formData.token.replace(/[^0-9]/g, '').trim();
+    if (cleanToken.length !== 6) {
+      setError("Verification code must be 6 digits");
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 8 || formData.password.length > 256) {
+      setError("Password must be at least 8 characters");
+      setIsLoading(false);
+      return;
+    }
+
     if (formData.password !== formData.password_confirmation) {
       setError("Passwords do not match");
       setIsLoading(false);
@@ -38,7 +51,7 @@ function ResetPasswordContent() {
     }
 
     try {
-      await resetPassword(formData);
+      await resetPassword({ ...formData, email: formData.email.trim(), token: cleanToken });
     } catch (err: any) {
       setError(err.message || 'Failed to reset password');
       setIsLoading(false);
@@ -72,6 +85,8 @@ function ResetPasswordContent() {
             name="email"
             type="email"
             label="Email Address"
+            autoComplete="email"
+            maxLength={254}
             value={formData.email}
             onChange={handleChange}
             required
@@ -81,11 +96,15 @@ function ResetPasswordContent() {
 
         <Input
             name="token"
-            label="Verification Code (OTP)"
-            placeholder="Enter code from email"
-            value={formData.token}
-            onChange={handleChange}
+            inputMode="numeric"
+            pattern="[0-9]{6}"
+            autoComplete="one-time-code"
+            minLength={6}
             maxLength={6}
+            label="Verification Code (OTP)"
+            placeholder="Enter 6-digit code from email"
+            value={formData.token}
+            onChange={(e) => setFormData({ ...formData, token: e.target.value.replace(/[^0-9]/g, '').slice(0, 6) })}
             required
             className="tracking-widest font-mono"
         />
@@ -94,7 +113,10 @@ function ResetPasswordContent() {
             name="password"
             type="password"
             label="New Password"
-            placeholder="New password"
+            placeholder="New password (min. 8 chars)"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={256}
             value={formData.password}
             onChange={handleChange}
             icon={<LockClosedIcon className="w-5 h-5" />}
@@ -106,6 +128,9 @@ function ResetPasswordContent() {
             type="password"
             label="Confirm Password"
             placeholder="Confirm new password"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={256}
             value={formData.password_confirmation}
             onChange={handleChange}
             icon={<LockClosedIcon className="w-5 h-5" />}

@@ -162,6 +162,7 @@ export default function HistoryPage() {
            <Input 
               placeholder="Search by ID or Asset..." 
               value={searchTerm}
+              maxLength={100}
               onChange={(e) => setSearchTerm(e.target.value)}
               icon={<MagnifyingGlassIcon className="w-5 h-5 text-gray-400" />}
               className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 focus:ring-gold-500 rounded-2xl h-11"

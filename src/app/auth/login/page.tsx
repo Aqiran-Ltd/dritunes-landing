@@ -17,12 +17,22 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedEmail = formData.email.trim();
+    if (!trimmedEmail || trimmedEmail.length > 254) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (!formData.password || formData.password.length > 256) {
+      setError('Please enter your password.');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
     const loadingToast = toast.loading('Logging in...');
 
     try {
-      await login(formData);
+      await login({ email: trimmedEmail, password: formData.password });
       toast.success('Logged in successfully!', { id: loadingToast });
     } catch (err: any) {
       const msg = err.message || 'Failed to login';
@@ -60,6 +70,8 @@ export default function LoginPage() {
             type="email"
             label="Email Address"
             placeholder="name@example.com"
+            autoComplete="email"
+            maxLength={254}
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             icon={<EnvelopeIcon className="w-5 h-5" />}
@@ -72,6 +84,9 @@ export default function LoginPage() {
                 type="password"
                 label="Password"
                 placeholder="Enter your password"
+                autoComplete="current-password"
+                minLength={8}
+                maxLength={256}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 icon={<LockClosedIcon className="w-5 h-5" />}

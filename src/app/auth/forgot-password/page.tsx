@@ -18,13 +18,19 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || trimmedEmail.length > 254) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
     try {
-      await forgotPassword(email);
+      await forgotPassword(trimmedEmail);
       // Redirect to Reset Password page with email as query param for convenience
-      router.push(`/auth/reset-password?email=${encodeURIComponent(email)}`);
+      router.push(`/auth/reset-password?email=${encodeURIComponent(trimmedEmail)}`);
     } catch (err: any) {
       setError(err.message || 'Failed to send reset link');
       setIsLoading(false);
@@ -54,6 +60,8 @@ export default function ForgotPasswordPage() {
             type="email"
             label="Email Address"
             placeholder="Enter your registered email"
+            autoComplete="email"
+            maxLength={254}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             icon={<EnvelopeIcon className="w-5 h-5" />}

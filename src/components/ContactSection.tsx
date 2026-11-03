@@ -27,14 +27,38 @@ export default function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData._hp) return;
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const normalizedPhone = formData.phone.replace(/[\s()-]/g, '').trim();
+    const trimmedSubject = formData.subject.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (trimmedName.length < 2) {
+      toast.error("Please enter your full name (at least 2 characters).");
+      return;
+    }
+    if (!/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
+      toast.error("Please enter a valid phone number (9 to 15 digits).");
+      return;
+    }
+    if (trimmedSubject.length < 2) {
+      toast.error("Please enter a subject.");
+      return;
+    }
+    if (trimmedMessage.length < 3) {
+      toast.error("Please enter a message.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       await api.post("/contact", {
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        subject: formData.subject.trim(),
-        content: `${formData.message.trim()}\n\nPhone: ${formData.phone.trim()}`,
+        name: trimmedName,
+        email: trimmedEmail,
+        subject: trimmedSubject,
+        content: `${trimmedMessage}\n\nPhone: ${normalizedPhone}`,
         _hp: formData._hp
       });
       
@@ -148,6 +172,9 @@ export default function ContactSection() {
                     <input
                       type="text"
                       name="name"
+                      autoComplete="name"
+                      minLength={2}
+                      maxLength={120}
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Enter your full name"
@@ -161,6 +188,8 @@ export default function ContactSection() {
                     <input
                       type="email"
                       name="email"
+                      autoComplete="email"
+                      maxLength={254}
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your email address"
@@ -175,7 +204,11 @@ export default function ContactSection() {
                     <label className="block text-sm font-semibold text-white mb-2">Phone Number</label>
                     <input
                       type="tel"
+                      inputMode="tel"
                       name="phone"
+                      autoComplete="tel"
+                      minLength={9}
+                      maxLength={20}
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="Enter your phone number"
@@ -189,6 +222,8 @@ export default function ContactSection() {
                     <input
                       type="text"
                       name="subject"
+                      minLength={2}
+                      maxLength={200}
                       value={formData.subject}
                       onChange={handleChange}
                       placeholder="What is this regarding?"
@@ -202,6 +237,8 @@ export default function ContactSection() {
                   <label className="block text-sm font-semibold text-white mb-2">Message</label>
                   <textarea
                     name="message"
+                    minLength={3}
+                    maxLength={3500}
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Tell us about your trading needs..."

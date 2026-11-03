@@ -9,6 +9,8 @@ import {
   isScannerUserAgent,
   isTrustedOrigin,
   isValidEmail,
+  isValidPhone,
+  normalizePhone,
   sanitizeText,
   validateEndpointBody,
 } from '@/lib/security';
@@ -195,6 +197,10 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
       }
 
       const outgoingForm = new FormData();
+      let fileCount = 0;
+      const isProfileRoute = path === 'user/profile';
+      const isTradeStoreRoute = path === 'trades';
+
       for (const [fieldKey, fieldValue] of incomingForm.entries()) {
         const keyCheck = detectMaliciousString(fieldKey, `form.key(${fieldKey})`);
         if (!keyCheck.safe) {
@@ -214,19 +220,60 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
               { status: 400 }
             );
           }
-          outgoingForm.append(fieldKey, sanitizeText(fieldValue, 4000));
+
+          if (isProfileRoute && fieldKey === 'phone_number') {
+            const normalizedPhone = normalizePhone(fieldValue);
+            if (!isValidPhone(normalizedPhone)) {
+              return NextResponse.json(
+                { status: false, message: 'Phone number must be 9 to 15 digits (optional leading +).' },
+                { status: 422 }
+              );
+            }
+            outgoingForm.append(fieldKey, normalizedPhone);
+          } else if (isProfileRoute && fieldKey === 'country') {
+            const cleanCountry = sanitizeText(fieldValue, 64);
+            if (!['Ghana', 'Nigeria'].includes(cleanCountry)) {
+              return NextResponse.json(
+                { status: false, message: 'Country must be Ghana or Nigeria.' },
+                { status: 422 }
+              );
+            }
+            outgoingForm.append(fieldKey, cleanCountry);
+          } else {
+            outgoingForm.append(fieldKey, sanitizeText(fieldValue, 4000));
+          }
         } else if (fieldValue instanceof File) {
-          // Validate file size, extension, and MIME type to block PHP webshells & SVG XSS
-          if (fieldValue.size > MAX_UPLOAD_BODY_BYTES) {
+          fileCount++;
+          if (isTradeStoreRoute && fileCount > 10) {
             return NextResponse.json(
-              { status: false, message: 'Attached file is too large.' },
+              { status: false, message: 'A maximum of 10 image attachments is allowed per trade.' },
+              { status: 422 }
+            );
+          }
+
+          const maxFileSize = isProfileRoute
+            ? 2 * 1024 * 1024 // 2MB for profile_picture
+            : isTradeStoreRoute
+            ? 5 * 1024 * 1024 // 5MB per trade attachment
+            : 20 * 1024 * 1024; // 20MB for trade chat messages
+
+          if (fieldValue.size > maxFileSize) {
+            return NextResponse.json(
+              {
+                status: false,
+                message: `Attached file exceeds the ${Math.round(maxFileSize / (1024 * 1024))}MB limit.`,
+              },
               { status: 413 }
             );
           }
-          if (
-            DANGEROUS_FILE_EXTENSIONS.test(fieldValue.name) ||
-            !ALLOWED_FILE_MIME_TYPES.has(fieldValue.type.toLowerCase())
-          ) {
+
+          const mime = fieldValue.type.toLowerCase();
+          const imageOnlyRequired = isProfileRoute || isTradeStoreRoute;
+          const isAllowedMime = imageOnlyRequired
+            ? mime.startsWith('image/') && ALLOWED_FILE_MIME_TYPES.has(mime)
+            : ALLOWED_FILE_MIME_TYPES.has(mime);
+
+          if (DANGEROUS_FILE_EXTENSIONS.test(fieldValue.name) || !isAllowedMime) {
             console.warn(
               `[Security] Blocked disallowed file upload (${fieldValue.name}, ${fieldValue.type}) from ${clientIp}`
             );

@@ -148,6 +148,7 @@ export default function RateHistoryTable() {
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
+            maxLength={100}
             placeholder="Search asset name…"
             value={assetSearch}
             onChange={e => setAssetSearch(e.target.value)}
@@ -209,6 +210,7 @@ export default function RateHistoryTable() {
             <input
               type="date"
               value={from}
+              max={to || new Date().toISOString().split('T')[0]}
               onChange={e => setFrom(e.target.value)}
               className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-gray-900 dark:text-white transition-all"
             />
@@ -218,6 +220,8 @@ export default function RateHistoryTable() {
             <input
               type="date"
               value={to}
+              min={from || undefined}
+              max={new Date().toISOString().split('T')[0]}
               onChange={e => setTo(e.target.value)}
               className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 text-gray-900 dark:text-white transition-all"
             />
