@@ -85,7 +85,7 @@ export default function TradeDetailPage() {
         const token = localStorage.getItem('access_token');
         if (!token || !id) return;
         
-        const response: any = await api.get(`/trades/${id}`, token);
+        const response: any = await api.get(`/trades/${encodeURIComponent(String(id))}`, token);
         
         // Robust unwrapping of the response payload based on common API patterns
         let dataPayload = response;

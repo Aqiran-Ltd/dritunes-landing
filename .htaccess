@@ -1,6 +1,20 @@
 # Enable rewrite engine
 RewriteEngine On
 
+# Block access to hidden files and directories (.env, .git, etc.)
+RewriteRule (?:^|/)\.(?!well-known/) - [F,L]
+
+# Block common SQL injection, XSS, and path traversal probes in query strings
+<IfModule mod_rewrite.c>
+    RewriteCond %{QUERY_STRING} (\.\./|\.\.\\|%2e%2e|%00) [NC,OR]
+    RewriteCond %{QUERY_STRING} (union.*select|insert.*into|drop.*table|information_schema|sleep\(|benchmark\(|waitfor.*delay) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<script|%3cscript|javascript:|onerror=|onload=) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
 # Set default index file
 DirectoryIndex index.html
 
@@ -32,9 +46,12 @@ DirectoryIndex index.html
 
 # Security headers
 <IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
     Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 </IfModule>
 
 # Handle 404 errors

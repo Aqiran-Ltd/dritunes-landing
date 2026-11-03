@@ -30,9 +30,9 @@ export async function addUserPaymentMethod(token: string, data: Partial<UserPaym
 }
 
 export async function updateUserPaymentMethod(token: string, id: number, data: Partial<UserPaymentMethod>) {
-  return await api.put(`/user-payment-methods/${id}`, data, token);
+  return await api.put(`/user-payment-methods/${encodeURIComponent(String(id))}`, data, token);
 }
 
 export async function deleteUserPaymentMethod(token: string, id: number) {
-  return await api.delete(`/user-payment-methods/${id}`, token);
+  return await api.delete(`/user-payment-methods/${encodeURIComponent(String(id))}`, token);
 }

@@ -30,7 +30,9 @@ export interface TradeMessagesPage {
 }
 
 export async function fetchTradeMessages(tradeNumber: string, token: string, page = 1): Promise<TradeMessagesPage> {
-  const response: any = await api.get(`/trades/${tradeNumber}/messages?page=${page}`, token);
+  const safeTrade = encodeURIComponent(tradeNumber);
+  const safePage = encodeURIComponent(String(page));
+  const response: any = await api.get(`/trades/${safeTrade}/messages?page=${safePage}`, token);
   return response.data;
 }
 
@@ -39,22 +41,26 @@ export async function sendTradeMessage(
   token: string,
   payload: { message?: string; attachments?: File[] }
 ): Promise<TradeMessage> {
+  const safeTrade = encodeURIComponent(tradeNumber);
   let response: any;
   if (payload.attachments && payload.attachments.length > 0) {
     const formData = new FormData();
     if (payload.message) formData.append('message', payload.message);
     payload.attachments.forEach((file) => formData.append('attachments[]', file));
-    response = await api.postForm(`/trades/${tradeNumber}/messages`, formData, token);
+    response = await api.postForm(`/trades/${safeTrade}/messages`, formData, token);
   } else {
-    response = await api.post(`/trades/${tradeNumber}/messages`, { message: payload.message }, token);
+    response = await api.post(`/trades/${safeTrade}/messages`, { message: payload.message }, token);
   }
   return response.data;
 }
 
 export async function markTradeMessagesRead(tradeNumber: string, token: string): Promise<void> {
-  await api.post(`/trades/${tradeNumber}/messages/read`, {}, token);
+  const safeTrade = encodeURIComponent(tradeNumber);
+  await api.post(`/trades/${safeTrade}/messages/read`, {}, token);
 }
 
 export async function deleteTradeMessage(tradeNumber: string, token: string, messageId: number): Promise<void> {
-  await api.delete(`/trades/${tradeNumber}/messages/${messageId}`, token);
+  const safeTrade = encodeURIComponent(tradeNumber);
+  const safeMsgId = encodeURIComponent(String(messageId));
+  await api.delete(`/trades/${safeTrade}/messages/${safeMsgId}`, token);
 }

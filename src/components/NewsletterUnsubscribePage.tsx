@@ -27,7 +27,8 @@ function UnsubscribeContent() {
 
     const unsubscribe = async () => {
       try {
-        await api.get(`/newsletter/unsubscribe?email=${email}`);
+        const query = new URLSearchParams({ email: email.trim() });
+        await api.get(`/newsletter/unsubscribe?${query.toString()}`);
         setStatus("success");
       } catch (err: any) {
         setStatus("error");
