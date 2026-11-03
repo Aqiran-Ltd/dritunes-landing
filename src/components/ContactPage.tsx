@@ -68,7 +68,8 @@ export default function ContactPage() {
     email: "",
     phone: "",
     subject: "",
-    message: ""
+    message: "",
+    _hp: ""
   });
 
   useEffect(() => {
@@ -82,19 +83,21 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData._hp) return;
     setIsSubmitting(true);
 
     try {
       await api.post("/contact", {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        content: `${formData.message}\n\nPhone: ${formData.phone}`
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        content: `${formData.message.trim()}\n\nPhone: ${formData.phone.trim()}`,
+        _hp: formData._hp
       });
       
       track('Contact Form Submitted', { subject: formData.subject });
       toast.success("Message sent. We will reply by email.");
-      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "", _hp: "" });
     } catch (error: any) {
       console.error("Contact form error:", error);
       toast.error(error.message || "Your message did not send. Check your connection and try again, or message us on WhatsApp.");
@@ -194,25 +197,29 @@ export default function ContactPage() {
             <h2 className="text-2xl font-semibold tracking-tight">Send a message</h2>
             <p className="mt-1 text-gray-600 dark:text-gray-400">We reply by email, usually within a day.</p>
             <form onSubmit={handleSubmit} className="mt-8 grid sm:grid-cols-2 gap-5">
+              <div aria-hidden="true" className="hidden">
+                <label htmlFor="c-website">Website</label>
+                <input id="c-website" type="text" name="_hp" tabIndex={-1} autoComplete="off" value={formData._hp} onChange={handleChange} />
+              </div>
               <div>
                 <label htmlFor="c-name" className="block text-sm font-medium mb-1.5">Your name</label>
-                <input id="c-name" type="text" name="name" autoComplete="name" value={formData.name} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
+                <input id="c-name" type="text" name="name" autoComplete="name" maxLength={120} value={formData.name} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
               </div>
               <div>
                 <label htmlFor="c-email" className="block text-sm font-medium mb-1.5">Email address</label>
-                <input id="c-email" type="email" name="email" autoComplete="email" value={formData.email} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
+                <input id="c-email" type="email" name="email" autoComplete="email" maxLength={254} value={formData.email} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
               </div>
               <div>
                 <label htmlFor="c-phone" className="block text-sm font-medium mb-1.5">Phone number</label>
-                <input id="c-phone" type="tel" name="phone" autoComplete="tel" value={formData.phone} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
+                <input id="c-phone" type="tel" name="phone" autoComplete="tel" maxLength={24} value={formData.phone} onChange={handleChange} className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
               </div>
               <div>
                 <label htmlFor="c-subject" className="block text-sm font-medium mb-1.5">Subject</label>
-                <input id="c-subject" type="text" name="subject" value={formData.subject} onChange={handleChange} placeholder="A trade, a payout, training" className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
+                <input id="c-subject" type="text" name="subject" maxLength={200} value={formData.subject} onChange={handleChange} placeholder="A trade, a payout, training" className="w-full h-12 px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all" required />
               </div>
               <div className="sm:col-span-2">
                 <label htmlFor="c-message" className="block text-sm font-medium mb-1.5">Message</label>
-                <textarea id="c-message" name="message" rows={6} value={formData.message} onChange={handleChange} placeholder="If it is about a trade, include the trade number." className="w-full px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all py-3 resize-y" required />
+                <textarea id="c-message" name="message" rows={6} maxLength={3500} value={formData.message} onChange={handleChange} placeholder="If it is about a trade, include the trade number." className="w-full px-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15 dark:focus:ring-gold-500/20 transition-all py-3 resize-y" required />
               </div>
               <button
                 type="submit"

@@ -24,10 +24,16 @@ class AuditService {
       // Basic checks for browser environment
       if (typeof window === 'undefined') return;
 
+      // Use origin + pathname only so attacker-supplied query strings (e.g., SQLi probes
+      // in URL parameters) or sensitive tokens (?token=...) are never written to audit_logs.
+      const safeUrl = `${window.location.origin}${window.location.pathname}`.slice(0, 500);
+      const safeEvent = event.replace(/[^a-zA-Z0-9_.: -]/g, '').slice(0, 64);
+      if (!safeEvent) return;
+
       const payload: AuditPayload = {
-        event,
-        url: window.location.href,
-        user_agent: navigator.userAgent,
+        event: safeEvent,
+        url: safeUrl,
+        user_agent: (navigator.userAgent || '').slice(0, 300),
         properties,
       };
 

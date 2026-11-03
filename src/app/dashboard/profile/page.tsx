@@ -38,6 +38,17 @@ function ProfileForm({ user }: { user: any }) {
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!allowedTypes.includes(file.type.toLowerCase())) {
+                toast.error('Only JPG, PNG, GIF, or WEBP images are allowed.');
+                e.target.value = '';
+                return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                toast.error('Profile photo must be smaller than 2MB.');
+                e.target.value = '';
+                return;
+            }
             setPhoto(file);
             setPhotoPreview(URL.createObjectURL(file));
         }

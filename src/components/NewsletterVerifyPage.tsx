@@ -23,7 +23,8 @@ function VerifyContent() {
 
     const verifyEmail = async () => {
       try {
-        await api.get(`/newsletter/verify?token=${token}&email=${email}`);
+        const query = new URLSearchParams({ token: token.trim(), email: email.trim() });
+        await api.get(`/newsletter/verify?${query.toString()}`);
         setStatus("success");
       } catch (err: any) {
         setStatus("error");

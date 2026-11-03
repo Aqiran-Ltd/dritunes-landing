@@ -9,20 +9,23 @@ export default function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (honeypot) return;
     setIsLoading(true);
     setError(null);
     
     try {
       await api.post("/newsletter/subscribe", {
-        name,
-        email,
-        phone
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        _hp: honeypot,
       });
       
       setIsSubscribed(true);
@@ -52,17 +55,21 @@ export default function NewsletterSection() {
 
         <div>
           <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-3.5 sm:gap-4">
+            <div aria-hidden="true" className="hidden">
+              <label htmlFor="nl-website">Website</label>
+              <input id="nl-website" type="text" name="website" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+            </div>
             <div>
               <label htmlFor="nl-name" className="block text-xs sm:text-sm font-medium mb-1.5">Your name</label>
-              <input id="nl-name" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
+              <input id="nl-name" type="text" autoComplete="name" maxLength={120} value={name} onChange={(e) => setName(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
             </div>
             <div>
               <label htmlFor="nl-email" className="block text-xs sm:text-sm font-medium mb-1.5">Email address</label>
-              <input id="nl-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
+              <input id="nl-email" type="email" autoComplete="email" maxLength={254} value={email} onChange={(e) => setEmail(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" required />
             </div>
             <div className="sm:col-span-2">
               <label htmlFor="nl-phone" className="block text-xs sm:text-sm font-medium mb-1.5">Phone number <span className="font-normal text-ink/60">(optional, for SMS)</span></label>
-              <input id="nl-phone" type="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" />
+              <input id="nl-phone" type="tel" autoComplete="tel" maxLength={24} value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full h-12 px-4 rounded-xl border border-ink/15 bg-white text-ink text-base placeholder-gray-500 focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 transition-colors" />
             </div>
             <div className="sm:col-span-2">
               <label htmlFor="nl-consent" className="flex items-start gap-3 cursor-pointer py-1">

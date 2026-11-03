@@ -15,7 +15,8 @@ export default function ContactSection() {
     email: "",
     phone: "",
     subject: "",
-    message: ""
+    message: "",
+    _hp: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -25,19 +26,21 @@ export default function ContactSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData._hp) return;
     setIsSubmitting(true);
 
     try {
       await api.post("/contact", {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        content: `${formData.message}\n\nPhone: ${formData.phone}`
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        content: `${formData.message.trim()}\n\nPhone: ${formData.phone.trim()}`,
+        _hp: formData._hp
       });
       
       track('Contact Form Submitted', { subject: formData.subject, location: 'Contact Section' });
       toast.success("Message sent successfully! We'll get back to you soon.");
-      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "", _hp: "" });
     } catch (error: any) {
       console.error("Contact form error:", error);
       toast.error(error.message || "Failed to send message. Please try again later.");
@@ -135,6 +138,10 @@ export default function ContactSection() {
               </div>
               
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div aria-hidden="true" className="hidden">
+                  <label htmlFor="cs-website">Website</label>
+                  <input id="cs-website" type="text" name="_hp" tabIndex={-1} autoComplete="off" value={formData._hp} onChange={handleChange} />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-white mb-2">Full Name</label>
