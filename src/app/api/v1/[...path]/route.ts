@@ -352,7 +352,7 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
   outboundHeaders.set('X-Real-IP', clientIp);
 
   const authHeader = request.headers.get('authorization');
-  if (authHeader && /^Bearer\s+[A-Za-z0-9._~+/-]+=*$/i.test(authHeader.trim()) && authHeader.length < 2048) {
+  if (authHeader && /^Bearer\s+[A-Za-z0-9._~+/|=-]+$/i.test(authHeader.trim()) && authHeader.length < 2048) {
     outboundHeaders.set('Authorization', authHeader.trim());
   }
 

@@ -78,30 +78,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     };
 
-    loadUser();    loadUser();
+    loadUser();
   }, []);
 
   const login = async (credentials: any) => {
     // Note: Toasts are handled in the components for login/register to allow for loading states
     const response: any = await api.post('/auth/login', credentials);
     if (response.status) {
-      const token = response.data.access_token;
-      localStorage.setItem('access_token', token);
+      const token = response.data?.access_token;
+      if (token) {
+        localStorage.setItem('access_token', token);
+      }
       
-      
-      // Fetch user details immediately
-      const userResponse: any = await api.get('/user', token);
-      console.log('Login User Fetch Response:', userResponse); // Debug log
-      
-      let userData = null;
-      if (userResponse.status && userResponse.data) {
-         userData = userResponse.data;
-      } else if (userResponse.data) {
-         userData = userResponse.data;
-      } else if (userResponse.user) {
-         userData = userResponse.user;
-      } else if (userResponse.id) {
-         userData = userResponse;
+      let userData = response.data?.user ?? null;
+      if (token) {
+        try {
+          const userResponse: any = await api.get('/user', token);
+          if (userResponse.status && userResponse.data) {
+            userData = userResponse.data;
+          } else if (userResponse.data) {
+            userData = userResponse.data;
+          } else if (userResponse.user) {
+            userData = userResponse.user;
+          } else if (userResponse.id) {
+            userData = userResponse;
+          }
+        } catch (fetchErr) {
+          console.warn('Could not fetch user profile after login:', fetchErr);
+        }
       }
 
       if (userData) {
@@ -110,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
          // The VerificationBanner in the dashboard will warn them
          router.push('/dashboard');
       } else {
-         console.error('Failed to parse user data:', userResponse);
+         console.error('Failed to parse user data:', response);
          throw new Error('Failed to fetch user details.');
       }
 
@@ -123,21 +127,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Note: Toasts are handled in the components
     const response: any = await api.post('/auth/register', data);
     if (response.status) {
-      const token = response.data.access_token;
-      localStorage.setItem('access_token', token);
+      const token = response.data?.access_token;
+      if (token) {
+        localStorage.setItem('access_token', token);
+      }
       
-       // Fetch user details
-      const userResponse: any = await api.get('/user', token);
-       console.log('Register User Fetch Response:', userResponse); // Debug log
-      
-      if (userResponse.status && userResponse.data) {
-        setUser(userResponse.data);
-      } else if (userResponse.data) {
-        setUser(userResponse.data);
-      } else if (userResponse.user) {
-        setUser(userResponse.user);
-      } else if (userResponse.id) {
-        setUser(userResponse);
+      let userData = response.data?.user ?? null;
+      if (token) {
+        try {
+          const userResponse: any = await api.get('/user', token);
+          if (userResponse.status && userResponse.data) {
+            userData = userResponse.data;
+          } else if (userResponse.data) {
+            userData = userResponse.data;
+          } else if (userResponse.user) {
+            userData = userResponse.user;
+          } else if (userResponse.id) {
+            userData = userResponse;
+          }
+        } catch (fetchErr) {
+          console.warn('Could not fetch user profile after registration:', fetchErr);
+        }
+      }
+
+      if (userData) {
+        setUser(userData);
       }
 
       // Redirect to verification page
