@@ -6,6 +6,11 @@ import {
   getRateLimitTier,
   inspectPayload,
   isAllowedApiRoute,
+  isBuyerLockedOut,
+  isBuyerPath,
+  isValidBuyerToken,
+  recordBuyerAuthFailure,
+  validateBuyerBody,
   isScannerUserAgent,
   isTrustedOrigin,
   isValidEmail,
@@ -116,6 +121,38 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
         },
       }
     );
+  }
+
+  // 4b. Buyer portal: brute-force lockout + strict token format check (never hits the backend if malformed)
+  const isBuyer = isBuyerPath(path);
+  let buyerToken: string | null = null;
+  if (isBuyer) {
+    const lockout = isBuyerLockedOut(clientIp);
+    if (lockout.locked) {
+      console.warn(`[Security] Buyer portal lockout for ${clientIp} on ${method} /api/v1/${path}`);
+      return NextResponse.json(
+        { success: false, message: 'Too many failed attempts. Try again later.' },
+        { status: 429, headers: { 'Retry-After': String(lockout.retryAfterSeconds), 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    const candidate = request.headers.get('x-buyer-token');
+    if (!isValidBuyerToken(candidate)) {
+      recordBuyerAuthFailure(clientIp);
+      return NextResponse.json(
+        { success: false, message: 'Invalid or revoked buyer token.' },
+        { status: 401, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+    buyerToken = candidate;
+
+    // Buyer endpoints take no query parameters
+    if (request.nextUrl.searchParams.size > 0) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid query parameter.' },
+        { status: 400 }
+      );
+    }
   }
 
   // 5. Inspect all URL query parameters for SQL injection, XSS, and path traversal
@@ -304,7 +341,31 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
         );
       }
 
-      if (rawText.trim().length > 0) {
+      if (isBuyer) {
+        // Strict schema (replaces the generic WAF array cap, which is 100 items; buyers may send up to 1000)
+        let parsedBuyer: unknown = {};
+        if (rawText.trim().length > 0) {
+          try {
+            parsedBuyer = JSON.parse(rawText);
+          } catch {
+            return NextResponse.json(
+              { success: false, message: 'Invalid JSON payload.' },
+              { status: 400 }
+            );
+          }
+        }
+        if (!parsedBuyer || typeof parsedBuyer !== 'object' || Array.isArray(parsedBuyer)) {
+          return NextResponse.json({ success: false, message: 'Invalid request.' }, { status: 422 });
+        }
+        const buyerValidation = validateBuyerBody(path, parsedBuyer as Record<string, unknown>);
+        if (!buyerValidation.valid) {
+          return NextResponse.json(
+            { success: false, message: buyerValidation.message || 'Invalid input.' },
+            { status: 422 }
+          );
+        }
+        outboundBody = JSON.stringify(buyerValidation.sanitizedBody ?? {});
+      } else if (rawText.trim().length > 0) {
         let parsedJson: unknown;
         try {
           parsedJson = JSON.parse(rawText);
@@ -351,7 +412,12 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
   outboundHeaders.set('X-Forwarded-For', clientIp);
   outboundHeaders.set('X-Real-IP', clientIp);
 
-  const authHeader = request.headers.get('authorization');
+  if (buyerToken) {
+    // Buyer routes authenticate with the buyer token only; never forward a user session token
+    outboundHeaders.set('X-Buyer-Token', buyerToken);
+  }
+
+  const authHeader = isBuyer ? null : request.headers.get('authorization');
   if (authHeader && /^Bearer\s+[A-Za-z0-9._~+/|=-]+$/i.test(authHeader.trim()) && authHeader.length < 2048) {
     outboundHeaders.set('Authorization', authHeader.trim());
   }
@@ -379,6 +445,10 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
       cache: 'no-store',
       redirect: 'manual',
     });
+
+    if (isBuyer && (response.status === 401 || response.status === 403)) {
+      recordBuyerAuthFailure(clientIp);
+    }
 
     // Only forward safe response headers back to the client
     const responseHeaders = new Headers();

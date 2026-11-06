@@ -24,6 +24,8 @@ const RATE_LIMIT_TIERS: Record<string, RateLimitConfig> = {
   auth: { windowMs: 60_000, maxRequests: 10 },
   // Moderate limit for client-side audit logging
   audit: { windowMs: 60_000, maxRequests: 25 },
+  // Buyer portal (token-authenticated); tighter than backend `throttle:60,1`
+  buyer: { windowMs: 60_000, maxRequests: 20 },
   // Authenticated write operations
   write: { windowMs: 60_000, maxRequests: 30 },
   // Matches backend `throttle:api` (60 req/min)
@@ -46,6 +48,9 @@ export function getRateLimitTier(path: string, method: string): { bucket: string
   }
   if (cleanPath === 'audit/log') {
     return { bucket: 'audit', config: RATE_LIMIT_TIERS.audit };
+  }
+  if (cleanPath.startsWith('buyer/')) {
+    return { bucket: 'buyer', config: RATE_LIMIT_TIERS.buyer };
   }
   if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase())) {
     return { bucket: 'write', config: RATE_LIMIT_TIERS.write };
@@ -307,6 +312,15 @@ const ALLOWED_API_ROUTES: Array<{ pattern: RegExp; methods: string[] }> = [
   // Audit log
   {
     pattern: /^audit\/log$/,
+    methods: ['POST'],
+  },
+  // Buyer rate portal (token-authenticated via X-Buyer-Token)
+  {
+    pattern: /^buyer\/sheet$/,
+    methods: ['GET'],
+  },
+  {
+    pattern: /^buyer\/rates(\/confirm)?$/,
     methods: ['POST'],
   },
   // Analytics & trends
@@ -933,6 +947,123 @@ export function validateEndpointBody(
   }
 
   return { valid: true, sanitizedBody: sanitized };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 6b. BUYER PORTAL SECURITY (token format, brute-force lockout, strict body schema)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Backend issues Str::random(48) tokens (alphanumeric). Allow a small range for rotation.
+export const BUYER_TOKEN_REGEX = /^[A-Za-z0-9]{32,128}$/;
+
+export function isBuyerPath(path: string): boolean {
+  return /^buyer\//i.test(path.replace(/^\/+/, ''));
+}
+
+export function isValidBuyerToken(token: string | null | undefined): token is string {
+  return typeof token === 'string' && BUYER_TOKEN_REGEX.test(token);
+}
+
+const BUYER_FAIL_WINDOW_MS = 15 * 60_000;
+const BUYER_FAIL_MAX = 8;
+const buyerFailures = new Map<string, number[]>();
+
+function recentBuyerFailures(ip: string, now: number): number[] {
+  const recent = (buyerFailures.get(ip) || []).filter((t) => now - t < BUYER_FAIL_WINDOW_MS);
+  if (recent.length === 0) buyerFailures.delete(ip);
+  else buyerFailures.set(ip, recent);
+  return recent;
+}
+
+/** True when this IP has made too many failed token attempts recently. */
+export function isBuyerLockedOut(ip: string): { locked: boolean; retryAfterSeconds: number } {
+  const now = Date.now();
+  // Opportunistic cleanup so the map cannot grow without bound
+  if (buyerFailures.size > 5000) {
+    for (const key of buyerFailures.keys()) recentBuyerFailures(key, now);
+  }
+  const recent = recentBuyerFailures(ip, now);
+  if (recent.length >= BUYER_FAIL_MAX) {
+    return {
+      locked: true,
+      retryAfterSeconds: Math.max(1, Math.ceil((BUYER_FAIL_WINDOW_MS - (now - recent[0])) / 1000)),
+    };
+  }
+  return { locked: false, retryAfterSeconds: 0 };
+}
+
+export function recordBuyerAuthFailure(ip: string): void {
+  const now = Date.now();
+  const recent = recentBuyerFailures(ip, now);
+  recent.push(now);
+  buyerFailures.set(ip, recent);
+}
+
+const ASSET_NAME_REGEX = /^[\p{L}\p{N} .,&'()/+_-]{1,255}$/u;
+
+/**
+ * Strict schema for buyer submissions. Everything is rebuilt from validated
+ * primitives, so unknown keys are dropped and nothing user-controlled is
+ * forwarded verbatim.
+ */
+export function validateBuyerBody(
+  path: string,
+  body: Record<string, unknown>
+): EndpointValidationResult {
+  const cleanPath = path.replace(/^\/+|\/+$/g, '').toLowerCase();
+
+  if (cleanPath === 'buyer/rates') {
+    const rates = body.rates;
+    if (!Array.isArray(rates) || rates.length < 1 || rates.length > 1000) {
+      return { valid: false, message: 'Provide between 1 and 1000 rates.' };
+    }
+
+    const seen = new Set<number>();
+    const clean: Array<{ rate_id: number; rmb_rate: number | null }> = [];
+
+    for (const row of rates) {
+      if (!row || typeof row !== 'object' || Array.isArray(row)) {
+        return { valid: false, message: 'Invalid rate entry.' };
+      }
+      const { rate_id, rmb_rate } = row as Record<string, unknown>;
+
+      if (typeof rate_id !== 'number' || !Number.isSafeInteger(rate_id) || rate_id <= 0) {
+        return { valid: false, message: 'Invalid rate identifier.' };
+      }
+      if (seen.has(rate_id)) {
+        return { valid: false, message: 'Duplicate rate entries are not allowed.' };
+      }
+      seen.add(rate_id);
+
+      let value: number | null = null;
+      if (rmb_rate !== null && rmb_rate !== undefined) {
+        if (typeof rmb_rate !== 'number' || !Number.isFinite(rmb_rate) || rmb_rate < 0 || rmb_rate > 100_000) {
+          return { valid: false, message: 'Rates must be numbers between 0 and 100,000.' };
+        }
+        value = Math.round(rmb_rate * 10_000) / 10_000;
+      }
+      clean.push({ rate_id, rmb_rate: value });
+    }
+
+    return { valid: true, sanitizedBody: { rates: clean } };
+  }
+
+  if (cleanPath === 'buyer/rates/confirm') {
+    const asset = body.asset_name;
+    if (asset === undefined || asset === null || asset === '') {
+      return { valid: true, sanitizedBody: {} };
+    }
+    if (typeof asset !== 'string') {
+      return { valid: false, message: 'Invalid brand name.' };
+    }
+    const name = sanitizeText(asset, 255);
+    if (!ASSET_NAME_REGEX.test(name) || !detectMaliciousString(name, 'asset_name').safe) {
+      return { valid: false, message: 'Invalid brand name.' };
+    }
+    return { valid: true, sanitizedBody: { asset_name: name } };
+  }
+
+  return { valid: false, message: 'Invalid request.' };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
