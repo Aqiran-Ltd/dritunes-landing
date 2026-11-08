@@ -1019,13 +1019,15 @@ export function validateBuyerBody(
     }
 
     const seen = new Set<number>();
-    const clean: Array<{ rate_id: number; rmb_rate: number | null }> = [];
+    const clean: Array<{ rate_id: number; rate: number | null }> = [];
 
     for (const row of rates) {
       if (!row || typeof row !== 'object' || Array.isArray(row)) {
         return { valid: false, message: 'Invalid rate entry.' };
       }
-      const { rate_id, rmb_rate } = row as Record<string, unknown>;
+      // "rmb_rate" is the deprecated alias for "rate" (the value is cedis)
+      const { rate_id, rate: newRate, rmb_rate: legacyRate } = row as Record<string, unknown>;
+      const rmb_rate = newRate ?? legacyRate;
 
       if (typeof rate_id !== 'number' || !Number.isSafeInteger(rate_id) || rate_id <= 0) {
         return { valid: false, message: 'Invalid rate identifier.' };
@@ -1042,7 +1044,7 @@ export function validateBuyerBody(
         }
         value = Math.round(rmb_rate * 10_000) / 10_000;
       }
-      clean.push({ rate_id, rmb_rate: value });
+      clean.push({ rate_id, rate: value });
     }
 
     return { valid: true, sanitizedBody: { rates: clean } };

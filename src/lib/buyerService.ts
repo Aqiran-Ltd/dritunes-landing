@@ -17,7 +17,13 @@ export interface BuyerSheetItem {
   country_code: string | null;
   denomination: string | null;
   type: string | null;
+  /** Rate the site is currently using for this card (GH₵). */
+  current_rate: number | null;
+  /** Highest quote that goes live without approval; null when there is no limit. */
+  ceiling: number | null;
   my_rate: number | null;
+  /** Submitted but held for admin approval; not live yet. */
+  pending_rate: number | null;
   expires_at: string | null;
   expired: boolean | null;
 }
@@ -34,6 +40,16 @@ export interface BuyerSheet {
     currency: string;
     quote_valid_hours: number;
     last_submitted_at: string | null;
+  };
+}
+
+export interface BuyerSubmitResult {
+  success: boolean;
+  message: string;
+  meta: {
+    expires_at: string;
+    /** rate_ids held for admin approval because they rose too far above the current rate */
+    pending_approval: number[];
   };
 }
 
@@ -136,9 +152,9 @@ async function call<T>(token: string, path: string, init: { method: 'GET' | 'POS
 export const buyerService = {
   sheet: (token: string) => call<BuyerSheet & { success: boolean }>(token, '/sheet', { method: 'GET' }),
 
-  /** rmb_rate: positive number to quote, null to withdraw a quote. */
-  submit: (token: string, rates: Array<{ rate_id: number; rmb_rate: number | null }>) =>
-    call<{ success: boolean; message: string; meta: { expires_at: string } }>(token, '/rates', {
+  /** rate (GH₵): positive number to quote, null to withdraw a quote. */
+  submit: (token: string, rates: Array<{ rate_id: number; rate: number | null }>) =>
+    call<BuyerSubmitResult>(token, '/rates', {
       method: 'POST',
       body: { rates },
     }),
