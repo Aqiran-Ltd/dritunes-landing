@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api, ApiError } from '@/lib/api';
+import { getDeviceId, getDeviceMeta } from '@/lib/device';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 
@@ -170,20 +171,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      // Stop pushes to this browser before the session ends; the token is
-      // needed to authorise the call. device_id is set by NotificationContext.
-      const deviceId = localStorage.getItem('device_id');
-      if (deviceId) {
-        try {
-          await api.delete(`/devices/${encodeURIComponent(deviceId)}`, token);
-        } catch (error) {
-          console.error('Failed to unregister device', error);
-        }
+      // Stop pushes to this browser while signed out, but KEEP the device record and
+      // the local device_id (needed for history / blocking): re-register the same
+      // device with no push token instead of deleting it. The next login's
+      // registration (NotificationContext) stores a token again.
+      try {
+        await api.post('/devices', {
+          device_id: getDeviceId(),
+          type: 'web',
+          fcm_token: null,
+          meta_data: getDeviceMeta(),
+        }, token);
+      } catch (error) {
+        console.error('Failed to clear device push token', error);
       }
       try {
         await api.post('/auth/logout', {}, token);
       } catch (error) {
-        console.error('Logout failed', error);
+        if (!(error instanceof ApiError && error.status === 401)) {
+          console.error('Logout failed', error);
+        }
       }
     }
     localStorage.removeItem('access_token');

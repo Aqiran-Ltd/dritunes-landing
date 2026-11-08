@@ -1,3 +1,5 @@
+import { getDeviceId } from './device';
+
 // Re-uses the same base URL pattern as api.ts:
 // Client-side → '/api/v1' (Next.js middleware injects x-api-key)
 // Server-side  → direct backend URL with API_KEY header
@@ -11,6 +13,7 @@ function buildHeaders(token: string): HeadersInit {
   const h: Record<string, string> = {
     Accept: 'application/json',
     Authorization: `Bearer ${token}`,
+    ...(typeof window !== 'undefined' && getDeviceId() ? { 'X-Device-Id': getDeviceId() } : {}),
   };
   // Server-side: inject key directly (client-side middleware does this)
   if (typeof window === 'undefined' && process.env.API_KEY) {

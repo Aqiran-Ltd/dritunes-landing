@@ -1,3 +1,5 @@
+import { getDeviceId } from './device';
+
 // In client-side, we now point to the Next.js API route (handled by middleware)
 // which matches the path structure /api/v1...
 const getBaseUrl = () => {
@@ -31,6 +33,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const requestHeaders: HeadersInit = {
     'Accept': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(typeof window !== 'undefined' && getDeviceId() ? { 'X-Device-Id': getDeviceId() } : {}),
     ...headers,
   };
 

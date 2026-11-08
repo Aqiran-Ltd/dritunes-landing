@@ -9,6 +9,7 @@ import {
   isBuyerLockedOut,
   isBuyerPath,
   isValidBuyerToken,
+  isValidDeviceId,
   recordBuyerAuthFailure,
   validateBuyerBody,
   isScannerUserAgent,
@@ -411,6 +412,13 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
   outboundHeaders.set('User-Agent', safeUserAgent);
   outboundHeaders.set('X-Forwarded-For', clientIp);
   outboundHeaders.set('X-Real-IP', clientIp);
+
+  // Stable per-browser device id (minted client-side on first visit). The backend uses it
+  // for device blocking and audit logs; invalid values are dropped so it assigns its own.
+  const deviceId = request.headers.get('x-device-id');
+  if (isValidDeviceId(deviceId)) {
+    outboundHeaders.set('X-Device-Id', deviceId);
+  }
 
   if (buyerToken) {
     // Buyer routes authenticate with the buyer token only; never forward a user session token

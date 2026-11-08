@@ -7,6 +7,8 @@
 //  - Requests go through the same-origin proxy (/api/v1/buyer/*), which re-validates
 //    the token format, schema, rate limits and lockouts before reaching the backend.
 
+import { getDeviceId } from './device';
+
 const BASE = '/api/v1/buyer';
 const STORAGE_KEY = 'aqx_buyer_session';
 const TOKEN_REGEX = /^[A-Za-z0-9]{32,128}$/;
@@ -114,6 +116,7 @@ async function call<T>(token: string, path: string, init: { method: 'GET' | 'POS
       headers: {
         Accept: 'application/json',
         'X-Buyer-Token': token,
+        ...(getDeviceId() ? { 'X-Device-Id': getDeviceId() } : {}),
         ...(init.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
       },
       body: init.body !== undefined ? JSON.stringify(init.body) : undefined,

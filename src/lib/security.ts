@@ -114,11 +114,31 @@ export function isValidIp(ip: string): boolean {
   return IPV4_REGEX.test(trimmed) || IPV6_REGEX.test(trimmed);
 }
 
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+/**
+ * Topology: client -> Cloudflare -> Vercel. Vercel overwrites x-forwarded-for /
+ * x-vercel-forwarded-for with the peer it sees, which is a Cloudflare edge IP, so
+ * the real visitor IP is only in Cloudflare's CF-Connecting-IP. That header is
+ * spoofable by anyone who hits the *.vercel.app URL directly, so when
+ * CF_ORIGIN_SECRET is set it is trusted ONLY if the request also carries
+ * `x-cf-origin-secret: <same value>` (add it in Cloudflare: Rules > Transform Rules >
+ * Modify Request Header). Otherwise we fall back to the peer IP Vercel observed,
+ * which cannot be spoofed.
+ */
 export function getClientIp(request: NextRequest): string {
-  // Prefer platform-verified headers first
+  const secret = process.env.CF_ORIGIN_SECRET;
+  const presented = request.headers.get('x-cf-origin-secret') || '';
+  const trustCloudflare = secret ? constantTimeEqual(presented, secret) : true;
+
   const candidates = [
+    trustCloudflare ? request.headers.get('cf-connecting-ip') : null,
     request.headers.get('x-vercel-forwarded-for'),
-    request.headers.get('cf-connecting-ip'),
     request.headers.get('x-real-ip'),
     request.headers.get('x-forwarded-for'),
   ];
@@ -636,6 +656,13 @@ export interface EndpointValidationResult {
   sanitizedBody?: Record<string, unknown>;
 }
 
+// Matches the backend's BlockBlockedDevices middleware (X-Device-Id header format).
+export const DEVICE_ID_REGEX = /^[A-Za-z0-9._-]{8,100}$/;
+
+export function isValidDeviceId(value: string | null | undefined): value is string {
+  return typeof value === 'string' && DEVICE_ID_REGEX.test(value);
+}
+
 export function validateEndpointBody(
   endpointPath: string,
   body: Record<string, unknown>
@@ -1043,6 +1070,8 @@ export function validateBuyerBody(
           return { valid: false, message: 'Rates must be numbers between 0 and 100,000.' };
         }
         value = Math.round(rmb_rate * 10_000) / 10_000;
+        // 0 means "no quote": send it as an explicit withdrawal, never as a literal 0 rate
+        if (value === 0) value = null;
       }
       clean.push({ rate_id, rate: value });
     }

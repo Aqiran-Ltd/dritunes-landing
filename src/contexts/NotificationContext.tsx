@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { getFirebaseMessaging, registerMessagingServiceWorker } from "@/lib/firebase";
 import { getToken, onMessage } from "firebase/messaging";
 import { api } from "@/lib/api";
+import { getDeviceId, getDeviceMeta } from "@/lib/device";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -175,6 +176,12 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     requestPermission();
   }, []);
 
+  // Mint the device id on first visit, before any login, so it is stable from
+  // the very first page load and is attached to the user at login/register.
+  useEffect(() => {
+    getDeviceId();
+  }, []);
+
   // Register this browser with the backend whenever we have both a push token
   // and a signed-in user: after the token arrives, after login, and after
   // switching accounts. A visitor who gets a token before logging in is
@@ -186,29 +193,15 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
       const accessToken = localStorage.getItem("access_token");
       if (!accessToken) return;
 
-      // Get or create a persistent device ID
-      let deviceId = localStorage.getItem("device_id");
-      if (!deviceId) {
-        deviceId = typeof crypto !== 'undefined' && crypto.randomUUID 
-          ? crypto.randomUUID() 
-          : `web-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-        localStorage.setItem("device_id", deviceId);
-      }
-
+      // Same id the app already sends as X-Device-Id on every request; this ties
+      // the device to the signed-in user and stores its push token.
       try {
-        // We use the api utility but we need to ensure we pass the token if it's not automatically picked up structure-wise
-        // But api wrapper handles headers manually in some calls. 
-        // Let's use the explicit token we got from localStorage.
         await api.post("/devices", {
-          device_id: deviceId,
+          device_id: getDeviceId(),
           type: "web",
           fcm_token: fcmToken,
-          meta_data: {
-            user_agent: navigator.userAgent,
-            platform: navigator.platform
-          }
+          meta_data: getDeviceMeta(),
         }, accessToken);
-        console.log("Device registered with backend successfully");
       } catch (error) {
         console.error("Failed to register device:", error);
       }
