@@ -434,7 +434,7 @@ export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string;
           </div>
         </div>
         {/* MASTER FILTER BAR */}
-        <div className="w-full max-w-6xl mx-auto mb-10 sticky top-24 z-30">
+        <div className="w-full max-w-6xl mx-auto mb-10 relative lg:sticky lg:top-24 z-30">
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }}
@@ -461,7 +461,7 @@ export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string;
             {/* Controls Group */}
             <div className="flex flex-wrap items-center gap-2 p-1 bg-gray-50/50 dark:bg-black/20 rounded-[2rem]">
               {/* Delivery Type Dropdown */}
-              <div className="min-w-[140px] border-r border-gray-200 dark:border-gray-800 pr-1">
+              <div className="flex-1 sm:flex-none min-w-[130px] border-r border-gray-200 dark:border-gray-800 pr-1">
                 <Select 
                   options={[
                     { id: "All", name: "All Types" },
@@ -475,7 +475,7 @@ export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string;
               </div>
 
               {/* Sort Dropdown */}
-              <div className="min-w-[180px]">
+              <div className="flex-1 sm:flex-none min-w-[150px] sm:min-w-[180px]">
                 <Select 
                   options={SORT_OPTIONS} 
                   value={activeSortOption} 
@@ -666,7 +666,7 @@ export default function RatesPage({ deepCard, deepRegion }: { deepCard?: string;
                 const isExpanded = expandedRegions.has(regionKey);
                 const sortedCards = [...cards].sort((a, b) => getAmountValue(a.amount) - getAmountValue(b.amount));
                 return (
-                  <motion.div key={regionKey} id={`rates-${regionKey}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`scroll-mt-48 transition-shadow duration-500 ${highlightRegion === regionKey ? "ring-4 ring-gold" : ""} bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden`}>
+                  <motion.div key={regionKey} id={`rates-${regionKey}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`scroll-mt-24 lg:scroll-mt-48 transition-shadow duration-500 ${highlightRegion === regionKey ? "ring-4 ring-gold" : ""} bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-800 overflow-hidden`}>
                     <button onClick={() => toggleRegion(regionKey)} className={`w-full px-6 py-4 bg-gradient-to-r ${style.color} text-white font-bold text-lg flex items-center justify-between hover:opacity-90 transition-opacity cursor-pointer`}>
                       <div className="flex items-center gap-3">
                         {style.icon} 
