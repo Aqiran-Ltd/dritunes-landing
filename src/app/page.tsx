@@ -5,6 +5,7 @@ import StatsSection from "@/components/StatsSection";
 import CardsWeBuy from "@/components/CardsWeBuy";
 import PriceUpdateSection from "@/components/PriceUpdateSection";
 import FeaturesSection from "@/components/FeaturesSection";
+import AppDownloadSection from "@/components/AppDownloadSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 import MobileQuickActions from "@/components/MobileQuickActions";
@@ -39,6 +40,7 @@ export default async function Home() {
       <CardsWeBuy brands={brands} />
       <FeaturesSection />
       <PriceUpdateSection initialCategories={categories} />
+      <AppDownloadSection />
       <NewsletterSection />
       <Footer />
       <MobileQuickActions />

@@ -139,6 +139,7 @@ export default function Footer() {
                   { name: "Home", href: "/" },
                   { name: "About Us", href: "/about" },
                   { name: "Rates", href: "/rates" },
+                  { name: "Download App", href: "/download" },
                   { name: "Our Services", href: "/#features" },
                   { name: "Contact", href: "/contact" },
                   { name: "Privacy Policy", href: "/privacy" },

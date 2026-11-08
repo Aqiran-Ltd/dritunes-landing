@@ -49,25 +49,23 @@ export default function FeaturesSection() {
           <TradeSteps />
         </div>
 
-        <div className="mt-14 sm:mt-24 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-0 md:divide-x divide-gray-200 dark:divide-gray-800">
-          {promises.map((promise, i) => {
+        <ul className="mt-14 sm:mt-24 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          {promises.map((promise) => {
             const Icon = promise.icon;
             return (
-              <div 
-                key={promise.title} 
-                className={`p-5 rounded-2xl bg-white dark:bg-gray-950 border border-gray-200/80 dark:border-gray-800 shadow-sm md:bg-transparent md:p-0 md:border-0 md:shadow-none ${
-                  i === 0 ? "md:pr-10" : i === 1 ? "md:px-10" : "md:pl-10"
-                }`}
+              <li
+                key={promise.title}
+                className="flex h-full flex-col rounded-2xl border border-gray-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-gray-800 dark:bg-gray-950"
               >
-                <div className="w-10 h-10 rounded-xl bg-gold/15 dark:bg-gold/20 text-gold-700 dark:text-gold-400 flex items-center justify-center mb-3">
+                <div className="w-10 h-10 shrink-0 rounded-xl bg-gold/15 dark:bg-gold/20 text-gold-700 dark:text-gold-400 flex items-center justify-center mb-4">
                   <Icon className="w-5 h-5 stroke-[2]" />
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold text-ink dark:text-white">{promise.title}</h3>
-                <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm leading-relaxed text-gray-600 dark:text-gray-400">{promise.body}</p>
-              </div>
+                <h3 className="text-base sm:text-lg font-semibold leading-snug text-balance text-ink dark:text-white">{promise.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{promise.body}</p>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </section>
   );
