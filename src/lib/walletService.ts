@@ -54,9 +54,10 @@ export async function fetchWallet(token: string, params?: WalletQueryParams): Pr
   }
 }
 
-export async function requestWithdrawal(token: string, amount: number, userPaymentMethodId: number) {
+export async function requestWithdrawal(token: string, amount: number, userPaymentMethodId: number, currentPassword?: string) {
   return await api.post('/wallet/withdraw', {
     amount,
-    user_payment_method_id: userPaymentMethodId
+    user_payment_method_id: userPaymentMethodId,
+    ...(currentPassword ? { current_password: currentPassword } : {}),
   }, token);
 }

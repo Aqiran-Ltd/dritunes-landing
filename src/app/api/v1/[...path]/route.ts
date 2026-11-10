@@ -435,6 +435,16 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
     outboundHeaders.set('Content-Type', 'application/json');
   }
 
+  // Tell the backend who the visitor really is. Cloudflare reports THIS server as the client, so
+  // without this every web user would share one IP (rate limits, IP blocks, audit logs, security
+  // emails). The backend only honours X-Visitor-IP when X-Proxy-Auth matches its WEB_PROXY_SECRET.
+  // Server-only secret: never prefix with NEXT_PUBLIC_.
+  const proxySecret = process.env.WEB_PROXY_SECRET;
+  if (proxySecret && clientIp !== '127.0.0.1') {
+    outboundHeaders.set('X-Proxy-Auth', proxySecret);
+    outboundHeaders.set('X-Visitor-IP', clientIp);
+  }
+
   const apiKey = process.env.API_KEY;
   if (apiKey) {
     outboundHeaders.set('x-api-key', apiKey);

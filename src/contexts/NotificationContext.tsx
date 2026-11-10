@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { getFirebaseMessaging, registerMessagingServiceWorker } from "@/lib/firebase";
 import { getToken, onMessage } from "firebase/messaging";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { getDeviceId, getDeviceMeta } from "@/lib/device";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
@@ -204,6 +204,9 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
         }, accessToken);
       } catch (error) {
         console.error("Failed to register device:", error);
+        if (error instanceof ApiError && error.status === 409) {
+          toast.error("This browser was recently used by another account, so push notifications are off here. Try again tomorrow.", { id: "device-conflict", duration: 7000 });
+        }
       }
     };
 

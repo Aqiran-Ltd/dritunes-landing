@@ -904,6 +904,10 @@ export function validateEndpointBody(
     const bank_name = typeof sanitized.bank_name === 'string' ? sanitizeText(sanitized.bank_name, 120) : '';
     const branch = typeof sanitized.branch === 'string' ? sanitizeText(sanitized.branch, 100) : '';
     const is_default = Boolean(sanitized.is_default);
+    // Sent only when the backend asks for password confirmation (PAYOUT_REQUIRE_PASSWORD).
+    const current_password = typeof sanitized.current_password === 'string' && sanitized.current_password.length > 0 && sanitized.current_password.length <= 256
+      ? sanitized.current_password
+      : undefined;
 
     if (!['momo', 'bank'].includes(payment_type)) {
       return { valid: false, message: 'Invalid payment type (must be momo or bank).' };
@@ -931,6 +935,7 @@ export function validateEndpointBody(
         bank_name,
         branch: branch || null,
         is_default,
+        ...(current_password ? { current_password } : {}),
       },
     };
   }
@@ -939,6 +944,10 @@ export function validateEndpointBody(
   if (cleanPath === 'wallet/withdraw') {
     const amount = Number(sanitized.amount);
     const user_payment_method_id = Number(sanitized.user_payment_method_id);
+    // Sent only when the backend asks for password confirmation (PAYOUT_REQUIRE_PASSWORD).
+    const current_password = typeof sanitized.current_password === 'string' && sanitized.current_password.length > 0 && sanitized.current_password.length <= 256
+      ? sanitized.current_password
+      : undefined;
 
     if (!Number.isFinite(amount) || amount < 1 || amount > 1_000_000) {
       return { valid: false, message: 'Withdrawal amount must be at least ₵1.00.' };
@@ -949,7 +958,7 @@ export function validateEndpointBody(
 
     return {
       valid: true,
-      sanitizedBody: { amount, user_payment_method_id },
+      sanitizedBody: { amount, user_payment_method_id, ...(current_password ? { current_password } : {}) },
     };
   }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { api, ApiError } from '@/lib/api';
+import { api, ApiError, SESSION_ENDED_EVENT, type SessionEndReason } from '@/lib/api';
 import { getDeviceId, getDeviceMeta } from '@/lib/device';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
@@ -39,6 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const loggingOut = React.useRef(false);
 
   // Derived state for verification
   // If property is explicitly null, they need verification.
@@ -81,6 +82,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     loadUser();
   }, []);
+
+  // The API client reports a dead session (expired token, suspended account):
+  // drop the token and send the user to sign in again, once.
+  useEffect(() => {
+    const onSessionEnded = (e: Event) => {
+      if (loggingOut.current || !localStorage.getItem('access_token')) return; // already signing out
+      const reason = (e as CustomEvent<SessionEndReason>).detail;
+      localStorage.removeItem('access_token');
+      setUser(null);
+      toast.error(
+        reason === 'suspended'
+          ? 'Your account has been suspended. Please contact support.'
+          : 'Your session has expired. Please sign in again.',
+        { id: 'session-ended' }
+      );
+      router.push('/auth/login');
+    };
+    window.addEventListener(SESSION_ENDED_EVENT, onSessionEnded);
+    return () => window.removeEventListener(SESSION_ENDED_EVENT, onSessionEnded);
+  }, [router]);
 
   const login = async (credentials: any) => {
     // Note: Toasts are handled in the components for login/register to allow for loading states
@@ -169,6 +190,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    loggingOut.current = true;
     const token = localStorage.getItem('access_token');
     if (token) {
       // Stop pushes to this browser while signed out, but KEEP the device record and
@@ -196,6 +218,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('access_token');
     setUser(null);
     toast.success('Logged out successfully');
+    loggingOut.current = false;
     router.push('/auth/login');
   };
 
@@ -251,9 +274,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const forgotPassword = async (email: string) => {
       try {
           await api.post('/auth/forgot-password', { email });
-          toast.success('Password reset link sent to your email');
+          toast.success("If an account exists for that email, we've sent a reset code.");
       } catch (err: any) {
-          toast.error(err.message || 'Failed to send reset link');
+          toast.error(err.message || 'Failed to send reset code');
           throw err;
       }
   };

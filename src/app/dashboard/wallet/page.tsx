@@ -17,13 +17,14 @@ import {
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 import { fetchWallet, requestWithdrawal, type WalletData, type WalletQueryParams } from '@/lib/walletService';
-import { fetchUserPaymentMethods, type UserPaymentMethod } from '@/lib/paymentMethodService';
+import { fetchUserPaymentMethods, type UserPaymentMethod, payoutHoldEndsAt } from '@/lib/paymentMethodService';
 import PaymentMethodsManager from '@/components/dashboard/PaymentMethodsManager';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { usePasswordConfirm, PasswordCancelledError } from '@/hooks/usePasswordConfirm';
 
 const formatDateTime = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -42,6 +43,7 @@ export default function WalletPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState('');
+  const { withPassword, passwordModal } = usePasswordConfirm();
   const [selectedMethodId, setSelectedMethodId] = useState<number>(-1);
   const [withdrawStatus, setWithdrawStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -118,6 +120,11 @@ export default function WalletPage() {
         return;
     }
 
+    if (Math.round(amount * 100) / 100 !== amount) {
+        setWithdrawStatus({ type: 'error', message: 'Amount can have at most 2 decimal places.' });
+        return;
+    }
+
     if (wallet && amount > parseFloat(wallet.balance)) {
         setWithdrawStatus({ type: 'error', message: 'Insufficient balance.' });
         return;
@@ -130,7 +137,7 @@ export default function WalletPage() {
       const token = localStorage.getItem('access_token');
       if (!token) return;
 
-      await requestWithdrawal(token, amount, selectedMethodId);
+      await withPassword((pw) => requestWithdrawal(token, amount, selectedMethodId, pw), 'confirm this withdrawal');
       toast.success('Withdrawal request submitted successfully!', { id: loadingToast });
       setWithdrawAmount('');
       setTimeout(() => {
@@ -139,6 +146,10 @@ export default function WalletPage() {
         loadWalletData();
       }, 2000);
     } catch (err: any) {
+      if (err instanceof PasswordCancelledError) {
+        toast.dismiss(loadingToast);
+        return;
+      }
       const msg = err.message || 'Failed to submit withdrawal request.';
       toast.error(msg, { id: loadingToast });
       setWithdrawStatus({ type: 'error', message: msg });
@@ -424,7 +435,9 @@ export default function WalletPage() {
                               {method.payment_method?.name} • {method.account_number}
                             </p>
                           </div>
-                          {selectedMethodId === method.id && <CheckCircleIcon className="w-5 h-5 text-gold-700 dark:text-gold-400" />}
+                          {payoutHoldEndsAt(method) ? (
+                            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 text-right">On hold until<br />{payoutHoldEndsAt(method)!.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                          ) : selectedMethodId === method.id && <CheckCircleIcon className="w-5 h-5 text-gold-700 dark:text-gold-400" />}
                         </button>
                       ))
                     )}
@@ -590,6 +603,8 @@ export default function WalletPage() {
             </>
         )}
       </AnimatePresence>
+
+      {passwordModal}
     </div>
   );
 }

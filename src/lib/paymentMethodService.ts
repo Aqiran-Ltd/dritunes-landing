@@ -13,6 +13,18 @@ export interface UserPaymentMethod {
   branch?: string;
   is_default: boolean;
   details?: Record<string, any>;
+  /** Set by the backend whenever the account details were added or changed. */
+  payout_details_changed_at?: string | null;
+}
+
+// Mirrors the backend's PAYOUT_COOLDOWN_HOURS default. Display only: the server enforces it.
+export const PAYOUT_COOLDOWN_HOURS = 24;
+
+/** When a freshly added/edited payout account becomes usable for withdrawals, or null if it already is. */
+export function payoutHoldEndsAt(method: UserPaymentMethod): Date | null {
+  if (!method.payout_details_changed_at) return null;
+  const ends = new Date(new Date(method.payout_details_changed_at).getTime() + PAYOUT_COOLDOWN_HOURS * 3600_000);
+  return Number.isNaN(ends.getTime()) || ends.getTime() <= Date.now() ? null : ends;
 }
 
 export async function fetchUserPaymentMethods(token: string): Promise<UserPaymentMethod[]> {
@@ -25,12 +37,12 @@ export async function fetchUserPaymentMethods(token: string): Promise<UserPaymen
   }
 }
 
-export async function addUserPaymentMethod(token: string, data: Partial<UserPaymentMethod>) {
-  return await api.post('/user-payment-methods', data, token);
+export async function addUserPaymentMethod(token: string, data: Partial<UserPaymentMethod>, currentPassword?: string) {
+  return await api.post('/user-payment-methods', currentPassword ? { ...data, current_password: currentPassword } : data, token);
 }
 
-export async function updateUserPaymentMethod(token: string, id: number, data: Partial<UserPaymentMethod>) {
-  return await api.put(`/user-payment-methods/${encodeURIComponent(String(id))}`, data, token);
+export async function updateUserPaymentMethod(token: string, id: number, data: Partial<UserPaymentMethod>, currentPassword?: string) {
+  return await api.put(`/user-payment-methods/${encodeURIComponent(String(id))}`, currentPassword ? { ...data, current_password: currentPassword } : data, token);
 }
 
 export async function deleteUserPaymentMethod(token: string, id: number) {

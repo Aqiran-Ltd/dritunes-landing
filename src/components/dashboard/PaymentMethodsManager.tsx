@@ -16,6 +16,8 @@ import {
   addUserPaymentMethod, 
   deleteUserPaymentMethod, 
   updateUserPaymentMethod,
+  payoutHoldEndsAt,
+  PAYOUT_COOLDOWN_HOURS,
   type UserPaymentMethod 
 } from '@/lib/paymentMethodService';
 import { fetchCompanyPaymentMethods, type PaymentMethod as CompanyPaymentMethod } from '@/lib/tradeService';
@@ -24,6 +26,7 @@ import { Input } from '@/components/ui/Input';
 import { Select, type SelectOption } from '@/components/ui/Select';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { usePasswordConfirm, PasswordCancelledError } from '@/hooks/usePasswordConfirm';
 
 const MOMO_OPTIONS: SelectOption[] = [
   { id: 'mtn', name: 'MTN Mobile Money', description: 'Scan & Pay, Transfers' },
@@ -49,6 +52,7 @@ export default function PaymentMethodsManager() {
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { withPassword, passwordModal } = usePasswordConfirm();
 
   // Form State for New Method
   const [selectedCategory, setSelectedCategory] = useState<'momo' | 'bank' | null>(null);
@@ -130,20 +134,24 @@ export default function PaymentMethodsManager() {
       const token = localStorage.getItem('access_token');
       if (!token) return;
 
-      await addUserPaymentMethod(token, {
+      await withPassword((pw) => addUserPaymentMethod(token, {
         payment_type: selectedCategory,
         account_name: trimmedName,
         account_number: normalizedAccNum,
         bank_name: bankName.trim(),
         branch: branch.trim().slice(0, 100),
         is_default: userMethods.length === 0 // Default if it's the first one
-      });
+      }, pw), 'add this payout account');
 
-      toast.success('Payment method added successfully!', { id: loadingToast });
+      toast.success(`Account added. For your security, withdrawals to it unlock in ${PAYOUT_COOLDOWN_HOURS} hours.`, { id: loadingToast, duration: 6000 });
       setIsAdding(false);
       resetForm();
       await loadData();
     } catch (err: any) {
+      if (err instanceof PasswordCancelledError) {
+        toast.dismiss(loadingToast);
+        return;
+      }
       const msg = err.message || 'Failed to add payment method.';
       setError(msg);
       toast.error(msg, { id: loadingToast });
@@ -171,9 +179,9 @@ export default function PaymentMethodsManager() {
       await deleteUserPaymentMethod(token, id);
       toast.success('Account deleted successfully!', { id: loadingToast });
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to delete method', err);
-      toast.error('Failed to delete account.', { id: loadingToast });
+      toast.error(err?.message || 'Failed to delete account.', { id: loadingToast });
     }
   };
 
@@ -182,12 +190,16 @@ export default function PaymentMethodsManager() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await updateUserPaymentMethod(token, id, { is_default: true });
+      await withPassword((pw) => updateUserPaymentMethod(token, id, { is_default: true }, pw), 'change your default payout account');
       toast.success('Default account updated!', { id: loadingToast });
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
+      if (err instanceof PasswordCancelledError) {
+        toast.dismiss(loadingToast);
+        return;
+      }
       console.error('Failed to set default', err);
-      toast.error('Failed to update default account.', { id: loadingToast });
+      toast.error(err?.message || 'Failed to update default account.', { id: loadingToast });
     }
   };
 
@@ -297,6 +309,16 @@ export default function PaymentMethodsManager() {
                       <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{method.bank_name}</p>
                    )}
                 </div>
+
+                {(() => {
+                  const holdEnds = payoutHoldEndsAt(method);
+                  return holdEnds ? (
+                    <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+                      <ExclamationCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span>Security hold: withdrawals to this account unlock {holdEnds.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}.</span>
+                    </div>
+                  ) : null;
+                })()}
 
                 {!method.is_default && (
                   <button 
@@ -457,6 +479,8 @@ export default function PaymentMethodsManager() {
           </div>
         )}
       </AnimatePresence>
+
+      {passwordModal}
     </div>
   );
 }

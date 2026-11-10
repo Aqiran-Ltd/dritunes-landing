@@ -27,6 +27,27 @@ export class ApiError extends Error {
   }
 }
 
+/** First message from a Laravel `{ errors: { field: [msg] } }` body, so 422s are never "Something went wrong". */
+function firstValidationMessage(data: any): string | null {
+  const errors = data?.errors;
+  if (!errors || typeof errors !== 'object') return null;
+  for (const messages of Object.values(errors)) {
+    if (Array.isArray(messages) && messages.length) return String(messages[0]);
+  }
+  return null;
+}
+
+export const SESSION_ENDED_EVENT = 'auth:session-ended';
+export type SessionEndReason = 'expired' | 'suspended';
+
+// Endpoints where a 401/403 is an expected answer, not a dead session.
+const SESSION_CHECK_SKIP = ['/auth/login', '/auth/logout', '/auth/register', '/auth/forgot-password', '/auth/verify-otp', '/auth/reset-password'];
+
+function notifySessionEnded(reason: SessionEndReason) {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent<SessionEndReason>(SESSION_ENDED_EVENT, { detail: reason }));
+}
+
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { token, headers, body, ...customConfig } = options;
 
@@ -57,13 +78,20 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const data = await response.json();
 
   if (!response.ok) {
-    let message = data.message || 'Something went wrong';
+    let message = data.message || firstValidationMessage(data) || 'Something went wrong';
     
     // Add specific handling for Rate Limiting
     if (response.status === 429) {
       message = 'Too many requests. Please slow down and try again in a moment.';
     }
     
+    // A signed-in request was refused because the login token is no longer valid
+    // (expired / revoked) or the account was suspended: tell the app to sign out.
+    if (token && !SESSION_CHECK_SKIP.some((p) => endpoint.startsWith(p))) {
+      if (response.status === 401) notifySessionEnded('expired');
+      else if (response.status === 403 && /suspended/i.test(String(data?.message ?? ''))) notifySessionEnded('suspended');
+    }
+
     throw new ApiError(response.status, message, data);
   }
 

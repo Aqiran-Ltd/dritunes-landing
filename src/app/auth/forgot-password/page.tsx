@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
       // Redirect to Reset Password page with email as query param for convenience
       router.push(`/auth/reset-password?email=${encodeURIComponent(trimmedEmail)}`);
     } catch (err: any) {
-      setError(err.message || 'Failed to send reset link');
+      setError(err.message || 'Failed to send reset code');
       setIsLoading(false);
     }
   };
@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
           Forgot Password?
         </h2>
         <p className="text-gray-500 dark:text-gray-400">
-          No worries, we&apos;ll send you reset instructions.
+          No worries, we&apos;ll email you a 6-digit reset code.
         </p>
       </div>
 
