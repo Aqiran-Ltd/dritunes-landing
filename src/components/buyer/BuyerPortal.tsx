@@ -27,7 +27,7 @@ import {
 import BrandLogo from "@/components/BrandLogo";
 import BrandImage from "@/components/BrandImage";
 import BuyerDesk, { type Status } from "./BuyerDesk";
-import RateRow, { wouldHold } from "./RateRow";
+import RateRow from "./RateRow";
 
 const IDLE_TIMEOUT_MS = 15 * 60_000;
 const RATE_INPUT_REGEX = /^\d{0,5}(\.\d{0,4})?$/;
@@ -159,12 +159,6 @@ export default function BuyerPortal() {
         .map(Number)
         .filter((id) => normalise(drafts[id]) !== normalise(originalOf(id))),
     [drafts, originalOf]
-  );
-
-  // How many of the edits are above the instant-approval limit
-  const heldEdits = useMemo(
-    () => dirtyIds.filter((id) => itemsById.get(id) && wouldHold(itemsById.get(id)!, drafts[id])).length,
-    [dirtyIds, drafts, itemsById]
   );
 
   // Warn before leaving with unsaved changes
@@ -314,6 +308,29 @@ export default function BuyerPortal() {
           res.meta.expires_at
         ).toLocaleString()}.`,
       });
+      await loadSheet(token);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  // Withdraw every quote (live or held) so the buyer has no active rates
+  const clearAll = async () => {
+    if (!token || busy || !sheet) return;
+    const ids = sheet.data.flatMap((g) => g.items).filter((i) => i.my_rate != null || i.pending_rate != null).map((i) => i.rate_id);
+    if (ids.length === 0) {
+      setDrafts({});
+      return;
+    }
+    if (!window.confirm(`Clear all ${ids.length} rate${ids.length === 1 ? "" : "s"}? They will stop being live.`)) return;
+    setBusy(true);
+    setNotice(null);
+    try {
+      await buyerService.submit(token, ids.map((rate_id) => ({ rate_id, rate: null })));
+      setDrafts({});
+      setNotice({ kind: "info", text: "All rates cleared." });
       await loadSheet(token);
     } catch (err) {
       handleError(err);
@@ -637,15 +654,19 @@ export default function BuyerPortal() {
                       <span className="font-semibold">
                         {dirtyIds.length} change{dirtyIds.length === 1 ? "" : "s"}
                       </span>
-                      {heldEdits > 0 ? (
-                        <span className="text-amber-300"> · {heldEdits} will need approval</span>
-                      ) : (
-                        <span className="text-gray-400"> · all go live straight away</span>
-                      )}
+                      <span className="text-gray-400"> · unsaved</span>
                     </>
                   )}
                 </p>
                 <div className="flex gap-2">
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={clearAll}
+                    className="flex-1 sm:flex-none rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-red-300 hover:bg-white/10 disabled:opacity-50 cursor-pointer transition-colors"
+                  >
+                    Clear all
+                  </button>
                   <button
                     type="button"
                     disabled={busy}

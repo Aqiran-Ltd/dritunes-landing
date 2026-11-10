@@ -19,10 +19,6 @@ export interface BuyerSheetItem {
   country_code: string | null;
   denomination: string | null;
   type: string | null;
-  /** Rate the site is currently using for this card (GH₵). */
-  current_rate: number | null;
-  /** Highest quote that goes live without approval; null when there is no limit. */
-  ceiling: number | null;
   my_rate: number | null;
   /** Submitted but held for admin approval; not live yet. */
   pending_rate: number | null;
