@@ -1,9 +1,54 @@
+/**
+ * Browsers only let a page make sound after the user has interacted with it, and a context created
+ * outside a click/keypress starts "suspended" (silent). Our chime fires from a push message or a
+ * poll, never from a click, so we keep ONE shared context, unlock it on the first interaction,
+ * and resume it before every play.
+ */
+let ctx: AudioContext | null = null;
+let unlockInstalled = false;
+
+function getContext(): AudioContext | null {
+  if (typeof window === 'undefined') return null;
+  if (ctx && ctx.state !== 'closed') return ctx;
+  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+  if (!AudioCtx) return null;
+  ctx = new AudioCtx();
+  return ctx;
+}
+
+const UNLOCK_EVENTS = ['pointerdown', 'keydown', 'touchend'] as const;
+
+/** Call once on the client: the first tap/click/keypress un-suspends audio for the rest of the session. */
+export function installAudioUnlock() {
+  if (typeof window === 'undefined' || unlockInstalled) return;
+  unlockInstalled = true;
+
+  const unlock = () => {
+    const c = getContext();
+    if (!c) return;
+    c.resume()
+      .then(() => {
+        if (c.state === 'running') UNLOCK_EVENTS.forEach((e) => window.removeEventListener(e, unlock));
+      })
+      .catch(() => {});
+  };
+  UNLOCK_EVENTS.forEach((e) => window.addEventListener(e, unlock, { passive: true }));
+}
+
 export function playNotificationSound() {
-  if (typeof window === 'undefined') return;
+  const ctx = getContext();
+  if (!ctx) return;
+  installAudioUnlock();
+  // Still suspended means the user hasn't interacted yet: stay silent rather than queue a stale chime.
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(() => ctx.state === 'running' && chime(ctx)).catch(() => {});
+    return;
+  }
+  chime(ctx);
+}
+
+function chime(ctx: AudioContext) {
   try {
-    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
 
     // Ascending three-note chime: G4 → B4 → D5
     const notes = [392, 493.88, 587.33];

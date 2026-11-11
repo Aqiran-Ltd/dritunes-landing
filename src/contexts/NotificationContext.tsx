@@ -17,7 +17,7 @@ import {
   WalletIcon as Wallet,
   ChatBubbleLeftRightIcon
 } from "@heroicons/react/24/outline";
-import { playNotificationSound } from "@/lib/notificationSound";
+import { playNotificationSound, installAudioUnlock } from "@/lib/notificationSound";
 
 interface NotificationContextType {
   fcmToken: string | null;
@@ -61,6 +61,11 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   };
 
   const router = useRouter();
+
+  // Arm audio on the first click/tap so later (non-gesture) chimes are allowed to play.
+  useEffect(() => {
+    installAudioUnlock();
+  }, []);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
