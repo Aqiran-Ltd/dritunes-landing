@@ -20,6 +20,7 @@ import {
 import { PlayIcon } from '@heroicons/react/24/solid';
 import { useAuth } from '@/contexts/AuthContext';
 import { resolveStorageUrl } from '@/lib/storage';
+import { subscribeTradeChat } from '@/lib/realtime';
 import {
   TradeMessage,
   fetchTradeMessages,
@@ -29,6 +30,8 @@ import {
 } from '@/lib/chatService';
 
 const POLL_INTERVAL_MS = 8000;
+// With a live socket, polling is only a safety net for missed events.
+const LIVE_POLL_INTERVAL_MS = 60000;
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // matches backend `max:20480` (KB)
 const MAX_ATTACHMENTS = 5;
 const ALLOWED_CHAT_MIMES = [
@@ -83,9 +86,11 @@ interface GalleryItem {
 
 interface TradeChatPanelProps {
   tradeNumber: string;
+  /** Numeric trade id: names the live websocket channel. Without it the chat polls. */
+  tradeId?: number;
 }
 
-export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
+export function TradeChatPanel({ tradeNumber, tradeId }: TradeChatPanelProps) {
   const { user } = useAuth();
   const currentUserId = user?.id;
 
@@ -99,6 +104,7 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
   const [sending, setSending] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
+  const [live, setLive] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -195,9 +201,41 @@ export function TradeChatPanel({ tradeNumber }: TradeChatPanelProps) {
       loadPage(1, { silent: true }).then(() => {
         if (shouldStickToBottom) scrollToBottom('smooth');
       });
-    }, POLL_INTERVAL_MS);
+    }, live ? LIVE_POLL_INTERVAL_MS : POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [loadPage, scrollToBottom]);
+  }, [loadPage, scrollToBottom, live]);
+
+  // Live updates: new messages, deletions and read receipts arrive over the websocket.
+  const markReadRef = useRef(markRead);
+  markReadRef.current = markRead;
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (!tradeId || !token) return;
+    const unsubscribe = subscribeTradeChat(tradeId, token, {
+      onMessage: (incoming) => {
+        const stick = isNearBottom();
+        setMessages((prev) => mergeMessages(prev, [incoming]));
+        if (incoming.user_id !== currentUserId) markReadRef.current();
+        if (stick) scrollToBottom('smooth');
+      },
+      onDeleted: (id) =>
+        setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, deleted_at: m.deleted_at ?? new Date().toISOString() } : m))),
+      onRead: (readerId, readAt) => {
+        if (readerId === currentUserId) return;
+        setMessages((prev) => prev.map((m) => (m.user_id === currentUserId && !m.read_at ? { ...m, read_at: readAt } : m)));
+      },
+      onStatus: (isLive) => {
+        setLive(isLive);
+        // Anything sent while the socket was down is picked up as soon as it is back.
+        if (isLive) loadPage(1, { silent: true });
+      },
+    });
+    return () => {
+      unsubscribe?.();
+      setLive(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tradeId, currentUserId]);
 
   useEffect(() => {
     return () => {

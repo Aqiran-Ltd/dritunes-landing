@@ -290,6 +290,11 @@ const ALLOWED_API_ROUTES: Array<{ pattern: RegExp; methods: string[] }> = [
     pattern: /^trades\/[A-Za-z0-9_-]{1,64}\/messages\/\d+$/,
     methods: ['DELETE'],
   },
+  // Live chat: private-channel auth for the websocket
+  {
+    pattern: /^broadcasting\/auth$/,
+    methods: ['POST'],
+  },
   // Newsletter & contact
   {
     pattern: /^newsletter\/subscribe$/,

@@ -1,6 +1,11 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
+// Live trade chat websocket (Reverb). Only allowed when a public ws host is configured.
+const reverbHost = process.env.NEXT_PUBLIC_REVERB_HOST;
+const reverbScheme = process.env.NEXT_PUBLIC_REVERB_SCHEME === 'http' ? 'ws' : 'wss';
+const reverbConnect = reverbHost ? ` ${reverbScheme}://${reverbHost}${process.env.NEXT_PUBLIC_REVERB_PORT ? `:${process.env.NEXT_PUBLIC_REVERB_PORT}` : ''}` : '';
+
 const securityHeaders = [
   {
     key: 'X-DNS-Prefetch-Control',
@@ -35,7 +40,7 @@ const securityHeaders = [
       "font-src 'self' data: https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://upload.wikimedia.org https://flagcdn.com https://admin.dritunesconsult.com https://admin.aqiranxchange.com http://localhost:8000 http://127.0.0.1:8000",
       "media-src 'self' data: blob: https://admin.dritunesconsult.com https://admin.aqiranxchange.com http://localhost:8000 http://127.0.0.1:8000",
-      "connect-src 'self' https://admin.dritunesconsult.com https://admin.aqiranxchange.com http://localhost:8000 http://127.0.0.1:8000 https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.googleapis.com https://www.gstatic.com https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+      `connect-src 'self' https://admin.dritunesconsult.com https://admin.aqiranxchange.com http://localhost:8000 http://127.0.0.1:8000 https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.googleapis.com https://www.gstatic.com https://va.vercel-scripts.com https://vitals.vercel-insights.com${reverbConnect}`,
       "worker-src 'self' blob:",
       "object-src 'none'",
       "base-uri 'self'",

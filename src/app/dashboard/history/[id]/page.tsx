@@ -470,7 +470,7 @@ export default function TradeDetailPage() {
             )}
 
             {/* Live trade chat */}
-            <TradeChatPanel tradeNumber={trade.trade_number} />
+            <TradeChatPanel tradeNumber={trade.trade_number} tradeId={trade.id} />
          </div>
 
          {/* RIGHT COLUMN: Payout Info */}
