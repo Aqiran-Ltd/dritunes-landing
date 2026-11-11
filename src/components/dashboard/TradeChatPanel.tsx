@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -73,6 +73,23 @@ function mergeMessages(existing: TradeMessage[], incoming: TradeMessage[]): Trad
   return Array.from(map.values()).sort((a, b) => a.id - b.id);
 }
 
+const COMPOSER_MAX_LINES = 5;
+
+/** Grow the box with its text up to ~5 lines, then scroll. Overflow stays hidden until the cap so no scrollbar flashes. */
+function autosize(el: HTMLTextAreaElement) {
+  const cs = getComputedStyle(el);
+  const lineHeight = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4;
+  const chrome =
+    parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+  const max = Math.ceil(lineHeight * COMPOSER_MAX_LINES + chrome);
+
+  el.style.height = 'auto';
+  // scrollHeight leaves out the border, which border-box sizing needs added back.
+  const wanted = el.scrollHeight + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+  el.style.height = `${Math.min(wanted, max)}px`;
+  el.style.overflowY = wanted > max ? 'auto' : 'hidden';
+}
+
 interface PendingFile {
   file: File;
   previewUrl: string | null;
@@ -110,6 +127,11 @@ export function TradeChatPanel({ tradeNumber, tradeId }: TradeChatPanelProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Resize after every text change, including the clear after sending.
+  useLayoutEffect(() => {
+    if (textareaRef.current) autosize(textareaRef.current);
+  }, [messageText]);
 
   const galleryItems = useMemo<GalleryItem[]>(() => {
     const items: GalleryItem[] = [];
@@ -306,7 +328,6 @@ export function TradeChatPanel({ tradeNumber, tradeId }: TradeChatPanelProps) {
       setMessageText('');
       pendingFiles.forEach((p) => p.previewUrl && URL.revokeObjectURL(p.previewUrl));
       setPendingFiles([]);
-      if (textareaRef.current) textareaRef.current.style.height = 'auto';
       scrollToBottom('smooth');
     } catch (err: any) {
       toast.error(err.message || 'Failed to send message');
@@ -576,14 +597,12 @@ export function TradeChatPanel({ tradeNumber, tradeId }: TradeChatPanelProps) {
           maxLength={4000}
           onChange={(e) => {
             setMessageText(e.target.value);
-            e.target.style.height = 'auto';
-            e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
           }}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
           rows={1}
           disabled={sending}
-          className="flex-1 resize-none bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-gold-200 dark:focus:border-gold-900/50 focus:outline-none focus:ring-2 focus:ring-gold-500/10 disabled:opacity-60 max-h-[120px]"
+          className="flex-1 resize-none bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 border border-transparent focus:border-gold-200 dark:focus:border-gold-900/50 focus:outline-none focus:ring-2 focus:ring-gold-500/10 disabled:opacity-60 overflow-y-hidden leading-5"
         />
 
         <button
