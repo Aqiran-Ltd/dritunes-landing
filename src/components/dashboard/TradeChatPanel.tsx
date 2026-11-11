@@ -175,6 +175,8 @@ export function TradeChatPanel({ tradeNumber, tradeId }: TradeChatPanelProps) {
     if (!token) return;
     try {
       await markTradeMessagesRead(tradeNumber, token);
+      // The backend also clears this trade's chat notifications; refresh the bell.
+      window.dispatchEvent(new CustomEvent('dritunes:new-notification'));
       setMessages((prev) =>
         prev.map((m) => (m.user_id !== currentUserId && !m.read_at ? { ...m, read_at: new Date().toISOString() } : m))
       );
