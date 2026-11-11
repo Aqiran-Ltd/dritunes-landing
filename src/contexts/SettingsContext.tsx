@@ -8,7 +8,24 @@ interface Settings {
   whatsapp_number: string;
   maintenance_mode: boolean;
   maintenance_message: string;
+  /** Backend asks for the account password on payout-account changes and withdrawals. */
+  payout_require_password: boolean;
+  /** Hours a new/changed payout account is held before it can receive a withdrawal (0 = no hold). */
+  payout_cooldown_hours: number;
+  /** Withdrawals need a verified email or phone. */
+  payout_require_verified_contact: boolean;
 }
+
+// Used until /settings answers, or if it can't be reached. The server enforces every rule regardless.
+export const DEFAULT_SETTINGS: Settings = {
+  offer_trade_via_whatsapp: false,
+  whatsapp_number: '',
+  maintenance_mode: false,
+  maintenance_message: 'The system is currently undergoing maintenance. Please check back later.',
+  payout_require_password: false,
+  payout_cooldown_hours: 24,
+  payout_require_verified_contact: true,
+};
 
 interface NotificationSettings {
   email_notifications: boolean;
@@ -37,20 +54,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     try {
       const response: any = await api.get('/settings');
       // Handle the response format flexibly
-      if (response && response.data) {
-         setSettings(response.data);
-      } else if (response) {
-         setSettings(response);
-      }
+      const data = response && response.data ? response.data : response;
+      // Merge over defaults so a field an older backend doesn't send never reads as undefined.
+      if (data) setSettings({ ...DEFAULT_SETTINGS, ...data });
     } catch (error) {
       console.error('Failed to load settings', error);
       // Fallback defaults if verification fails or no settings found
-      setSettings({
-          offer_trade_via_whatsapp: false,
-          whatsapp_number: '233548434599', // fallback
-          maintenance_mode: false,
-          maintenance_message: 'The system is currently undergoing maintenance. Please check back later.'
-      });
+      setSettings(DEFAULT_SETTINGS);
     }
   };
 

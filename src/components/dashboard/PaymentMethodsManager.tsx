@@ -17,7 +17,6 @@ import {
   deleteUserPaymentMethod, 
   updateUserPaymentMethod,
   payoutHoldEndsAt,
-  PAYOUT_COOLDOWN_HOURS,
   type UserPaymentMethod 
 } from '@/lib/paymentMethodService';
 import { fetchCompanyPaymentMethods, type PaymentMethod as CompanyPaymentMethod } from '@/lib/tradeService';
@@ -26,6 +25,7 @@ import { Input } from '@/components/ui/Input';
 import { Select, type SelectOption } from '@/components/ui/Select';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { useSettings } from '@/contexts/SettingsContext';
 import { usePasswordConfirm, PasswordCancelledError } from '@/hooks/usePasswordConfirm';
 
 const MOMO_OPTIONS: SelectOption[] = [
@@ -53,6 +53,8 @@ export default function PaymentMethodsManager() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { withPassword, passwordModal } = usePasswordConfirm();
+  const { settings } = useSettings();
+  const holdHours = settings?.payout_cooldown_hours ?? 0;
 
   // Form State for New Method
   const [selectedCategory, setSelectedCategory] = useState<'momo' | 'bank' | null>(null);
@@ -143,7 +145,7 @@ export default function PaymentMethodsManager() {
         is_default: userMethods.length === 0 // Default if it's the first one
       }, pw), 'add this payout account');
 
-      toast.success(`Account added. For your security, withdrawals to it unlock in ${PAYOUT_COOLDOWN_HOURS} hours.`, { id: loadingToast, duration: 6000 });
+      toast.success(holdHours > 0 ? `Account added. For your security, withdrawals to it unlock in ${holdHours} hour${holdHours === 1 ? '' : 's'}.` : 'Account added.', { id: loadingToast, duration: 6000 });
       setIsAdding(false);
       resetForm();
       await loadData();
@@ -311,7 +313,7 @@ export default function PaymentMethodsManager() {
                 </div>
 
                 {(() => {
-                  const holdEnds = payoutHoldEndsAt(method);
+                  const holdEnds = payoutHoldEndsAt(method, holdHours);
                   return holdEnds ? (
                     <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
                       <ExclamationCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />

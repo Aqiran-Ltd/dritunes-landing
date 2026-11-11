@@ -17,13 +17,14 @@ export interface UserPaymentMethod {
   payout_details_changed_at?: string | null;
 }
 
-// Mirrors the backend's PAYOUT_COOLDOWN_HOURS default. Display only: the server enforces it.
-export const PAYOUT_COOLDOWN_HOURS = 24;
-
-/** When a freshly added/edited payout account becomes usable for withdrawals, or null if it already is. */
-export function payoutHoldEndsAt(method: UserPaymentMethod): Date | null {
-  if (!method.payout_details_changed_at) return null;
-  const ends = new Date(new Date(method.payout_details_changed_at).getTime() + PAYOUT_COOLDOWN_HOURS * 3600_000);
+/**
+ * When a freshly added/edited payout account becomes usable for withdrawals, or null if it already is.
+ * `holdHours` comes from the backend's `payout_cooldown_hours` setting (0 = no hold). Display only:
+ * the server enforces it.
+ */
+export function payoutHoldEndsAt(method: UserPaymentMethod, holdHours: number): Date | null {
+  if (!method.payout_details_changed_at || holdHours <= 0) return null;
+  const ends = new Date(new Date(method.payout_details_changed_at).getTime() + holdHours * 3600_000);
   return Number.isNaN(ends.getTime()) || ends.getTime() <= Date.now() ? null : ends;
 }
 

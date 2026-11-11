@@ -24,6 +24,9 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import Link from 'next/link';
+import { useSettings } from '@/contexts/SettingsContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { usePasswordConfirm, PasswordCancelledError } from '@/hooks/usePasswordConfirm';
 
 const formatDateTime = (dateString: string) => {
@@ -44,6 +47,11 @@ export default function WalletPage() {
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const { withPassword, passwordModal } = usePasswordConfirm();
+  const { settings } = useSettings();
+  const { user } = useAuth();
+  const holdHours = settings?.payout_cooldown_hours ?? 0;
+  // The backend refuses withdrawals until the user has a verified email or phone (when that rule is on).
+  const needsVerifiedContact = !!settings?.payout_require_verified_contact && !!user && user.email_verified_at === null && user.phone_verified_at === null;
   const [selectedMethodId, setSelectedMethodId] = useState<number>(-1);
   const [withdrawStatus, setWithdrawStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,6 +117,10 @@ export default function WalletPage() {
 
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (needsVerifiedContact) {
+      setWithdrawStatus({ type: 'error', message: 'Verify your email address or phone number before withdrawing.' });
+      return;
+    }
     if (selectedMethodId === -1) {
       setWithdrawStatus({ type: 'error', message: 'Please select a payout account.' });
       return;
@@ -435,8 +447,8 @@ export default function WalletPage() {
                               {method.payment_method?.name} • {method.account_number}
                             </p>
                           </div>
-                          {payoutHoldEndsAt(method) ? (
-                            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 text-right">On hold until<br />{payoutHoldEndsAt(method)!.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                          {payoutHoldEndsAt(method, holdHours) ? (
+                            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 text-right">On hold until<br />{payoutHoldEndsAt(method, holdHours)!.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
                           ) : selectedMethodId === method.id && <CheckCircleIcon className="w-5 h-5 text-gold-700 dark:text-gold-400" />}
                         </button>
                       ))
@@ -444,10 +456,17 @@ export default function WalletPage() {
                   </div>
                 </div>
 
+                {needsVerifiedContact && (
+                  <div className="flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+                    <ExclamationCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>Verify your email address or phone number to withdraw. <Link href="/auth/otp" className="font-bold underline">Verify now</Link></span>
+                  </div>
+                )}
+
                 <Button 
                   type="submit" 
                   isLoading={isSubmitting} 
-                  disabled={userMethods.length === 0}
+                  disabled={userMethods.length === 0 || needsVerifiedContact}
                   className="w-full rounded-2xl h-14 bg-gold-500 hover:bg-gold-600 text-ink font-black text-lg shadow-xl shadow-gold-500/20"
                 >
                   Confirm Withdrawal

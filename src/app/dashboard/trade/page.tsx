@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSettings } from '@/contexts/SettingsContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchRates, type Category } from '@/lib/ratesService';
 import { createTrade } from '@/lib/tradeService';
@@ -39,7 +40,13 @@ export default function TradePage() {
   // -- Data State --
   const [categories, setCategories] = useState<Category[]>([]);
   const [userPaymentMethods, setUserPaymentMethods] = useState<UserPaymentMethod[]>([]);
-  const [whatsappLink, setWhatsappLink] = useState('https://wa.me/233548434599'); 
+  const { settings } = useSettings();
+  const [socialWhatsapp, setSocialWhatsapp] = useState('');
+  // Backend "Trade via WhatsApp" switch + number; falls back to the company WhatsApp link.
+  const whatsappDigits = (settings?.whatsapp_number ?? '').replace(/\D/g, '');
+  const whatsappLink = settings?.offer_trade_via_whatsapp
+    ? (whatsappDigits ? `https://wa.me/${whatsappDigits}` : socialWhatsapp)
+    : '';
   const [loadingRates, setLoadingRates] = useState(true);
 
   // -- Form State --
@@ -145,7 +152,7 @@ export default function TradePage() {
         setUserPaymentMethods(userMethodsData);
 
         fetchSocials().then(s => {
-          if (s.whatsapp) setWhatsappLink(s.whatsapp);
+          if (s.whatsapp) setSocialWhatsapp(s.whatsapp);
         });
 
       } catch (err) {
@@ -644,12 +651,14 @@ export default function TradePage() {
                          className="w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-gold-500 min-h-[80px]"
                        />
 
-                       <div className="text-center mt-4">
-                             <p className="text-xs text-gray-400 mb-2">Need help? Chat with us.</p>
-                             <button onClick={() => window.open(whatsappLink)} className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-200 transition-colors cursor-pointer">
-                                 WhatsApp Support
-                             </button>
-                       </div>
+                       {whatsappLink && (
+                         <div className="text-center mt-4">
+                               <p className="text-xs text-gray-400 mb-2">Need help? Chat with us.</p>
+                               <button onClick={() => window.open(whatsappLink, '_blank', 'noopener,noreferrer')} className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-200 transition-colors cursor-pointer">
+                                   WhatsApp Support
+                               </button>
+                         </div>
+                       )}
                   </div>
                </div>
 
