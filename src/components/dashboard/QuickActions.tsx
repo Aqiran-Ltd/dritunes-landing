@@ -21,7 +21,7 @@ export default function QuickActions() {
                 <CurrencyDollarIcon className="w-6 h-6" />
              </div>
              <h3 className="font-bold text-lg leading-tight">Sell Gift Card</h3>
-             <p className="text-ink/70 text-xs mt-1">Instant Payment</p>
+             <p className="text-ink/70 text-xs mt-1">Fast Payment</p>
           </div>
           <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors" />
        </Link>

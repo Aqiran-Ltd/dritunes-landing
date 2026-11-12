@@ -5,7 +5,7 @@ import BrandLogo from "@/components/BrandLogo";
 
 export const metadata: Metadata = {
   title: "Account Sign In & Registration",
-  description: "Sign in or create your Aqiran Xchange account to trade gift cards with instant Mobile Money and bank payouts.",
+  description: "Sign in or create your Aqiran Xchange account to trade gift cards with fast Mobile Money and bank payouts.",
 };
 
 export default function AuthLayout({

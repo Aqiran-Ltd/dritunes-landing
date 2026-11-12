@@ -133,7 +133,7 @@ export default function AboutSection() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Security First</h3>
               <p className="text-gray-600 leading-relaxed">
-                Your assets are protected with bank-grade security measures. We prioritize the safety of your transactions and personal information.
+                Your assets are protected with strong security measures. We prioritize the safety of your transactions and personal information.
               </p>
             </div>
           </motion.div>
@@ -147,9 +147,9 @@ export default function AboutSection() {
               <div className="w-12 h-12 bg-gradient-to-br from-gold-500 to-gold-600 rounded-xl flex items-center justify-center text-ink mb-6 shadow-lg">
                 <ClockIcon className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Instant Trading</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Fast Trading</h3>
               <p className="text-gray-600 leading-relaxed">
-                Get the best rates instantly. Our platform ensures fast transactions whether you&apos;re trading gift cards.
+                Get live rates in seconds. Our platform ensures fast transactions whether you&apos;re trading gift cards.
               </p>
             </div>
           </motion.div>

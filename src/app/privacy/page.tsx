@@ -77,7 +77,7 @@ const sections: LegalSection[] = [
                 <strong>Data Types Collected:</strong> Bank details (bank name, account number, account holder name) and Mobile Money credentials (e.g., MTN MoMo, Telecel Cash, AT Money phone numbers and registered subscriber names), as well as cash payout transaction logs.
               </p>
               <p>
-                <strong>Purpose of Collection:</strong> Strictly collected for <strong>App Functionality &amp; Cash Payouts</strong>. When your trade is accepted, we require valid payout details to disburse instant cedis to your designated wallet or bank account.
+                <strong>Purpose of Collection:</strong> Strictly collected for <strong>App Functionality &amp; Cash Payouts</strong>. When your trade is accepted, we require valid payout details to disburse cedis to your designated wallet or bank account.
               </p>
               <p>
                 <strong>Third-Party Sharing:</strong> Shared solely with licensed, regulated payment processors and settlement banks strictly to execute payout transfers. We <em>never</em> sell, rent, or trade your financial info.
@@ -163,7 +163,7 @@ const sections: LegalSection[] = [
                   </td>
                   <td className="p-3">Yes (Account Profile)</td>
                   <td className="p-3 text-gray-500">No (Never)</td>
-                  <td className="p-3">Instant cash payouts &amp; fraud mitigation</td>
+                  <td className="p-3">Cash payouts &amp; fraud mitigation</td>
                 </tr>
                 <tr>
                   <td className="p-3 font-semibold text-ink dark:text-white">Identity Information (Name, Email, Phone)</td>
@@ -260,7 +260,7 @@ const sections: LegalSection[] = [
         <ul className="list-disc pl-5 space-y-2">
           <li><strong>Access &amp; Export:</strong> Review your stored profile details, active payout methods, and transaction history at any time through your dashboard.</li>
           <li><strong>Modify Payout Methods:</strong> Add, edit, or delete connected Mobile Money numbers or bank account numbers at will via Payment Settings.</li>
-          <li><strong>Permanent Deletion:</strong> You may permanently delete your account at any time directly through the mobile app or via our <Link href="/auth/delete-account" className="font-semibold text-ink dark:text-white underline underline-offset-4">Account Deletion Portal</Link>. Deleting your account immediately wipes your profile identity, active login sessions, and saved payout credentials from our active database.</li>
+          <li><strong>Permanent Deletion:</strong> You may permanently delete your account at any time directly through the mobile app or via our <Link href="/auth/delete-account" className="font-semibold text-ink dark:text-white underline underline-offset-4">Account Deletion Portal</Link>. Deleting your account immediately signs you out of all devices and deactivates your profile so it can no longer be accessed. Deletion is blocked while you have pending trades or payments. We may retain limited transaction and payout records for fraud prevention, dispute handling, and legal and accounting obligations, after which they are removed or anonymized. Your email address and phone number are released when you delete your account, so you are welcome to register again at any time.</li>
         </ul>
       </div>
     ),

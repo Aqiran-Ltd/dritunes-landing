@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Aqiran Xchange — Independent Gift Card Marketplace',
     short_name: 'Aqiran Xchange',
-    description: "Ghana's trusted independent secondary marketplace for gift cards. Instant Mobile Money and bank payouts with zero KYC.",
+    description: "Ghana's trusted independent secondary marketplace for gift cards. Fast Mobile Money and bank payouts with zero KYC.",
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

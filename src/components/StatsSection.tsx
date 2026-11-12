@@ -1,11 +1,15 @@
-const stats = [
-  { value: "10,000+", label: "customers have traded with us" },
-  { value: "₵50M+", label: "paid out to date" },
-  { value: "99.9%", label: "of trades completed" },
+import { realFigures, type PublicStats, type StatFigure } from "@/lib/statsService";
+
+const fixedFacts: StatFigure[] = [
   { value: "24/7", label: "support on WhatsApp and Telegram" },
+  { value: "3", label: "ways to trade: app, chat, or in person" },
+  { value: "MoMo", label: "and bank payouts in Ghana cedis" },
+  { value: "0", label: "ID documents required to trade" },
 ];
 
-export default function StatsSection() {
+export default function StatsSection({ stats: live }: { stats?: PublicStats | null }) {
+  // Real figures (from paid trades) come first; fixed facts fill the rest of the row.
+  const stats = [...realFigures(live ?? null), ...fixedFacts].slice(0, 4);
   return (
     <section aria-label="Aqiran Xchange in numbers" className="bg-white dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

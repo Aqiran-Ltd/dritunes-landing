@@ -346,7 +346,7 @@ export default function TradePage() {
       <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Start a Payout</h1>
-            <p className="text-gray-500 dark:text-gray-400">Securely trade your assets for GHC instantly.</p>
+            <p className="text-gray-500 dark:text-gray-400">Securely trade your assets for GHC.</p>
           </div>
           <BoltIcon className="w-10 h-10 text-yellow-500" />
       </div>

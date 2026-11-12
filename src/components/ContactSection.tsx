@@ -318,7 +318,7 @@ export default function ContactSection() {
                 <div>
                   <h3 className="text-lg font-bold text-white">WhatsApp</h3>
                   <p className="text-gray-300 font-medium">+233 XX XXX XXXX</p>
-                  <p className="text-sm text-gray-400">Instant messaging</p>
+                  <p className="text-sm text-gray-400">Chat messaging</p>
                 </div>
               </div>
             </motion.div>
@@ -424,7 +424,7 @@ export default function ContactSection() {
                 <ClockIcon className="w-8 h-8 text-ink" />
                 <div>
                   <h4 className="text-lg font-bold text-ink">Fast Response</h4>
-                  <p className="text-ink/70 text-sm">We reply within 5 minutes</p>
+                  <p className="text-ink/70 text-sm">We reply as quickly as we can</p>
                 </div>
               </div>
             </motion.div>

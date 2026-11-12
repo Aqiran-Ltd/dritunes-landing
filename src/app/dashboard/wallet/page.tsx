@@ -354,7 +354,7 @@ export default function WalletPage() {
 
            <div className="bg-gradient-to-br from-gold-500 to-gold-600 rounded-[2.5rem] p-8 text-ink">
               <BanknotesIcon className="w-10 h-10 mb-4 opacity-50" />
-              <h3 className="text-xl font-bold mb-2">Instant Payouts</h3>
+              <h3 className="text-xl font-bold mb-2">Fast Payouts</h3>
               <p className="text-ink/80 text-sm leading-relaxed">
                 Choose &quot;Direct Payout&quot; during your sell trades to receive funds directly in your bank or momo account as soon as the trade is approved.
               </p>

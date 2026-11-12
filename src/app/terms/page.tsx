@@ -14,7 +14,7 @@ const intro = "These Terms of Service govern your access to and use of Aqiran Xc
 
 export const metadata: Metadata = {
   title: "Terms of Service & Secondary Marketplace Disclaimers",
-  description: "Terms of Service for Aqiran Xchange. Transparent terms governing gift card trading, instant cash payouts, our independent secondary marketplace disclaimer, and zero-KYC user onboarding across web and mobile apps.",
+  description: "Terms of Service for Aqiran Xchange. Transparent terms governing gift card trading, fast cash payouts, our independent secondary marketplace disclaimer, and zero-KYC user onboarding across web and mobile apps.",
 };
 
 const sections: LegalSection[] = [
@@ -127,7 +127,7 @@ const sections: LegalSection[] = [
     ),
   },
   {
-    title: "Financial Information & Instant Payout Settlements",
+    title: "Financial Information & Payout Settlements",
     badge: "Cedis Cashout",
     content: (
       <div className="space-y-4">
@@ -142,7 +142,7 @@ const sections: LegalSection[] = [
               <li><strong>Bank Transfer:</strong> Bank name, account number, branch/routing code, and account holder name.</li>
             </ul>
             <p>
-              <strong>Payout Execution &amp; Finality:</strong> Once your card verification is completed, our automated systems dispatch the Ghanaian Cedi (GHS) payout immediately to your chosen settlement channel.
+              <strong>Payout Execution &amp; Finality:</strong> Once your card verification is completed, our automated systems dispatch the Ghanaian Cedi (GHS) payout to your chosen settlement channel.
             </p>
             <div className="rounded-xl bg-amber-500/10 border border-amber-500/25 p-4 text-xs sm:text-sm text-gray-800 dark:text-gray-200">
               <strong>User Responsibility for Account Details:</strong> Payouts are executed strictly to the exact mobile money number or bank account specified in your trade submission. Aqiran Xchange cannot reverse settlements sent to an incorrect number entered by the user. Please double-check your payout numbers before confirming.

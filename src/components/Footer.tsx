@@ -209,7 +209,7 @@ export default function Footer() {
                     </div>
                     <div>
                       <div className="font-medium">Telegram</div>
-                      <div className="text-xs text-gray-400">Instant Chat</div>
+                      <div className="text-xs text-gray-400">Live Chat</div>
                     </div>
                   </a>
                 </li>

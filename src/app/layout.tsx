@@ -26,16 +26,16 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://aqiranxchange.com"),
   title: {
-    default: "Aqiran Xchange | Independent Gift Card Exchange & Instant Cedis Payouts",
+    default: "Aqiran Xchange | Independent Gift Card Exchange & Fast Cedis Payouts",
     template: "%s | Aqiran Xchange"
   },
-  description: "Ghana's trusted independent secondary marketplace for gift cards. Sell Apple, Amazon, Steam, Razer, and Google Play cards for instant Mobile Money (MoMo) or bank payouts. Zero KYC required, live market rates, and 24/7 support.",
+  description: "Ghana's trusted independent secondary marketplace for gift cards. Sell Apple, Amazon, Steam, Razer, and Google Play cards for fast Mobile Money (MoMo) or bank payouts. Zero KYC required, live market rates, and 24/7 support.",
   keywords: [
     "gift card exchange Ghana", 
     "independent gift card marketplace",
     "secondary gift card exchange Ghana",
     "sell gift cards Ghana", 
-    "instant MoMo gift card payout",
+    "fast MoMo gift card payout",
     "no KYC gift card exchange",
     "sell iTunes card Ghana",
     "sell Apple gift card Ghana",
@@ -68,8 +68,8 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: "Aqiran Xchange | Independent Gift Card Exchange & Instant Cedis Payouts",
-    description: "Ghana's premier independent secondary gift card marketplace. Instant Mobile Money & bank payouts with zero KYC. Best rates & 24/7 support.",
+    title: "Aqiran Xchange | Independent Gift Card Exchange & Fast Cedis Payouts",
+    description: "Ghana's premier independent secondary gift card marketplace. Fast Mobile Money & bank payouts with zero KYC. Best rates & 24/7 support.",
     url: "https://aqiranxchange.com",
     siteName: "Aqiran Xchange",
     type: "website",
@@ -85,8 +85,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aqiran Xchange | Independent Gift Card Exchange & Instant Cedis Payouts",
-    description: "Trade gift cards securely with zero KYC. Best rates, instant MoMo/bank payouts, and 24/7 support across Ghana.",
+    title: "Aqiran Xchange | Independent Gift Card Exchange & Fast Cedis Payouts",
+    description: "Trade gift cards securely with zero KYC. Best rates, fast MoMo/bank payouts, and 24/7 support across Ghana.",
     images: ['/og-image.png'],
     creator: "@dritunes",
   },
@@ -113,7 +113,7 @@ export default function RootLayout({
     "@type": "Organization",
     "name": "Aqiran Xchange",
     "alternateName": "Dr iTunes Consult",
-    "description": "Independent secondary marketplace for digital gift card exchange and instant cash payouts in Ghana.",
+    "description": "Independent secondary marketplace for digital gift card exchange and fast cash payouts in Ghana.",
     "url": "https://aqiranxchange.com",
     "logo": "https://aqiranxchange.com/icon-512.png",
     "sameAs": [
@@ -137,7 +137,7 @@ export default function RootLayout({
     "@type": "FinancialService",
     "name": "Aqiran Xchange",
     "alternateName": "Dr iTunes Consult",
-    "description": "Independent secondary marketplace for digital gift card exchange and instant Mobile Money payouts in Tamale and across Ghana.",
+    "description": "Independent secondary marketplace for digital gift card exchange and fast Mobile Money payouts in Tamale and across Ghana.",
     "image": "https://aqiranxchange.com/og-image.png",
     "@id": "https://aqiranxchange.com",
     "url": "https://aqiranxchange.com",

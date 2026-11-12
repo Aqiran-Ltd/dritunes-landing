@@ -6,7 +6,7 @@
 
 ## 1. Executive Summary & Policy Compliance Context
 
-Aqiran Xchange operates as an **independent secondary marketplace** facilitating the exchange of unredeemed, secondary digital gift cards for instant Ghanaian Cedi (GHS) cashouts via Mobile Money and local banks. 
+Aqiran Xchange operates as an **independent secondary marketplace** facilitating the exchange of unredeemed, secondary digital gift cards for fast Ghanaian Cedi (GHS) cashouts via Mobile Money and local banks. 
 
 To satisfy Apple and Google store review requirements without triggering rejection for trademark infringement or misleading data declarations:
 1. **Independent Secondary Marketplace & Brand Disclaimers:** Explicitly clarify in the App Description, Terms of Service, Privacy Policy, and in-app legal dialogs that Aqiran Xchange is an independent secondary exchange and is **not affiliated with, endorsed by, sponsored by, or authorized by** the brand owners whose gift cards are traded (e.g., Apple, Amazon, Steam, Google, Razer, Sony).
@@ -21,32 +21,33 @@ To satisfy Apple and Google store review requirements without triggering rejecti
 * **Google Play App Title:** `Aqiran Xchange: Trade & Payout` *(29 chars)*
 * **Apple App Store Name:** `Aqiran Xchange` *(14 chars)*
 * **Apple App Store Subtitle:** `Fast Gift Card Cashouts` *(24 chars)*
+* **Apple note:** Do not put third-party brand names (Apple, Amazon, Steam...) in the app name, subtitle, or keywords (Guideline 2.3.7). The brand non-affiliation disclaimer may stay in the description.
 
 ### B. Short Description (Google Play — 80-Character Limit)
 ```text
-Trade gift cards for instant cedis. Fast, secure secondary market payouts.
+Sell gift cards for cedis. Fast Mobile Money and bank payouts in Ghana.
 ```
 
 ### C. Full Description (Google Play & Apple App Store)
 ```text
 Welcome to Aqiran Xchange (formerly Dr iTunes Consult) — Northern Ghana's premier secondary digital asset and gift card exchange platform.
 
-Get the best rates and instant Ghanaian Cedi (GHS) payouts directly to your Mobile Money (MTN MoMo, Telecel Cash, AT Money) or local bank account. Whether you trade online in the app, chat directly with our 24/7 support desk on WhatsApp and Telegram, or visit our physical counter in Tamale, Aqiran Xchange makes gift card trading frictionless, fast, and secure.
+Get live rates and fast Ghanaian Cedi (GHS) payouts directly to your Mobile Money (MTN MoMo, Telecel Cash, AT Money) or local bank account. Whether you trade online in the app, chat directly with our 24/7 support desk on WhatsApp and Telegram, or visit our physical counter in Tamale, Aqiran Xchange makes gift card trading frictionless, fast, and secure.
 
 WHY TRADE WITH AQIRAN XCHANGE?
-• Instant Cedis Payouts: Zero waiting. Receive instant cash settlements the moment your trade is authenticated.
+• Fast Cedi Payouts: Payouts are sent once your card is verified, typically within minutes.
 • Transparent, Live Market Rates: Check live quotes before you trade with our real-time exchange calculator.
-• Streamlined, No-KYC Trading: Fast onboarding with zero KYC hassle. No uploading passports, national IDs, or facial biometric scans.
-• Multiple Payment Rails: Instant cashout to all Ghanaian Mobile Money networks and bank accounts.
+• Simple Onboarding: No passports, national IDs, or facial biometric scans are collected.
+• Multiple Payment Rails: Cash out to Ghanaian Mobile Money networks and bank accounts.
 • 24/7 Human Support: Speak with our responsive support desk via WhatsApp, Telegram, or in-app live chat.
-• Trusted Legacy: Over 10,000+ traders served and ₵50M+ disbursed across Ghana.
+• Local Presence: Visit our physical counter in Tamale, Ghana.
 
 HOW IT WORKS:
-1. Select your gift card brand (Apple, Amazon, Steam, Google Play, Razer, Xbox, etc.) and denomination.
+1. Select your gift card brand and denomination.
 2. Get a live, transparent quote.
 3. Submit the card claim code or physical card pack photo.
-4. Enter your Mobile Money or Bank details for instant cashout.
-5. Receive funds in your account within minutes!
+4. Enter your Mobile Money or Bank details for payout.
+5. Receive funds once your card is verified, typically within minutes.
 
 ============================================================
 IMPORTANT DISCLAIMERS & LEGAL DISCLOSURES:
@@ -69,7 +70,7 @@ When completing the **Data Safety form** in Google Play Console:
 | :--- | :--- | :--- |
 | **Does your app collect or share user data?** | **Yes** | App collects basic profile, financial payout info, and trade data. |
 | **Is all user data encrypted in transit?** | **Yes** | All API traffic is TLS 1.3 / HTTPS. |
-| **Do you provide a way for users to request data deletion?** | **Yes** | In-app delete button and URL: `https://aqiranxchange.com/auth/delete-account`. |
+| **Do you provide a way for users to request data deletion?** | **Yes** | In-app: Profile → Delete Account. Web: `https://aqiranxchange.com/auth/delete-account`. Deletion is a soft delete; limited transaction records are retained for fraud/legal purposes (disclosed in the Privacy Policy). |
 | **Financial Info: Bank account / Payment details** | **Collected: Yes**<br>**Shared: Yes**<br>Ephemeral: No<br>Optional: Yes | Collected to disburse cashouts. Shared strictly with regulated payment processors/banks. |
 | **Personal Info: Name, Email, Phone number** | **Collected: Yes**<br>**Shared: No**<br>Ephemeral: No<br>Optional: No | Account creation, receipts, and login authentication. |
 | **Personal Info: Government ID (KYC)** | **Collected: NO** | **Aqiran Xchange does NOT conduct KYC or collect national IDs.** |
@@ -95,14 +96,15 @@ When completing the **App Privacy** section in App Store Connect:
 * **User Content:**
   * **Customer Support / Photos:** Yes (Uploaded card photos & claim codes).
   * *Purpose:* App Functionality (Trade verification).
+* **Other User Content:** Yes (trade chat messages and attachments). *Purpose:* App Functionality.
 * **Identifiers:**
+  * **Device ID:** Yes (Firebase push token). *Purpose:* App Functionality (push notifications).
   * **User ID:** Yes (Account ID / Sanctum token).
   * *Purpose:* App Functionality.
 
 ### 3. Data Not Linked to You
 * **Diagnostics:**
-  * **Crash Data & Performance Data:** Yes (Sentry error logs).
-  * *Purpose:* Analytics and App Health (Pseudonymous).
+  * **Not collected:** the mobile app has no crash-reporting SDK. If one (e.g. Sentry) is added later, declare Crash Data here.
 
 ---
 
@@ -194,3 +196,9 @@ Widget buildSecondaryMarketplaceNotice() {
 | **Cookie Policy** | `https://aqiranxchange.com/cookies` |
 | **Account Deletion Portal** | `https://aqiranxchange.com/auth/delete-account` |
 | **Support & Compliance Contact** | `https://aqiranxchange.com/contact` • `info@aqiranxchange.com` |
+
+---
+
+## 7. Live Statistics (Backend-Driven)
+
+Figures such as customers served and cedis paid out are **not hardcoded**. They come from the public backend endpoint `GET /api/v1/stats` (paid trades only, cached 1 hour) and the website rounds them down before showing them. Do **not** add numeric claims (e.g. "10,000+ traders") to App Store / Play Store copy unless the endpoint currently supports them, because Apple can ask for evidence under Guideline 2.3.

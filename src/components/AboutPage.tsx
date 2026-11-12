@@ -4,14 +4,15 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import StartTradeLink from "@/components/StartTradeLink";
 import { cardByName } from "@/lib/cardCatalogue";
 import { BuildingStorefrontIcon } from "@heroicons/react/24/outline";
+import { realFigures, type PublicStats } from "@/lib/statsService";
 
-const tradingFacts = [
-  { value: "10,000+", label: "customers have traded with us" },
-  { value: "₵50M+", label: "paid out to date" },
+const fixedTradingFacts = [
+  { value: "3", label: "ways to trade: app, chat, or in person" },
+  { value: "24/7", label: "support on WhatsApp and Telegram" },
 ];
 
 const tradeWays = [
-  { title: "Web & Mobile App", body: "Upload your card on our website or mobile app (iOS & Android), track live rates, and receive instant MoMo or bank payouts." },
+  { title: "Web & Mobile App", body: "Upload your card on our website or mobile app (iOS & Android), track live rates, and receive fast MoMo or bank payouts." },
   { title: "On WhatsApp or Telegram", body: "Message our 24/7 team with your card details and lock in a live quote." },
   { title: "At the counter in Tamale", body: "Bring the card to our physical desk and trade face to face." },
 ];
@@ -77,7 +78,8 @@ const plans = [
 
 const sectionRule = "border-t border-gray-200 dark:border-gray-800";
 
-export default function AboutPage() {
+export default function AboutPage({ stats }: { stats?: PublicStats | null }) {
+  const tradingFacts = [...realFigures(stats ?? null), ...fixedTradingFacts].slice(0, 2);
   return (
     <div className="bg-white dark:bg-gray-950 text-ink dark:text-white">
       {/* The rename */}
@@ -96,7 +98,7 @@ export default function AboutPage() {
           </h1>
           <div className="mt-12 grid md:grid-cols-2 gap-8 md:gap-16 max-w-5xl">
             <p className="text-xl leading-relaxed text-gray-700 dark:text-gray-300 text-pretty">
-              Same founder, same team, same counter in Tamale. We operate an independent secondary marketplace for digital gift cards across Ghana, paying out instantly in cedis via Mobile Money and local banks — online, in-app, or in person, with zero KYC hurdles.
+              Same founder, same team, same counter in Tamale. We operate an independent secondary marketplace for digital gift cards across Ghana, paying out in cedis, typically within minutes of verification, via Mobile Money and local banks — online, in-app, or in person, with zero KYC hurdles.
             </p>
             <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400 text-pretty">
               The new name comes with our refreshed website and mobile app (iOS &amp; Android). Your account, your balance, and your trade history are all preserved.
@@ -111,7 +113,7 @@ export default function AboutPage() {
           <div>
             <SectionHeading
               title="We buy gift cards and pay in cedis"
-              intro="Customers across Ghana sell us Apple/iTunes, Amazon, Steam, Razer Gold and many other secondary cards, as physical cards or e-codes. We check each card and pay out instantly to Mobile Money (MTN MoMo, Telecel Cash, AT Money) or bank accounts."
+              intro="Customers across Ghana sell us Apple/iTunes, Amazon, Steam, Razer Gold and many other secondary cards, as physical cards or e-codes. We check each card and pay out, typically within minutes, to Mobile Money (MTN MoMo, Telecel Cash, AT Money) or bank accounts."
             />
             <dl className="mt-10 grid grid-cols-2 border-y border-gray-200 dark:border-gray-800">
               {tradingFacts.map((fact, i) => (

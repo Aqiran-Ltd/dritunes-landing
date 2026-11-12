@@ -11,10 +11,11 @@ import Footer from "@/components/Footer";
 import MobileQuickActions from "@/components/MobileQuickActions";
 import { fetchRates, fetchGiftCardGroups, withBrandImages, type GiftCardBrand } from "@/lib/ratesService";
 import { topRates } from "@/lib/rateBoard";
+import { fetchPublicStats } from "@/lib/statsService";
 
 export const metadata: Metadata = {
-  title: "Independent Gift Card Exchange & Instant Cedis Payouts",
-  description: "Sell Apple, Amazon, Steam, Razer, and Google Play gift cards at live, transparent market rates. Instant Mobile Money and bank payouts with zero KYC. Trade online 24/7 or visit our Tamale counter.",
+  title: "Independent Gift Card Exchange & Fast Cedis Payouts",
+  description: "Sell Apple, Amazon, Steam, Razer, and Google Play gift cards at live, transparent market rates. Fast Mobile Money and bank payouts with zero KYC. Trade online 24/7 or visit our Tamale counter.",
 };
 
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -23,6 +24,7 @@ export default async function Home() {
   let categories: any[] = []; // Explicit typing handled by component
   let updatedAt: string | undefined;
   let brands: GiftCardBrand[] = [];
+  const stats = await fetchPublicStats();
   try {
     const [ratesData, brandList] = await Promise.all([fetchRates(), fetchGiftCardGroups()]);
     brands = brandList;
@@ -36,7 +38,7 @@ export default async function Home() {
     <main className="flex flex-col min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
       <Navigation />
       <HeroSection boardRows={topRates(categories)} updatedAt={updatedAt} />
-      <StatsSection />
+      <StatsSection stats={stats} />
       <CardsWeBuy brands={brands} />
       <FeaturesSection />
       <PriceUpdateSection initialCategories={categories} />

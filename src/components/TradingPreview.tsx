@@ -57,23 +57,23 @@ export default function TradingPreview() {
   const tradingFeatures = [
     {
       icon: BoltIcon,
-      title: "Lightning Fast",
-      description: "Complete trades in under 30 seconds",
-      metric: "< 30s",
+      title: "Fast Trading",
+      description: "Get a live quote and submit your card in a few taps",
+      metric: "Live",
       color: "from-yellow-400 to-orange-500"
     },
     {
       icon: ShieldCheckIcon,
-      title: "Bank-Grade Security",
-      description: "256-bit encryption with 2FA protection",
-      metric: "99.9%",
+      title: "Secure by Design",
+      description: "Encrypted connections and protected accounts",
+      metric: "TLS",
       color: "from-green-400 to-blue-500"
     },
     {
       icon: ChartBarIcon,
       title: "Best Rates",
-      description: "Competitive rates with zero hidden fees",
-      metric: "0%",
+      description: "Live, transparent rates shown before you trade",
+      metric: "Live",
       color: "from-purple-400 to-pink-500"
     },
     {
@@ -311,7 +311,7 @@ export default function TradingPreview() {
             <ArrowRightIcon className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
           </motion.button>
           <p className="text-gray-400 text-lg">
-            Join 10,000+ traders across Ghana
+            Trade online or at our counter in Tamale
           </p>
         </motion.div>
       </div>
