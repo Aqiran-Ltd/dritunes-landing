@@ -451,6 +451,9 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
   }
 
   // 9. Forward the Verified Request to the Backend
+  if (!process.env.BACKEND_URL && process.env.NODE_ENV === 'production') {
+    console.error('[Config] BACKEND_URL is not set in production; falling back to http://127.0.0.1:8000, which will fail.');
+  }
   const backendBase = (process.env.BACKEND_URL || 'http://127.0.0.1:8000').replace(/\/+$/, '');
   const queryString = sanitizedSearchParams.toString();
   const targetUrl = `${backendBase}/api/v1/${path}${queryString ? `?${queryString}` : ''}`;
@@ -485,7 +488,12 @@ async function handleRequest(request: NextRequest, params: { path: string[] }) {
       headers: responseHeaders,
     });
   } catch (error) {
-    console.error(`Proxy Error [${method} /api/v1/${path}]:`, error);
+    const cause = (error as { cause?: { code?: string; message?: string } })?.cause;
+    console.error(
+      `Proxy Error [${method} /api/v1/${path}] -> ${backendBase}:`,
+      error,
+      cause ? `cause=${cause.code ?? ''} ${cause.message ?? ''}` : ''
+    );
     return NextResponse.json(
       { status: false, message: 'Service temporarily unavailable.' },
       { status: 502 }
