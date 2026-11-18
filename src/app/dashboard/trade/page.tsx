@@ -340,7 +340,14 @@ export default function TradePage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-slide-in-up pb-20">
+    <div
+      className="max-w-7xl mx-auto space-y-8 animate-slide-in-up pb-20"
+      onTouchStart={e => {
+        // Number keyboards have no "Done" key: tapping elsewhere dismisses it so the layout settles before the tap lands.
+        const a = document.activeElement as HTMLElement | null;
+        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA') && !(e.target as HTMLElement).closest('input,textarea,button,a,label,[role="listbox"]')) a.blur();
+      }}
+    >
       
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -429,11 +436,14 @@ export default function TradePage() {
                             step="any"
                             value={amount}
                             onChange={e => setAmount(e.target.value)}
+                            enterKeyHint="done"
+                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); } }}
                             className={`w-full p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border ${amount.trim() && !amountCheck.isValid ? 'border-red-500 focus:border-red-500 focus:ring-4 focus:ring-red-500/15' : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gold-500 dark:focus:border-gold-400 focus:ring-4 focus:ring-gold-500/15'} font-bold text-lg text-gray-900 dark:text-white outline-none transition-all`}
                             placeholder="100.00"
                             required
                           />
-                          {(amountCheck.helper || amountCheck.message) && (
+                          {/* Always rendered so the layout doesn't jump while the keyboard is open */}
+                          {(
                             <div className="mt-1.5 flex items-center justify-between text-xs min-h-[1.25rem]">
                               <span className="text-gray-500 dark:text-gray-400 font-medium">{amountCheck.helper}</span>
                               {amount.trim() && !amountCheck.isValid && (
