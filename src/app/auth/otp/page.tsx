@@ -1,35 +1,47 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { 
     ChatBubbleLeftRightIcon, 
     EnvelopeIcon, 
-    ArrowPathIcon,
-    ArrowRightIcon
+    ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 
 
 
 function OtpContent() {
-  const { verifyOtp, resendOtp, user } = useAuth();
+  const { user, isLoading: authLoading, pendingRegistration, verifyOtp, resendOtp, verifyRegistration, resendRegistrationOtp, cancelRegistration, logout } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // Initialize with URL param or default to phone
-  const [activeMethod, setActiveMethod] = useState<'phone' | 'email'>(() => {
-      const paramArgs = searchParams.get('type') as 'phone' | 'email';
-      return paramArgs || 'phone';
+
+  // A sign-up in progress (no account yet) or an existing account that still has an
+  // unverified contact. Nobody gets past this page until both are confirmed.
+  const mode: 'registration' | 'account' | null = pendingRegistration ? 'registration' : user ? 'account' : null;
+
+  const isPhoneVerified = pendingRegistration ? pendingRegistration.verified.phone : !!user?.phone_verified_at;
+  const isEmailVerified = pendingRegistration ? pendingRegistration.verified.email : !!user?.email_verified_at;
+  const allVerified = isPhoneVerified && isEmailVerified;
+
+  const [chosenMethod, setActiveMethod] = useState<'phone' | 'email'>(() => {
+      const param = searchParams.get('type');
+      return param === 'email' ? 'email' : 'phone';
   });
+  // Land on whichever contact is still unverified.
+  const activeMethod: 'phone' | 'email' =
+      chosenMethod === 'phone' && isPhoneVerified && !isEmailVerified ? 'email'
+      : chosenMethod === 'email' && isEmailVerified && !isPhoneVerified ? 'phone'
+      : chosenMethod;
 
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
+  const [cooldowns, setCooldowns] = useState<Record<'phone' | 'email', number>>(() => (pendingRegistration ? { phone: 60, email: 60 } : { phone: 0, email: 0 })); // codes were just sent
+  const resendCooldown = cooldowns[activeMethod];
+  const startedFor = useRef<string | null>(null);
 
   // Clear error/token when switching methods — adjusted during render (not an
   // effect) by detecting the change directly, per React's guidance on resetting
@@ -42,18 +54,33 @@ function OtpContent() {
   }
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (resendCooldown > 0) {
-      interval = setInterval(() => {
-        setResendCooldown((prev) => prev - 1);
-      }, 1000);
-    }
+    if (cooldowns.phone <= 0 && cooldowns.email <= 0) return;
+    const interval = setInterval(() => {
+      setCooldowns((c) => ({ phone: Math.max(0, c.phone - 1), email: Math.max(0, c.email - 1) }));
+    }, 1000);
     return () => clearInterval(interval);
-  }, [resendCooldown]);
+  }, [cooldowns.phone > 0, cooldowns.email > 0]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Derived state for verified status
-  const isPhoneVerified = !!user?.phone_verified_at;
-  const isEmailVerified = !!user?.email_verified_at;
+  // Entry: a fresh sign-up already has codes on the way (the backend rate-limits resends),
+  // an existing unverified account gets its first code sent now.
+  useEffect(() => {
+    if (!mode || startedFor.current === mode) return;
+    startedFor.current = mode;
+
+    if (mode === 'registration') return;
+
+    const first = !isPhoneVerified ? 'phone' : !isEmailVerified ? 'email' : null;
+    if (first) {
+      resendOtp(first).then(() => setCooldowns((c) => ({ ...c, [first]: 60 })));
+    }
+  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Leave once there is nothing left to verify, or nothing to verify at all.
+  useEffect(() => {
+    if (authLoading) return;
+    if (!mode) router.replace('/auth/register');
+    else if (mode === 'account' && allVerified) router.replace('/dashboard');
+  }, [authLoading, mode, allVerified, router]);
 
   const methods = [
       { 
@@ -76,72 +103,42 @@ function OtpContent() {
     setError('');
 
     try {
-      // Create a temporary variable to hold the updated user
-      // We know verifyOtp now returns the user object (or void)
-      const updatedUser: any = await verifyOtp(token, activeMethod);
-      
-      // Success! Move to next step or dashboard using the FRESH user data
-      handleNextStep(activeMethod, updatedUser);
+      if (mode === 'registration') {
+        await verifyRegistration(activeMethod, token);
+      } else {
+        await verifyOtp(token, activeMethod);
+      }
+      // When both are done the account/registration flow redirects to the dashboard on
+      // its own; otherwise the tab above moves to the contact that is still unverified.
+      setIsLoading(false);
     } catch (err: any) {
       setError(err.message || 'Invalid OTP');
       setIsLoading(false);
     }
   };
 
-  const handleNextStep = (currentMethod: 'phone' | 'email', freshUser?: any) => {
-      // Logic after successful verification of currentMethod
-      // Use freshUser if available, otherwise fall back to context user (which might be stale in this tight loop)
-      const currentUser = freshUser || user;
-
-      const phoneVerified = !!currentUser?.phone_verified_at;
-      const emailVerified = !!currentUser?.email_verified_at;
-      
-      if (currentMethod === 'phone') {
-           // Phone Verified. 
-           // If Email is NOT verified, go to Email.
-           if (!emailVerified) { 
-               setActiveMethod('email');
-               setIsLoading(false);
-               return;
-           }
-      } else if (currentMethod === 'email') {
-          // Email Verified.
-          // If Phone is NOT verified, go to Phone.
-          if (!phoneVerified) {
-              setActiveMethod('phone');
-              setIsLoading(false);
-              return;
-          }
-      }
-
-      // If we are here, either the other method is newly verified too, 
-      // or we just want to proceed.
-             
-      router.push('/dashboard');
-  };
-
-  // Trigger content resend if needed
-  useEffect(() => {
-     if (!user) return;
-     if (resendCooldown === 0) {
-         const isVerified = activeMethod === 'phone' ? user.phone_verified_at : user.email_verified_at;
-         if (!isVerified) {
-            // Optional: Auto-send logic if desired. Kept minimal to avoid spam as per previous thought.
-         }
-     }
-  }, [activeMethod, user, resendCooldown]);
-
   const handleResend = async () => {
     if (resendCooldown > 0) return;
     try {
-       await resendOtp(activeMethod);
-       setResendCooldown(60); 
-    } catch (err) {
-       console.error("Failed to resend");
+       if (mode === 'registration') {
+         await resendRegistrationOtp(activeMethod);
+       } else {
+         await resendOtp(activeMethod);
+       }
+       setCooldowns((c) => ({ ...c, [activeMethod]: 60 }));
+    } catch (err: any) {
+       setError(err?.message || 'Failed to resend the code');
     }
   };
 
   const isCurrentApprovied = activeMethod === 'phone' ? isPhoneVerified : isEmailVerified;
+  const destination = mode === 'registration'
+    ? (activeMethod === 'phone' ? pendingRegistration?.phone_number : pendingRegistration?.email)
+    : (activeMethod === 'phone' ? user?.phone_number : user?.email);
+
+  if (!mode) {
+    return <div className="flex justify-center p-8"><span className="loading-dots text-xl">Loading...</span></div>;
+  }
 
   return (
     <div className="space-y-8 animate-slide-in-up">
@@ -150,7 +147,9 @@ function OtpContent() {
           Verify Your Account
         </h2>
         <p className="text-gray-500 dark:text-gray-400">
-          Complete the steps below to fully activate your account.
+          {mode === 'registration'
+            ? 'Confirm your phone number and email to create your account.'
+            : 'Confirm your phone number and email to continue.'}
         </p>
       </div>
 
@@ -189,14 +188,14 @@ function OtpContent() {
                       </svg>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Verified!</h3>
-                  <p className="text-gray-500 dark:text-gray-400 mb-6">
-                      Your {activeMethod} has been successfully verified.
+                  <p className="text-gray-500 dark:text-gray-400">
+                      Your {activeMethod === 'phone' ? 'phone number' : 'email'} has been successfully verified.
                   </p>
-                  {/* If we are here, it means we are waiting for the next step logic or manual action. 
-                      Ideally should have auto-transitioned, but if not: */}
-                  <Button onClick={() => handleNextStep(activeMethod)} fullWidth>
-                      Continue
-                  </Button>
+                  {!allVerified && (
+                      <Button onClick={() => setActiveMethod(activeMethod === 'phone' ? 'email' : 'phone')} fullWidth className="mt-6">
+                          Verify {activeMethod === 'phone' ? 'Email' : 'Phone'}
+                      </Button>
+                  )}
               </div>
           ) : (
               <>
@@ -206,8 +205,9 @@ function OtpContent() {
                     </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                         {activeMethod === 'phone' 
-                            ? 'Enter the 6-digit code sent to your phone number.' 
-                            : 'Enter the verification code sent to your email.'}
+                            ? 'Enter the 6-digit code sent to'
+                            : 'Enter the 6-digit code sent to'}
+                        {destination && <span className="block font-medium text-gray-900 dark:text-white break-all">{destination}</span>}
                     </p>
                 </div>
 
@@ -253,43 +253,20 @@ function OtpContent() {
       </div>
 
       <div className="flex flex-col items-center gap-3 text-center pt-2">
-         {/* Navigation Logic */}
-         {activeMethod === 'phone' && (
-             !isEmailVerified ? (
-                 <button 
-                    onClick={() => setActiveMethod('email')}
-                    className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors group"
-                 >
-                     Skip to confirm email <ArrowRightIcon className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                 </button>
-             ) : (
-                 <Link 
-                    href="/dashboard" 
-                    className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors group"
-                 >
-                     Skip to Dashboard <ArrowRightIcon className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                 </Link>
-             )
-         )}
-
-         {activeMethod === 'email' && (
-             <>
-                 <Link 
-                    href="/dashboard" 
-                    className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors group"
-                 >
-                     Skip to Dashboard <ArrowRightIcon className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                 </Link>
-                 
-                 {!isPhoneVerified && (
-                     <button 
-                        onClick={() => setActiveMethod('phone')}
-                        className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                     >
-                         Back to verify Phone
-                     </button>
-                 )}
-             </>
+         {mode === 'registration' ? (
+             <button
+                onClick={() => { cancelRegistration(); router.push('/auth/register'); }}
+                className="text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+             >
+                 Wrong email or phone number? Start over
+             </button>
+         ) : (
+             <button
+                onClick={() => logout()}
+                className="text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+             >
+                 Sign out
+             </button>
          )}
       </div>
     </div>

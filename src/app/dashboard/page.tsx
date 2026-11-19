@@ -13,7 +13,6 @@ import {
 import { api } from '@/lib/api';
 import RatesTicker from '@/components/dashboard/RatesTicker';
 import QuickActions from '@/components/dashboard/QuickActions';
-import { VerificationStatus } from '@/components/auth/VerificationStatus';
 import TrendsSummaryCards from '@/components/dashboard/TrendsSummaryCards';
 import VolumeChart from '@/components/dashboard/VolumeChart';
 import AssetDistributionChart from '@/components/dashboard/AssetDistributionChart';
@@ -24,15 +23,6 @@ export default function DashboardPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState<any>(null);
-
-  // Check if all verifications are complete
-  const allVerified = React.useMemo(() => {
-      if (!user) return false;
-      const isPhoneVerified = !!user.phone_verified_at;
-      const isEmailVerified = !!user.email_verified_at;
-      
-      return isPhoneVerified && isEmailVerified;
-  }, [user]);
 
   useEffect(() => {
       const loadDashboardData = async () => {
@@ -107,13 +97,6 @@ export default function DashboardPage() {
                   </div>
              </div>
          </div>
-
-      {/* Verification Status - Hide if all verified */}
-      {!allVerified && (
-          <div className="md:col-span-3">
-             <VerificationStatus />
-          </div>
-      )}
       </div>
 
       {/* Live Rates */}

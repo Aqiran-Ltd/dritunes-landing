@@ -85,10 +85,10 @@ export default function RegisterPage() {
       return;
     }
 
-    const loadingToast = toast.loading('Creating your account...');
+    const loadingToast = toast.loading('Sending verification codes...');
     try {
       await register({ ...formData, name: trimmedName, email: formData.email.trim(), phone_number: normalizedPhone });
-      toast.success('Account created successfully!', { id: loadingToast });
+      toast.success('Codes sent to your email and phone', { id: loadingToast });
     } catch (err: any) {
       const msg = err.message || 'Failed to register';
       setError(msg);
@@ -248,7 +248,7 @@ export default function RegisterPage() {
           isLoading={isLoading}
           className="mt-4"
         >
-          Create Account <ArrowRightIcon className="w-4 h-4 ml-1" />
+          Continue <ArrowRightIcon className="w-4 h-4 ml-1" />
         </Button>
       </form>
 

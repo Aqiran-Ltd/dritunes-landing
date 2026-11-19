@@ -18,10 +18,44 @@ interface User {
   email_verified_at?: string | null;
 }
 
+export type VerifyChannel = 'phone' | 'email';
+
+/** A sign-up whose codes are out but whose account does not exist yet. */
+export interface PendingRegistration {
+  registration_id: string;
+  email: string;
+  phone_number: string;
+  verified: Record<VerifyChannel, boolean>;
+}
+
+const PENDING_KEY = 'pending_registration';
+
+function readPending(): PendingRegistration | null {
+  try {
+    const raw = sessionStorage.getItem(PENDING_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writePending(value: PendingRegistration | null) {
+  try {
+    if (value) sessionStorage.setItem(PENDING_KEY, JSON.stringify(value));
+    else sessionStorage.removeItem(PENDING_KEY);
+  } catch {
+    /* storage unavailable: the in-memory copy still works for this page */
+  }
+}
+
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   needsVerification: boolean;
+  pendingRegistration: PendingRegistration | null;
+  verifyRegistration: (channel: VerifyChannel, token: string) => Promise<void>;
+  resendRegistrationOtp: (channel: VerifyChannel) => Promise<void>;
+  cancelRegistration: () => void;
   isLoading: boolean;
   login: (credentials: any) => Promise<void>;
   register: (data: any) => Promise<void>;
@@ -40,13 +74,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const loggingOut = React.useRef(false);
+  const [pendingRegistration, setPendingRegistration] = useState<PendingRegistration | null>(null);
 
-  // Derived state for verification
-  // If property is explicitly null, they need verification.
-  // If property is undefined (backend doesn't send it), assume verified to avoid blocking.
+  // Restore a sign-up in progress (survives a refresh, not a closed tab).
+  useEffect(() => {
+    setPendingRegistration(readPending());
+  }, []);
+
+  const setPending = (value: PendingRegistration | null) => {
+    writePending(value);
+    setPendingRegistration(value);
+  };
+
+  // Both the email and the phone must be verified. A property that is explicitly null is
+  // unverified; undefined (backend didn't send it) is treated as verified so we never lock
+  // someone out over a missing field.
   const needsVerification = React.useMemo(() => {
       if (!user) return false;
-      return user.phone_verified_at === null; 
+      return user.phone_verified_at === null || user.email_verified_at === null;
   }, [user]);
 
   // Load token and user on mount
@@ -132,9 +177,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (userData) {
          setUser(userData);
-         // Redirect to dashboard regardless of verification status
-         // The VerificationBanner in the dashboard will warn them
-         router.push('/dashboard');
+         // Accounts that still have an unverified email or phone must finish that first.
+         const unverified = userData.phone_verified_at === null || userData.email_verified_at === null;
+         router.push(unverified ? '/auth/otp' : '/dashboard');
       } else {
          console.error('Failed to parse user data:', response);
          throw new Error('Failed to fetch user details.');
@@ -145,44 +190,72 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Signing up does not create an account. The backend validates the details, parks them and
+  // sends a code to the email and the phone; the account (and the session) only exists once
+  // both have been confirmed.
   const register = async (data: any) => {
-    // Note: Toasts are handled in the components
     const response: any = await api.post('/auth/register', data);
-    if (response.status) {
-      const token = response.data?.access_token;
-      if (token) {
-        localStorage.setItem('access_token', token);
-      }
-      
-      let userData = response.data?.user ?? null;
-      if (token) {
-        try {
-          const userResponse: any = await api.get('/user', token);
-          if (userResponse.status && userResponse.data) {
-            userData = userResponse.data;
-          } else if (userResponse.data) {
-            userData = userResponse.data;
-          } else if (userResponse.user) {
-            userData = userResponse.user;
-          } else if (userResponse.id) {
-            userData = userResponse;
-          }
-        } catch (fetchErr) {
-          console.warn('Could not fetch user profile after registration:', fetchErr);
-        }
-      }
-
-      if (userData) {
-        setUser(userData);
-      }
-
-      // Redirect to verification page
+    if (response.status && response.data?.registration_id) {
+      setPending({
+        registration_id: response.data.registration_id,
+        email: response.data.email,
+        phone_number: response.data.phone_number,
+        verified: response.data.verified ?? { email: false, phone: false },
+      });
       router.push('/auth/otp');
     } else {
         const error = new Error(response.message || 'Registration failed');
         (error as any).data = response.errors;
         throw error;
     }
+  };
+
+  const cancelRegistration = () => setPending(null);
+
+  const verifyRegistration = async (channel: VerifyChannel, token: string) => {
+    if (!pendingRegistration) throw new Error('Your sign-up has expired. Please start again.');
+
+    let response: any;
+    try {
+      response = await api.post('/auth/register/verify', {
+        registration_id: pendingRegistration.registration_id,
+        channel,
+        token,
+      });
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 410) setPending(null);
+      throw err;
+    }
+
+    if (!response.status) throw new Error(response.message || 'Verification failed');
+
+    if (!response.data?.complete) {
+      setPending({ ...pendingRegistration, verified: response.data?.verified ?? { ...pendingRegistration.verified, [channel]: true } });
+      return;
+    }
+
+    // Both confirmed: the account now exists and we are signed in.
+    const accessToken = response.data.access_token;
+    localStorage.setItem('access_token', accessToken);
+
+    let userData = response.data.user ?? null;
+    try {
+      const userResponse: any = await api.get('/user', accessToken);
+      userData = userResponse.data ?? userResponse.user ?? (userResponse.id ? userResponse : userData);
+    } catch (fetchErr) {
+      console.warn('Could not fetch user profile after registration:', fetchErr);
+    }
+
+    setPending(null);
+    if (userData) setUser(userData);
+    toast.success('Account created successfully!');
+    router.push('/dashboard');
+  };
+
+  const resendRegistrationOtp = async (channel: VerifyChannel) => {
+    if (!pendingRegistration) throw new Error('Your sign-up has expired. Please start again.');
+    await api.post('/auth/register/resend', { registration_id: pendingRegistration.registration_id, channel });
+    toast.success('Code sent');
   };
 
   const updateUser = (userData: User) => {
@@ -297,7 +370,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, isLoading, login, register, logout, updateUser, verifyOtp, resendOtp, forgotPassword, resetPassword }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, needsVerification, pendingRegistration, verifyRegistration, resendRegistrationOtp, cancelRegistration, isLoading, login, register, logout, updateUser, verifyOtp, resendOtp, forgotPassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

@@ -18,7 +18,6 @@ import {
 } from '@heroicons/react/24/outline';
 import BrandLogo from "@/components/BrandLogo";
 import TopBar from '@/components/dashboard/TopBar';
-import VerificationBanner from '@/components/dashboard/VerificationBanner';
 import { api } from '@/lib/api';
 
 const navigation = [
@@ -32,7 +31,7 @@ const navigation = [
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout, isLoading } = useAuth();
+  const { user, logout, isLoading, needsVerification } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,8 +41,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (!isLoading && !user) {
       router.push('/auth/login');
+    } else if (!isLoading && user && needsVerification) {
+      // Nothing in the dashboard is reachable until email and phone are both verified.
+      router.replace('/auth/otp');
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, needsVerification, router]);
 
   useEffect(() => {
     const fetchPendingTrades = async () => {
@@ -88,7 +90,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  if (!user) return null; 
+  if (!user || needsVerification) return null; 
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black">
@@ -182,8 +184,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <main className="flex-1 p-4 sm:p-8">
             <div className="max-w-7xl mx-auto dark:text-gray-100">
-               
-               <VerificationBanner />
                
                {children}
             </div>

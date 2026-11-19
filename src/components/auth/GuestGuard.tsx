@@ -11,7 +11,7 @@ export default function GuestGuard({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     if (!isLoading && user) {
       if (needsVerification) {
-         router.push('/auth/otp?type=phone');
+         router.push('/auth/otp');
       } else {
          router.push('/dashboard');
       }

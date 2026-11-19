@@ -199,7 +199,7 @@ export function isScannerUserAgent(userAgent: string | null): boolean {
 const ALLOWED_API_ROUTES: Array<{ pattern: RegExp; methods: string[] }> = [
   // Auth
   {
-    pattern: /^auth\/(login|register|logout|change-password|verify-phone|resend-phone-otp|verify-email|resend-email-otp|forgot-password|verify-otp|reset-password)$/,
+    pattern: /^auth\/(login|register|register\/verify|register\/resend|logout|change-password|verify-phone|resend-phone-otp|verify-email|resend-email-otp|forgot-password|verify-otp|reset-password)$/,
     methods: ['POST'],
   },
   {
@@ -834,6 +834,22 @@ export function validateEndpointBody(
       return { valid: false, message: 'Invalid verification code or email address.' };
     }
     return { valid: true, sanitizedBody: { email, token } };
+  }
+
+  if (cleanPath === 'auth/register/verify' || cleanPath === 'auth/register/resend') {
+    const registration_id = typeof sanitized.registration_id === 'string' ? sanitizeText(sanitized.registration_id, 40) : '';
+    const channel = sanitized.channel === 'email' || sanitized.channel === 'phone' ? sanitized.channel : '';
+    if (!/^[A-Za-z0-9]{40}$/.test(registration_id) || !channel) {
+      return { valid: false, message: 'Your sign-up has expired. Please start again.' };
+    }
+    if (cleanPath === 'auth/register/resend') {
+      return { valid: true, sanitizedBody: { registration_id, channel } };
+    }
+    const token = typeof sanitized.token === 'string' ? sanitizeText(sanitized.token, 6) : '';
+    if (!/^[0-9]{6}$/.test(token)) {
+      return { valid: false, message: 'Verification code must be 6 digits.' };
+    }
+    return { valid: true, sanitizedBody: { registration_id, channel, token } };
   }
 
   if (cleanPath === 'auth/verify-phone' || cleanPath === 'auth/verify-email') {
