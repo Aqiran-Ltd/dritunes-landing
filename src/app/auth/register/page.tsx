@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { UserIcon, EnvelopeIcon, PhoneIcon, GlobeAltIcon, LockClosedIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import GuestGuard from '@/components/auth/GuestGuard';
 import { toast } from 'react-hot-toast';
+import Turnstile, { TURNSTILE_SITE_KEY } from '@/components/auth/Turnstile';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -22,6 +23,8 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,6 +41,14 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError('');
     setFieldErrors({});
+
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      const msg = 'Please complete the security check.';
+      setError(msg);
+      toast.error(msg);
+      setIsLoading(false);
+      return;
+    }
 
     const trimmedName = formData.name.trim();
     if (trimmedName.length < 2 || trimmedName.length > 255) {
@@ -87,7 +98,7 @@ export default function RegisterPage() {
 
     const loadingToast = toast.loading('Sending verification codes...');
     try {
-      await register({ ...formData, name: trimmedName, email: formData.email.trim(), phone_number: normalizedPhone });
+      await register({ ...formData, name: trimmedName, email: formData.email.trim(), phone_number: normalizedPhone, cf_turnstile_token: captchaToken });
       toast.success('Codes sent to your email and phone', { id: loadingToast });
     } catch (err: any) {
       const msg = err.message || 'Failed to register';
@@ -99,6 +110,8 @@ export default function RegisterPage() {
           setFieldErrors(err.data);
       }
       setIsLoading(false);
+      // A token works once: always ask for a fresh challenge after a failed attempt.
+      setCaptchaReset((n) => n + 1);
     }
   };
 
@@ -241,6 +254,8 @@ export default function RegisterPage() {
             icon={<LockClosedIcon className="w-5 h-5" />}
             required
         />
+
+        <Turnstile onToken={setCaptchaToken} resetSignal={captchaReset} />
 
         <Button 
           type="submit" 

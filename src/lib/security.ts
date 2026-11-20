@@ -788,6 +788,11 @@ export function validateEndpointBody(
     const country = typeof sanitized.country === 'string' ? sanitizeText(sanitized.country, 64) : '';
     const password = typeof sanitized.password === 'string' ? sanitized.password : '';
     const password_confirmation = typeof sanitized.password_confirmation === 'string' ? sanitized.password_confirmation : '';
+    // Cloudflare Turnstile one-time token: must survive this rebuild or the backend (once enforcing) refuses the signup.
+    const cf_turnstile_token =
+      typeof sanitized.cf_turnstile_token === 'string' && sanitized.cf_turnstile_token.length <= 2048
+        ? sanitized.cf_turnstile_token
+        : '';
 
     if (!name || name.length < 2) {
       return { valid: false, message: 'Please provide a valid full name.' };
@@ -814,6 +819,7 @@ export function validateEndpointBody(
         country,
         password,
         password_confirmation,
+        ...(cf_turnstile_token ? { cf_turnstile_token } : {}),
       },
     };
   }
